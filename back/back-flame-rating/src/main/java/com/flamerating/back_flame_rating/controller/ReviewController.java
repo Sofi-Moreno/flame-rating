@@ -2,6 +2,7 @@ package com.flamerating.back_flame_rating.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,8 +40,14 @@ cliente en un objeto de tipo Review(Java) si tener que usar alguna librería.*/
         return reviewService.findAll();
     }
 
+/*http://localhost:8080/by-game/{id}*/
 @GetMapping("/reviews/by-game/{id}")
     public List<Review> getReviewsByGameId(@PathVariable Integer id) {
         return reviewService.findByVideoGameId(id);
+    }
+/*http://localhost:8080/delete-review/{id}*/
+@DeleteMapping("/delete-review/{id}")
+    public void deleteReview(@PathVariable Integer id) {
+        reviewService.deleteReview(id);
     }
 }

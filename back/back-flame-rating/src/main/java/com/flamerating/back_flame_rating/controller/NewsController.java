@@ -14,11 +14,6 @@ import java.util.List;
 comunicarse con los clientes mediante Json.*/
 
 @RestController
-<<<<<<< HEAD
-@RequestMapping("/api/news")
-@CrossOrigin(origins = "http://localhost:8080")
-=======
->>>>>>> d8c1f5c04365ac7484fae3bbec64252cbabf566e
 public class NewsController {
     private final NewsService newsService;
 

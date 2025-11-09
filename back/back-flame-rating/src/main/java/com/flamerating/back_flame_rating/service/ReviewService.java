@@ -37,8 +37,8 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public void deleteReview(Integer id) {
-        throw new UnsupportedOperationException("Unimplemented method 'deleteVideoGame'");
+    public void deleteReview(Integer id) { /*This elimation is by Id */
+        iReviewRepository.deleteById(id);
 
     }
 
