@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,9 +46,24 @@ cliente en un objeto de tipo Review(Java) si tener que usar alguna librería.*/
     public List<Review> getReviewsByGameId(@PathVariable Integer id) {
         return reviewService.findByVideoGameId(id);
     }
+
 /*http://localhost:8080/delete-review/{id}*/
 @DeleteMapping("/delete-review/{id}")
     public void deleteReview(@PathVariable Integer id) {
         reviewService.deleteReview(id);
+    }
+
+@GetMapping ("/review/{id}")
+    public Review findById(@PathVariable Integer id) {
+        return reviewService.findById(id);
+    }
+
+@PutMapping ("/update-review")
+    public Review updateReview(@RequestBody Review review) {
+        Review reviewDb = reviewService.findById(review.getId());
+        reviewDb.setIdUser(review.getIdUser());
+        reviewDb.setRating(review.getRating());
+        reviewDb.setComment(review.getComment());
+        return reviewService.updateReview(reviewDb);
     }
 }
