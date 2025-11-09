@@ -15,7 +15,7 @@ public class UserService {
     public User registerNewUser(User newUser) throws Exception {
 
         // A. Validación de unicidad
-        if (userRepository.existsByNombreDeUsuario(newUser.getNombreDeUsuario())) {
+        if (userRepository.existsByUsername(newUser.getUsername())) {
             throw new Exception("El nombre de usuario ya está en uso.");
         }
         if (userRepository.existsByEmail(newUser.getEmail())) {
@@ -28,21 +28,21 @@ public class UserService {
         // punto
 
         // C. El nuevo usuario es por defecto "Común"
-        newUser.setEsAdmin(false);
+        newUser.setIsAdmin(false);
 
         // D. Guardar en la Base de Datos
         return userRepository.save(newUser);
     }
 
     // --- 2. LÓGICA DE BÚSQUEDA / PERFIL ---
-    public Optional<User> findByNombreDeUsuario(String username) {
-        return userRepository.findByNombreDeUsuario(username);
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     // --- 3. LÓGICA DE ACTUALIZACIÓN DE PERFIL ---
     public User updateProfile(String currentUsername, User updatedDetails) throws Exception {
 
-        User userToUpdate = userRepository.findByNombreDeUsuario(currentUsername)
+        User userToUpdate = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new Exception("Usuario no encontrado."));
 
         // Se pueden actualizar campos como email o nombre de usuario
@@ -51,10 +51,10 @@ public class UserService {
             userToUpdate.setEmail(updatedDetails.getEmail());
         }
 
-        if (updatedDetails.getNombreDeUsuario() != null
-                && !updatedDetails.getNombreDeUsuario().equals(userToUpdate.getNombreDeUsuario())) {
+        if (updatedDetails.getUsername() != null
+                && !updatedDetails.getUsername().equals(userToUpdate.getUsername())) {
             // Se necesitaría validación extra aquí si el nuevo nombre ya existe
-            userToUpdate.setNombreDeUsuario(updatedDetails.getNombreDeUsuario());
+            userToUpdate.setUsername(updatedDetails.getUsername());
         }
 
         // Lógica para cambio de contraseña (Si el campo no es nulo y no usamos BCrypt)
@@ -69,7 +69,7 @@ public class UserService {
     // Este método es crucial para el login, sin usar Spring Security.
     public User authenticate(String username, String rawPassword) throws Exception {
 
-        User user = userRepository.findByNombreDeUsuario(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new Exception("Credenciales inválidas."));
 
         // COMPARACIÓN EN TEXTO PLANO (SIN HASHING)
