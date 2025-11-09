@@ -28,6 +28,7 @@ public class NewsController {
 
     /**
      * POST /api/news : Crea una nueva noticia
+     *
      */
     @PostMapping
     public ResponseEntity<News> crearNoticia(@RequestBody News news) { // <-- Cambio: Acepta la entidad
@@ -36,4 +37,5 @@ public class NewsController {
         News nuevaNoticia = newsService.createNews(news);
         return new ResponseEntity<>(nuevaNoticia, HttpStatus.CREATED);
     }
+
 }
