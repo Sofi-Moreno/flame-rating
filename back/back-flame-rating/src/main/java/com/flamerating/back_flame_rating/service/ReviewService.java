@@ -23,27 +23,23 @@ public class ReviewService implements IReviewService {
 
     @Override
     public List<Review> findAll() {
-        // TODO Auto-generated method stub
-        return null;
+        return iReviewRepository.findAll();
     }
 
     @Override
     public Review findById(Integer id) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 
     @Override
     public void deleteReview(Integer id) {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException("Unimplemented method 'deleteVideoGame'");
+
     }
 
     @Override
     public Review updateReview(Review review) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        throw new UnsupportedOperationException("Unimplemented method 'updateVideoGame'");
 
-    
+    }
 }

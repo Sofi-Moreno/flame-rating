@@ -1,5 +1,12 @@
 package com.flamerating.back_flame_rating.service;
 
-public interface IReviewService {
+import java.util.List;
+import com.flamerating.back_flame_rating.model.Review;
 
+public interface IReviewService {
+    Review saveReview(Review review);
+    List<Review> findAll();
+    Review findById(Integer id);
+    void deleteReview(Integer id);
+    Review updateReview(Review review);
 }
