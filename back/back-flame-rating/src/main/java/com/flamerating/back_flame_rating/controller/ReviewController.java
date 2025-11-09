@@ -3,6 +3,7 @@ package com.flamerating.back_flame_rating.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +37,10 @@ cliente en un objeto de tipo Review(Java) si tener que usar alguna librería.*/
 @GetMapping ("/reviews")
     public List<Review> findAll() {
         return reviewService.findAll();
+    }
+
+@GetMapping("/reviews/by-game/{id}")
+    public List<Review> getReviewsByGameId(@PathVariable Integer id) {
+        return reviewService.findByVideoGameId(id);
     }
 }

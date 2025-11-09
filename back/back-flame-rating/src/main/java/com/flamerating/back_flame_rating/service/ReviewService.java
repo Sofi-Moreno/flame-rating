@@ -32,6 +32,11 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
+    public List<Review> findByVideoGameId(Integer videoGameId) {
+        return iReviewRepository.findByVideoGameId(videoGameId);
+    }
+
+    @Override
     public void deleteReview(Integer id) {
         throw new UnsupportedOperationException("Unimplemented method 'deleteVideoGame'");
 

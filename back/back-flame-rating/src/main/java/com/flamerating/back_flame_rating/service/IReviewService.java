@@ -9,4 +9,5 @@ public interface IReviewService {
     Review findById(Integer id);
     void deleteReview(Integer id);
     Review updateReview(Review review);
+    List<Review> findByVideoGameId(Integer videoGameId);
 }
