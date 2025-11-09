@@ -15,7 +15,7 @@ public class VideoGameController {
         this.videoGameService = videoGameService;
     }
 
-    @PostMapping
+    @PostMapping ("/create-videogame")
     public VideoGame saveVideoGame(@RequestBody VideoGame videoGame) {
         return videoGameService.saveVideoGame(videoGame);
     }
