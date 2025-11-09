@@ -13,6 +13,7 @@ public class VideoGameService implements IVideoGameService {
         this.videoGameRepository = videoGameRepository;
     }
 
+    @SuppressWarnings("null")
     @Override
     public VideoGame saveVideoGame(VideoGame videoGame) {
         return videoGameRepository.save(videoGame);
@@ -20,8 +21,7 @@ public class VideoGameService implements IVideoGameService {
 
     @Override
     public List<VideoGame> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return videoGameRepository.findAll();
     }
 
     @Override

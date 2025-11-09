@@ -2,15 +2,13 @@ package com.flamerating.back_flame_rating.model;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "video_games")
@@ -37,17 +35,14 @@ public class VideoGame {
     private String genre;
     @Column(nullable = false, length = 500)
     private String category;
-    @Column(nullable = false, length = 500)
-    private String console;
-    @Column(nullable = false, length = 500)
-    @OneToMany(mappedBy = "videoGame", cascade = CascadeType.ALL)
+    @Transient
     private List<Review> reviews;
     
     public VideoGame() {
     }
 
     public VideoGame(Integer id, String title, LocalDate releaseDate, String synopsis, String urlTrailer,
-            String developer, String urlImages, String platform, String genre, String category, String console,
+            String developer, String urlImages, String platform, String genre, String category,
             List<Review> reviews) {
         this.id = id;
         this.title = title;
@@ -59,7 +54,6 @@ public class VideoGame {
         this.platform = platform;
         this.genre = genre;
         this.category = category;
-        this.console = console;
         this.reviews = reviews;
     }
 
@@ -131,13 +125,6 @@ public class VideoGame {
     }
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getConsole() {
-        return console;
-    }
-    public void setConsole(String console) {
-        this.console = console;
     }
 
     public List<Review> getReviews() {

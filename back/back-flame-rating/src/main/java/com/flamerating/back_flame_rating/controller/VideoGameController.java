@@ -1,5 +1,8 @@
 package com.flamerating.back_flame_rating.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +18,14 @@ public class VideoGameController {
         this.videoGameService = videoGameService;
     }
 
+    //localhost:8080
     @PostMapping ("/create-videogame")
     public VideoGame saveVideoGame(@RequestBody VideoGame videoGame) {
         return videoGameService.saveVideoGame(videoGame);
+    }
+
+    @GetMapping
+    public List<VideoGame> findAll() {
+        return videoGameService.findAll();
     }
 }
