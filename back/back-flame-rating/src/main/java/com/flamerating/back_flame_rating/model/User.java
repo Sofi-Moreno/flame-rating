@@ -8,10 +8,10 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idUsuario;
+    private Integer idUser;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String nombreDeUsuario;
+    private String username;
 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
@@ -20,24 +20,24 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private boolean esAdmin = false;
+    private boolean isAdmin = false;
 
     public User() {
     }
 
-    public User(String nombreDeUsuario, String email, String password, boolean esAdmin) {
-        this.nombreDeUsuario = nombreDeUsuario;
+    public User(String username, String email, String password, boolean isAdmin) {
+        this.username = username;
         this.email = email;
         this.password = password;
-        this.esAdmin = esAdmin;
+        this.isAdmin = isAdmin;
     }
 
-    public Integer getIdUsuario() {
-        return idUsuario;
+    public Integer getIdUser() {
+        return idUser;
     }
 
-    public String getNombreDeUsuario() {
-        return nombreDeUsuario;
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {
@@ -48,12 +48,12 @@ public class User {
         return password;
     }
 
-    public boolean isEsAdmin() {
-        return esAdmin;
+    public boolean isIsAdmin() {
+        return isAdmin;
     }
 
-    public void setNombreDeUsuario(String nombreDeUsuario) {
-        this.nombreDeUsuario = nombreDeUsuario;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setEmail(String email) {
@@ -64,8 +64,8 @@ public class User {
         this.password = password;
     }
 
-    public void setEsAdmin(boolean esAdmin) {
-        this.esAdmin = esAdmin;
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
 }

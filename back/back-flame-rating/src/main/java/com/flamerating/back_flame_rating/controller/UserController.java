@@ -3,8 +3,6 @@ package com.flamerating.back_flame_rating.controller;
 import com.flamerating.back_flame_rating.service.UserService;
 import com.flamerating.back_flame_rating.model.User;
 
-import javax.xml.crypto.Data;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,7 +65,7 @@ public class UserController {
 
         try {
             User authenticatedUser = userService.authenticate(
-                    loginRequest.getNombreDeUsuario(),
+                    loginRequest.getUsername(),
                     loginRequest.getPassword());
 
             // Devuelve la información del usuario autenticado (se puede simplificar en el
