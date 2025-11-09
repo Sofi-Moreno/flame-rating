@@ -3,8 +3,6 @@ package com.flamerating.back_flame_rating.controller;
 import com.flamerating.back_flame_rating.service.UserService;
 import com.flamerating.back_flame_rating.model.User;
 
-import javax.xml.crypto.Data;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +21,17 @@ public class UserController {
     // No requiere autenticación.
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // La lógica de verificación de unicidad, hashing de contraseña y guardado
-        // se hará dentro del UserService.
+        try {
+            // A. Llama al servicio para validar y guardar el usuario
+            User registeredUser = userService.registerNewUser(user);
 
-        // return userService.register(user);
-        return ResponseEntity.ok("Usuario registrado exitosamente");
+            // B. Devuelve el objeto creado con el código de estado 201 Created
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            // C. Maneja errores de validación (ej. usuario/email ya existen)
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     // 2. ENDPOINT PARA OBTENER DATOS DEL PERFIL
@@ -39,26 +43,12 @@ public class UserController {
     public ResponseEntity<User> getUserProfile(@PathVariable String username) {
         // La lógica de búsqueda se hace en el UserService.
 
-        // Optional<User> user = userService.findByUsername(username);
-        // if (user.isPresent()) {
-        // return ResponseEntity.ok(user.get());
-        // }
-        return ResponseEntity.notFound().build();
+        return userService.findByUsername(username)
+                .map(user -> ResponseEntity.ok(user)) // Si encuentra, devuelve 200 OK
+                .orElseGet(() -> ResponseEntity.notFound().build()); // Si no encuentra, devuelve 404 Not Found
     }
 
-    // 3. ENDPOINT PARA ACTUALIZAR PERFIL
-    // RUTA: PUT /api/users/{username}
-    // Requiere autenticación y autorización (solo el usuario puede modificar su
-    // propio perfil).
-    @PutMapping("/{username}")
-    public ResponseEntity<User> updateUserProfile(@PathVariable String username, @RequestBody User updatedUser) {
-        // La lógica de actualización y verificación de permisos va aquí.
-
-        // return userService.updateProfile(username, updatedUser);
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    /* 4. ENDPOINT PARA INICIO DE SESIÓN (LOGIN) */
+    /* 3. ENDPOINT PARA INICIO DE SESIÓN (LOGIN) */
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody User loginRequest) {
@@ -67,7 +57,7 @@ public class UserController {
 
         try {
             User authenticatedUser = userService.authenticate(
-                    loginRequest.getNombreDeUsuario(),
+                    loginRequest.getUsername(),
                     loginRequest.getPassword());
 
             // Devuelve la información del usuario autenticado (se puede simplificar en el

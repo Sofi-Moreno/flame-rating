@@ -2,6 +2,8 @@ package com.flamerating.back_flame_rating.model;
 
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +21,7 @@ public class VideoGame {
     private Integer id;
     @Column(unique = true, nullable = false)
     private String title;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
     private LocalDate releaseDate;
     @Column(nullable = false, length = 2000)
@@ -35,6 +38,8 @@ public class VideoGame {
     private String genre;
     @Column(nullable = false, length = 500)
     private String category;
+    @Column(nullable = false)
+    private Double averageRating;
     @Transient
     private List<Review> reviews;
     
@@ -43,7 +48,7 @@ public class VideoGame {
 
     public VideoGame(Integer id, String title, LocalDate releaseDate, String synopsis, String urlTrailer,
             String developer, String urlImages, String platform, String genre, String category,
-            List<Review> reviews) {
+            Double averageRating, List<Review> reviews) {
         this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -54,6 +59,7 @@ public class VideoGame {
         this.platform = platform;
         this.genre = genre;
         this.category = category;
+        this.averageRating = averageRating;
         this.reviews = reviews;
     }
 
@@ -125,6 +131,13 @@ public class VideoGame {
     }
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 
     public List<Review> getReviews() {
