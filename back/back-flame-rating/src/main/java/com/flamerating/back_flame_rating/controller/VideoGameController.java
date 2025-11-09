@@ -2,6 +2,8 @@ package com.flamerating.back_flame_rating.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +22,17 @@ public class VideoGameController {
 
     //localhost:8080
     @PostMapping ("/create-videogame")
-    public VideoGame saveVideoGame(@RequestBody VideoGame videoGame) {
-        return videoGameService.saveVideoGame(videoGame);
+    public ResponseEntity<?> saveVideoGame(@RequestBody VideoGame videoGame) {
+        try {
+            VideoGame saved = videoGameService.saveVideoGame(videoGame);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+        
     }
+
 
     @GetMapping
     public List<VideoGame> findAll() {

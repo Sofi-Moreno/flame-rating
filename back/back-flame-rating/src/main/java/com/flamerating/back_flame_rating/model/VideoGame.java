@@ -2,6 +2,7 @@ package com.flamerating.back_flame_rating.model;
 
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +20,7 @@ public class VideoGame {
     private Integer id;
     @Column(unique = true, nullable = false)
     private String title;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
     private LocalDate releaseDate;
     @Column(nullable = false, length = 2000)
