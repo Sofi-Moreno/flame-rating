@@ -48,20 +48,19 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Si no encuentra, devuelve 404 Not Found
     }
 
-    /* 3. ENDPOINT PARA INICIO DE SESIÓN (LOGIN) */
-
+    // 3. ENDPOINT PARA INICIO DE SESIÓN (LOGIN)
+    // RUTA: POST /api/users/login
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody User loginRequest) {
-        // En una implementación real, se usaría un DTO, no la entidad User
-        // directamente.
+        // Nota: En un proyecto real, usarías un DTO, no la entidad User.
 
         try {
             User authenticatedUser = userService.authenticate(
+                    // OJO: Asegúrate de que estos getters coincidan con tu clase User
                     loginRequest.getUsername(),
                     loginRequest.getPassword());
 
-            // Devuelve la información del usuario autenticado (se puede simplificar en el
-            // futuro)
+            // Si las credenciales son correctas, devuelve el objeto User
             return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
 
         } catch (Exception e) {

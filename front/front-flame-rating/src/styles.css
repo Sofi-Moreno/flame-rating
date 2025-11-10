@@ -1,0 +1,17 @@
+<<<<<<< HEAD
+=======
+/* You can add global styles to this file, and also import other style files */
+
+/* Resetear el margen y padding del navegador */
+html, body {
+    margin: 0;
+    padding: 0;
+    /* Esto es crucial para un diseño full-width */
+}
+
+/* Asegurar que el contenedor principal de Angular también se ajuste */
+app-root {
+    display: block;
+    height: 100%;
+}
+>>>>>>> 7d7294f9b2edc80c3725047861581a8b560e95a3
