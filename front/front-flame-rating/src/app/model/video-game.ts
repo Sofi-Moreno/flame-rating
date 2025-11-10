@@ -1,16 +1,19 @@
 // Import or declare Review type
 import { Review } from './review';
 export class VideoGame {
-    id?: number; // Autogenerado
-    title?: string; // Único y obligatorio
-    releaseDate?: string; // Formato 'yyyy-MM-dd'
-    synopsis?: string; // Máximo 2000 caracteres
-    urlTrailer?: string;
-    developer?: string;
-    urlImages?: string;
-    platform?: string; // Máximo 500 caracteres
-    genre?: string; // Máximo 500 caracteres
-    category?: string; // Máximo 500 caracteres
-    averageRating?: number;
-    reviews?: Review[]; // Transitorio, opcional
+    constructor(
+        id: number, // Autogenerado
+        title: string, // Único y obligatorio
+        releaseDate: string, // Formato 'yyyy-MM-dd'
+        synopsis: string, // Máximo 2000 caracteres
+        urlTrailer: string,
+        developer: string,
+        urlImages: string,
+        platform: string, // Máximo 500 caracteres
+        genre: string, // Máximo 500 caracteres
+        category: string, // Máximo 500 caracteres
+        averageRating: number,
+        reviews: Review[] // Transitorio, opcional
+    ){}
+    
 }

@@ -34,12 +34,12 @@ public class VideoGameController {
         
     }
 
-    @GetMapping
+    @GetMapping("/listVideogames")
     public List<VideoGame> findAll() {
         return videoGameService.findAll();
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search/{title}")
     public ResponseEntity<VideoGame> findByTitle(@RequestParam String title) {
         try {
             VideoGame videoGame = videoGameService.findByTitle(title);
@@ -50,7 +50,7 @@ public class VideoGameController {
         }
     }
 
-    @GetMapping("/videogame-by-id")
+    @GetMapping("/videogame-by-id/{id}")
     public ResponseEntity<?> findById(@RequestParam Integer id) {
         try {
             videoGameService.findById(id);
@@ -61,7 +61,7 @@ public class VideoGameController {
         }
     }
 
-    @DeleteMapping("/delete-videogame")
+    @DeleteMapping("/delete-videogame/{id}")
     public ResponseEntity<?> deleteVideoGame(@RequestParam Integer id) {
         try {
             videoGameService.deleteVideoGame(id);
