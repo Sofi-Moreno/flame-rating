@@ -28,7 +28,7 @@ public class NewsController {
      post, por lo que se utiliza la anotación @PostMapping */
 
 /*La anotación RequestBody lo que hace es transformar la petición que viene desde el
-cliente en un objeto de tipo News(Java) si tener que usar alguna librería.*/
+cliente en un objeto de tipo News(Java) si tener que usar alguna librería hola.*/
 
     /*http://localhost:8080/create-news*/
     @PostMapping("/create-news")
