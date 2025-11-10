@@ -1,18 +1,26 @@
-<div id="main-menu">
-  <div id="favicon">
-      <img src="flame-rating-images/flame-rating-background.png" alt="Flame Rating Favicon">
-  </div>
-  <div id="top">
+<section id="favicon">
+  <img src="flame-rating-images/flame-rating-background2.png" alt="flame-rating-favicon"/>
+</section>
 
-  </div>
-  <div class="carrousel" id="oneplayer">
-
-  </div>
-  <div class="carrousel" id="multiplayer">
-
-  </div>
-  <div class="carrousel" id="online">
-
-  </div>
-</div>
-
+<section id="menu">
+  @for (category of categorys; track category) {
+    <div class="category">
+      <h2>{{ category }}</h2>
+      <hr>
+      <ul>
+            @for (videoGame of videoGames[category]; track videoGame) {
+              <li>
+                <a>
+                  <img [src]="videoGame.image" [alt]="videoGame.title"/>
+                  <div class="info">
+                    <h3>{{ videoGame.title }}</h3>
+                    <p>{{ videoGame.synopsis}}</p>
+                    <button>Ver más</button>
+                  </div>
+                </a>
+              </li>
+            }
+          </ul>
+    </div>
+  }
+</section>

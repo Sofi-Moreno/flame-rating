@@ -3,17 +3,19 @@ package com.flamerating.back_flame_rating.controller;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.flamerating.back_flame_rating.model.VideoGame;
 import com.flamerating.back_flame_rating.service.VideoGameService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class VideoGameController {
     private final VideoGameService videoGameService;
 
@@ -40,7 +42,7 @@ public class VideoGameController {
     }
 
     @GetMapping("/search/{title}")
-    public ResponseEntity<VideoGame> findByTitle(@RequestParam String title) {
+    public ResponseEntity<VideoGame> findByTitle(@PathVariable String title) {
         try {
             VideoGame videoGame = videoGameService.findByTitle(title);
             return ResponseEntity.ok(videoGame);
@@ -51,7 +53,7 @@ public class VideoGameController {
     }
 
     @GetMapping("/videogame-by-id/{id}")
-    public ResponseEntity<?> findById(@RequestParam Integer id) {
+    public ResponseEntity<?> findById(@PathVariable Integer id) {
         try {
             videoGameService.findById(id);
             return ResponseEntity.ok(videoGameService.findById(id));
@@ -62,7 +64,7 @@ public class VideoGameController {
     }
 
     @DeleteMapping("/delete-videogame/{id}")
-    public ResponseEntity<?> deleteVideoGame(@RequestParam Integer id) {
+    public ResponseEntity<?> deleteVideoGame(@PathVariable Integer id) {
         try {
             videoGameService.deleteVideoGame(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Video game deleted successfully.");

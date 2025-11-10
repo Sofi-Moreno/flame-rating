@@ -1,11 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MainMenu } from "./main-menu/main-menu";
 import { Encabezado } from "./encabezado/encabezado";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Encabezado,MainMenu],
+  imports: [RouterOutlet, Encabezado],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

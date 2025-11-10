@@ -1,6 +1,11 @@
 // Import or declare Review type
 import { Review } from './review';
 export class VideoGame {
+    category: any;
+urlImages: any;
+image: any;
+title: any;
+synopsis: any;
     constructor(
         id: number, // Autogenerado
         title: string, // Único y obligatorio
