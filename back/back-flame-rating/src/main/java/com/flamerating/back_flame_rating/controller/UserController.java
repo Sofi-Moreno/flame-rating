@@ -48,7 +48,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Si no encuentra, devuelve 404 Not Found
     }
 
-    // 4. ENDPOINT PARA INICIO DE SESIÓN (LOGIN)
+    // 3. ENDPOINT PARA INICIO DE SESIÓN (LOGIN)
     // RUTA: POST /api/users/login
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody User loginRequest) {
