@@ -1,0 +1,256 @@
+/* -------------------------------------------------------------------------- */
+/* 1. Configuración Global y Paleta de Colores                                */
+/* Verificación: Paleta de colores exacta de la imagen.                     */
+/* -------------------------------------------------------------------------- */
+
+/* Verificación: Fondo de página solicitado (#212121) y 
+  fuente base para un look moderno. 
+*/
+body {
+  background-color: #212121; /* --page-background */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #FFFFFF; /* --color-text-light */
+  margin: 0;
+  padding: 2rem; /* Espaciado general de la página */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Estructura de Categorías                                                */
+/* -------------------------------------------------------------------------- */
+#menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Espacio entre categorías */
+}
+
+.category h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #FFFFFF; /* --color-text-light */
+}
+
+.category hr {
+  border: none;
+  height: 1px;
+  background-color: #373535; /* --color-dark-gray */
+  margin-bottom: 1.5rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. Carrusel (<ul>)                                                         */
+/* -------------------------------------------------------------------------- */
+.category ul {
+  display: flex;
+  overflow-x: auto; /* Permite el scroll horizontal */
+  list-style: none;
+  padding: 1rem 0; /* Espacio para que la sombra del hover se vea */
+  margin: 0;
+  
+  /* Ocultamos la barra de scroll */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE y Edge */
+}
+
+.category ul::-webkit-scrollbar {
+  display: none; /* Chrome, Safari y Opera */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Card (<li>)                                                             */
+/* Verificación: Estructura, color de fondo y layout de 3 cards.              */
+/* -------------------------------------------------------------------------- */
+.category li {
+  /* Configuración del layout de 3 cards */
+  flex-shrink: 0;
+  width: calc((100% / 3) - 1.5rem); /* Muestra 3 cards */
+  margin-right: 1.5rem; /* Espacio entre cards */
+  
+  /* Verificación: Color de fondo del card */
+  background-color: #373535; /* --color-dark-gray */
+  border-radius: 16px; /* Esquinas redondeadas como en la imagen */
+  overflow: hidden; /* Asegura que la imagen no se salga */
+  
+  /* Sombra sutil para dar profundidad */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+  /* Verificación: Transición para el efecto hover */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. Interacciones de la Card                                                */
+/* -------------------------------------------------------------------------- */
+
+/* Verificación: El card se levanta (translateY) y se 
+  hace más grande (scale) al pasar el mouse. 
+*/
+.category li:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.category li a {
+  text-decoration: none;
+  display: block;
+  color: inherit; /* Hereda el color (blanco) */
+}
+
+.category li img {
+  width: 100%;
+  aspect-ratio: 4 / 3; /* Proporción para la imagen */
+  object-fit: cover; /* Asegura que la imagen cubra */
+  display: block;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. Info del Card (.info)                                                   */
+/* -------------------------------------------------------------------------- */
+.info {
+  padding: 1.5rem;
+  position: relative; /* Necesario para el placeholder de llama */
+  
+  /* Dejamos espacio a la derecha para el placeholder de la llama 
+    que se posicionará de forma absoluta.
+  */
+  padding-right: 6rem; 
+}
+
+/* Placeholder para el Fuego/Rating (Tu Petición)
+  
+  Usamos un pseudo-elemento ::after en .info para crear 
+  el espacio de la llama SIN modificar tu HTML.
+  Se posiciona a la derecha del contenido.
+*/
+.info::after {
+  content: ''; /* Aquí iría el número, ej: '4.1' */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* Pone el número abajo */
+  
+  position: absolute;
+  right: 1.5rem;
+  top: 1.5rem;
+  bottom: 1.5rem;
+  width: 70px; /* Ancho del placeholder */
+  
+  /* Simulamos el ícono de la llama con un fondo.
+    Aquí es donde pondrías tu 'background-image'.
+  */
+  background-color: #FF641A; /* --color-orange-red */
+  background-size: 60%;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  border-radius: 12px; /* Placeholder redondeado */
+  
+  /* Estilo del texto (número) */
+  color: #FFFFFF; /* --color-text-light */
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding-bottom: 0.5rem;
+}
+
+
+/* Placeholder para Indicadores de Consola (Tu Petición) 
+  
+  Como pediste, esto está oculto pero indicado en el CSS.
+  Puedes crear una clase .console-icons y aplicarla aquí.
+*/
+.console-icons-placeholder {
+  display: none; 
+}
+
+
+/* Verificación: Textos en blanco */
+.info h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FFFFFF; /* --color-text-light */
+  margin: 0 0 0.5rem 0;
+  
+  /* Evita que el texto largo se superponga con la llama */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #FFFFFF; /* --color-text-light */
+  margin: 0 0 1.5rem 0;
+  
+  /* Limita el texto a 3 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 4.05rem; /* 0.9rem * 1.5 * 3 líneas */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. Botón "Ver más"                                                         */
+/* -------------------------------------------------------------------------- */
+.info button {
+  /* Verificación: Color del botón de la paleta */
+  background-color: #F2762E; /* --color-orange-medium */
+  color: #FFFFFF; /* --color-text-light */
+  
+  font-weight: 600;
+  font-size: 1rem;
+  border: 2px solid #FF9100; /* --color-orange-bright */
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  
+  /* Transición para los efectos */
+  transition: background-color 0.2s ease, filter 0.2s ease;
+}
+
+.info button:hover {
+  /* Usamos el naranja más brillante de la paleta para el hover */
+  background-color: #FF9100; /* --color-orange-bright */
+}
+
+/* Verificación: El botón se pone un poco más oscuro 
+  al hacer click (sin cambiar de color). 
+*/
+.info button:active {
+  filter: brightness(90%);
+  background-color: #F2762E; /* --color-orange-medium */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 8. Media Queries (Responsive)                                              */
+/* -------------------------------------------------------------------------- */
+
+/* En pantallas medianas (tablets), mostramos 2 cards */
+@media (max-width: 1024px) {
+  .category li {
+    width: calc((100% / 2) - 1.5rem);
+  }
+}
+
+/* En pantallas pequeñas (móviles), mostramos 1 card */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  .category li {
+    width: calc(100% - 1rem);
+    margin-right: 1rem;
+  }
+  .info {
+    /* En móviles, reducimos el padding para dar más espacio */
+    padding: 1rem;
+    padding-right: 5.5rem;
+  }
+  .info::after {
+    right: 1rem;
+    top: 1rem;
+    bottom: 1rem;
+    width: 60px;
+  }
+}
