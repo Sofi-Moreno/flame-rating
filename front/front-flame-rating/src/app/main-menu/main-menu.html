@@ -19,7 +19,7 @@
         @for (videoGame of videoGames[category]; track videoGame) {
           <li>
             <a>
-              <img [src]="videoGame.urlImages" [alt]="videoGame.title"/>
+              <img [src]="videoGame.urlImages[0]" [alt]="videoGame.title"/>
               <div class="info">
                 <h3>{{ videoGame.title }}</h3>
                 <div class="platforms">
@@ -35,7 +35,11 @@
                 <div class="rating">
                   <span>{{ videoGame.averageRating }}</span>
                 </div>
-                <button>Ver más</button>
+                <button>
+                  <a [routerLink]="['/videogame', videoGame.id]" class="boton-ver-mas">
+                    Ver más
+                  </a>
+                </button>
               </div>
             </a>
           </li>

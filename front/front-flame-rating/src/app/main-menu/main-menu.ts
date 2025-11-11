@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { VideoGame } from '../model/video-game';
 import { VideoGameService } from '../service/video-game-service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-main-menu',
   templateUrl: './main-menu.html',
   styleUrl: './main-menu.css',
+  imports: [
+    RouterLink
+  ],
 })
 export class MainMenu implements OnInit {
   // --- Propiedades existentes ---
@@ -28,9 +32,18 @@ export class MainMenu implements OnInit {
   // --- ngOnInit existente ---
   ngOnInit(): void {
     this.videoGameService.getVideoGames().subscribe((data: VideoGame[]) => {
-    this.videoGames = this.organizeByCategory(data);
+      // Si cada juego puede traer urlImages como string, convertirlo a array por juego
+      data.forEach(game => {
+        if ((game as any).urlImages && typeof (game as any).urlImages === 'string') {
+          (game as any).urlImages = ((game as any).urlImages as string)
+                                  .split(',')
+                                  .map((url: string) => url.trim()); // .trim() quita espacios extra
+        }
+      });
 
-    console.log('Datos de juegos recibidos:', this.videoGames);
+      this.videoGames = this.organizeByCategory(data);
+
+      console.log('Datos de juegos recibidos:', this.videoGames);
     });
   }
   

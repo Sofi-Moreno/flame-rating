@@ -8,11 +8,11 @@ import { VideoGame } from '../model/video-game';
 })
 export class VideoGameService {
   private apiList:string = "http://localhost:8080/listVideogames";
-  private apiCreate:string = "https://localhost:8080/create-videogame";
-  private apiFindByTitle:string = "https://localhost:8080/search/{title}";
-  private apiFindById:string = "https://localhost:8080/videogame-by-id/{id}";
-  private apiDelete:string = "https://localhost:8080/delete-videogame/{id}";
-  private apiUpdate:string = "https://localhost:8080/update-videogame";
+  private apiCreate:string = "http://localhost:8080/create-videogame";
+  private apiFindByTitle:string = "http://localhost:8080/search/{title}";
+  private apiFindById:string = "http://localhost:8080/videogame-by-id/{id}";
+  private apiDelete:string = "http://localhost:8080/delete-videogame/{id}";
+  private apiUpdate:string = "http://localhost:8080/update-videogame";
 
   constructor(private http:HttpClient) { }
   getVideoGames():Observable<VideoGame[]> { //La clase observablwe es un patrón de diseño que permite manejar elementos asincrónicos.
