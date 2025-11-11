@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Necesario para *ngIf
-import { RouterLink } from '@angular/router'; // Necesario para [routerLink]
-import { AuthService } from '../service/auth'; // Asegúrate que la ruta sea correcta
-import { User } from '../model/user'; // Asegúrate que la ruta sea correcta
+import { CommonModule } from '@angular/common'; 
+import { RouterLink } from '@angular/router'; 
+import { AuthService } from '../service/auth'; 
+import { User } from '../model/user'; 
 import { Observable } from 'rxjs';
 
 @Component({
