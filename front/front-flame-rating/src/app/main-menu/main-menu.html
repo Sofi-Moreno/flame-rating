@@ -6,33 +6,41 @@
   <h1>Explorar por categoría</h1>
   @for (category of categorys; track category) {
     <div class="category">
-      <h2>{{ category }}</h2>
-      <ul>
-            @for (videoGame of videoGames[category]; track videoGame) {
-              <li>
-                <a>
-                  <img [src]="videoGame.image" [alt]="videoGame.title"/>
-                  <div class="info">
-                    <h3>{{ videoGame.title }}</h3>
-                    <div class="platforms">
-                      <ul>
-                        @for (plataforma of getPlatformsArray(videoGame.platform); track plataforma) {
-                          <li>
-                            {{ plataforma }}
-                          </li>
-                        }
-                        </ul>
-                    </div>
-                    <p>{{ videoGame.synopsis}}</p>
-                    <div class="rating">
-                      <span>{{ videoGame.averageRating }}</span>
-                    </div>
-                    <button>Ver más</button>
-                  </div>
-                </a>
-              </li>
-            }
-          </ul>
+      <h2>{{ category }}</h2> 
+        <!--Añadimos la referencia #carouselList (para identificar cada <ul>)
+        y los 5 eventos del mouse para la lógica de "arrastrar".
+      -->
+      <ul #carouselList 
+          (mousedown)="onMouseDown($event, carouselList)" 
+          (mouseleave)="onMouseLeave(carouselList)" 
+          (mouseup)="onMouseUp(carouselList)" 
+          (mousemove)="onMouseMove($event, carouselList)">
+          
+        @for (videoGame of videoGames[category]; track videoGame) {
+          <li>
+            <a>
+              <img [src]="videoGame.urlImages" [alt]="videoGame.title"/>
+              <div class="info">
+                <h3>{{ videoGame.title }}</h3>
+                <div class="platforms">
+                  <ul>
+                    @for (plataforma of getPlatformsArray(videoGame.platform); track plataforma) {
+                      <li>
+                        {{ plataforma }}
+                      </li>
+                    }
+                  </ul>
+                </div>
+                <p>{{ videoGame.synopsis}}</p>
+                <div class="rating">
+                  <span>{{ videoGame.averageRating }}</span>
+                </div>
+                <button>Ver más</button>
+              </div>
+            </a>
+          </li>
+        }
+      </ul>
     </div>
   }
 </section>
