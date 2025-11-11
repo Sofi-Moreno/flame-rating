@@ -1,18 +1,31 @@
 /* -------------------------------------------------------------------------- */
-/* 1. Configuración Global y Paleta de Colores                                */
-/* Verificación: Paleta de colores exacta de la imagen.                     */
+/* 1. Estilos para el Banner de Flame Rating                                  */
 /* -------------------------------------------------------------------------- */
-
-/* Verificación: Fondo de página solicitado (#212121) y 
-  fuente base para un look moderno. 
-*/
-body {
-  background-color: #212121; /* --page-background */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #FFFFFF; /* --color-text-light */
-  margin: 0;
-  padding: 2rem; /* Espaciado general de la página */
+#favicon {
+  /* 1. Ocupa todo el ancho de la pantalla */
+  width: 100%;
+  
+  /* 2. Altura fija (Ajustada por ti) */
+  height: 500px;
+  
+  /* 3. Asegura que la imagen de adentro no se desborde */
+  overflow: hidden; 
 }
+
+#favicon img {
+  /* 4. Hacemos que la imagen llene el contenedor */
+  width: 100%;
+  height: 100%;
+  
+  /* 5. Evita que la imagen se deforme. */
+  object-fit: cover;
+  object-position: center center;
+  
+  /* 6. (Opcional) Sugerencia de renderizado de alta calidad */
+  /* image-rendering: -webkit-optimize-contrast; */
+  /* image-rendering: high-quality; */
+}
+
 
 /* -------------------------------------------------------------------------- */
 /* 2. Estructura de Categorías                                                */
@@ -21,24 +34,50 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem; /* Espacio entre categorías */
+  padding: 2rem; /* Espaciado general de la sección de carruseles */
 }
 
+/* Título H1 General ("Explorar por categoría") */
+#menu h1 {
+  font-size: 2.5rem; /* Más grande que el h2 */
+  font-weight: 700; /* Negrita para que resalte */
+  color: #FFFFFF; /* Color blanco */
+  text-align: center; /* Centrado */
+  margin: 0 0 2rem 0; /* Margen inferior para separarlo */
+  padding-bottom: 0; /* Asegura que no tenga padding */
+  border-bottom: none; /* Asegura que no tenga el subrayado */
+}
+
+/* Título H2 de Categoría (Ej: "Un Jugador") */
 .category h2 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: #FFFFFF; /* --color-text-light */
+  color: #FFFFFF;
+  font-weight: 400;
+
+  /* --- ¡SUBRAYADO RESTAURADO! --- */
+  display: inline-block; /* Para que el borde/subrayado sea solo del ancho del texto */
+  border-bottom: 4px solid #F2762E; /* El subrayado naranja pedido */
+  padding-bottom: 8px; /* Espacio entre el texto y la línea */
 }
 
-.category hr {
-  border: none;
-  height: 1px;
-  background-color: #373535; /* --color-dark-gray */
-  margin-bottom: 1.5rem;
+ .category hr {
+  /* Esta línea la habíamos ocultado para usar el border-bottom */
+  display: none;
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* 3. Carrusel (<ul>)                                                         */
 /* -------------------------------------------------------------------------- */
+
+/* ¡ELIMINADO! Ya no necesitamos el .carousel-wrapper */
+/*
+.carousel-wrapper {
+  position: relative;
+}
+*/
+
 .category ul {
   display: flex;
   overflow-x: auto; /* Permite el scroll horizontal */
@@ -46,18 +85,48 @@ body {
   padding: 1rem 0; /* Espacio para que la sombra del hover se vea */
   margin: 0;
   
+  /* ¡ELIMINADO! El scroll-behavior: smooth era para los botones */
+  /* scroll-behavior: smooth; */
+
+  /* --- ¡NUEVO! --- */
+  /* Estilos de cursor para la sensación de "arrastrar" */
+  cursor: grab; /* Manita abierta */
+  user-select: none; /* Evita que el texto se seleccione al arrastrar */
+
+
   /* Ocultamos la barra de scroll */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none;  /* IE y Edge */
 }
 
-.category ul::-webkit-scrollbar {
-  display: none; /* Chrome, Safari y Opera */
+/* --- ¡NUEVO! --- */
+/* Cuando el usuario hace clic en el carrusel, se muestra el puño */
+.category ul:active {
+  cursor: grabbing; /* Puño cerrado */
 }
+
+
+/* -------------------------------------------------------------------------- */
+/* ¡ELIMINADO! 3.5. Botones del Carrusel                                       */
+/* -------------------------------------------------------------------------- */
+/*
+.carousel-button {
+  ... (reglas eliminadas) ...
+}
+.carousel-button:hover {
+  ... (reglas eliminadas) ...
+}
+.carousel-button.prev {
+  ... (reglas eliminadas) ...
+}
+.carousel-button.next {
+  ... (reglas eliminadas) ...
+}
+*/
+
 
 /* -------------------------------------------------------------------------- */
 /* 4. Card (<li>)                                                             */
-/* Verificación: Estructura, color de fondo y layout de 3 cards.              */
 /* -------------------------------------------------------------------------- */
 .category li {
   /* Configuración del layout de 3 cards */
@@ -65,25 +134,20 @@ body {
   width: calc((100% / 3) - 1.5rem); /* Muestra 3 cards */
   margin-right: 1.5rem; /* Espacio entre cards */
   
-  /* Verificación: Color de fondo del card */
-  background-color: #373535; /* --color-dark-gray */
-  border-radius: 16px; /* Esquinas redondeadas como en la imagen */
-  overflow: hidden; /* Asegura que la imagen no se salga */
-  
-  /* Sombra sutil para dar profundidad */
+  background-color: #373535;
+  border-radius: 16px;
+  overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-
-  /* Verificación: Transición para el efecto hover */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  /* ¡CLAVE PARA ALINEAR FLAMAS! */
+  /* Hacemos que la llama (.rating) se posicione en relación a la card */
+  position: relative;
 }
 
 /* -------------------------------------------------------------------------- */
 /* 5. Interacciones de la Card                                                */
 /* -------------------------------------------------------------------------- */
-
-/* Verificación: El card se levanta (translateY) y se 
-  hace más grande (scale) al pasar el mouse. 
-*/
 .category li:hover {
   transform: translateY(-8px) scale(1.03);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
@@ -93,7 +157,7 @@ body {
 .category li a {
   text-decoration: none;
   display: block;
-  color: inherit; /* Hereda el color (blanco) */
+  color: inherit;
 }
 
 .category li img {
@@ -101,75 +165,83 @@ body {
   aspect-ratio: 4 / 3; /* Proporción para la imagen */
   object-fit: cover; /* Asegura que la imagen cubra */
   display: block;
+  
+  /* --- ¡CAMBIO AÑADIDO! --- */
+  /* Prioriza la parte superior de la imagen al cortar */
+  object-position: center top; 
 }
 
 /* -------------------------------------------------------------------------- */
 /* 6. Info del Card (.info)                                                   */
 /* -------------------------------------------------------------------------- */
 .info {
-  padding: 1.5rem;
-  position: relative; /* Necesario para el placeholder de llama */
+  /* ¡CLAVE PARA LAYOUT! */
+  /* El padding-right deja espacio para la llama */
+  /* El padding-bottom deja espacio para el botón "Ver más" */
+  padding: 1.5rem 6rem 8rem 1.5rem;
   
-  /* Dejamos espacio a la derecha para el placeholder de la llama 
-    que se posicionará de forma absoluta.
-  */
-  padding-right: 6rem; 
+  /* Ya no es 'relative' porque la llama se alinea al 'li' */
+  /* position: relative; */ /* -> ELIMINADO */
+  
+  /* El texto se alinea a la izquierda por defecto */
+  text-align: left;
 }
 
-/* Placeholder para el Fuego/Rating (Tu Petición)
-  
-  Usamos un pseudo-elemento ::after en .info para crear 
-  el espacio de la llama SIN modificar tu HTML.
-  Se posiciona a la derecha del contenido.
-*/
-.info::after {
-  content: ''; /* Aquí iría el número, ej: '4.1' */
+/* -------------------------------------------------------------------------- */
+/* 7. Plataformas (.platforms)                                                */
+/* -------------------------------------------------------------------------- */
+.platforms {
+  margin-bottom: 0.75rem;
+}
+
+.platforms ul {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end; /* Pone el número abajo */
+  flex-wrap: wrap; /* Permite que los tags bajen si no caben */
+  gap: 0.5rem; /* Espacio entre tags */
   
-  position: absolute;
-  right: 1.5rem;
-  top: 1.5rem;
-  bottom: 1.5rem;
-  width: 70px; /* Ancho del placeholder */
+  /* Reseteamos estilos de <ul> de carrusel */
+  overflow-x: visible;
+  padding: 0;
   
-  /* Simulamos el ícono de la llama con un fondo.
-    Aquí es donde pondrías tu 'background-image'.
-  */
-  background-color: #FF641A; /* --color-orange-red */
-  background-size: 60%;
-  background-position: center 30%;
-  background-repeat: no-repeat;
-  border-radius: 12px; /* Placeholder redondeado */
+  /* ¡ELIMINADO! Ya no es necesario */
+  /* scroll-behavior: auto; */
+}
+
+.platforms li {
+  /* Reseteamos estilos de <li> de carrusel */
+  width: auto;
+  flex-shrink: 1;
+  margin-right: 0;
   
-  /* Estilo del texto (número) */
-  color: #FFFFFF; /* --color-text-light */
-  font-size: 1.5rem;
-  font-weight: 700;
-  padding-bottom: 0.5rem;
+  /* Estilos del tag */
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  background-color: rgba(0, 0, 0, 0.3); /* Fondo oscuro sutil */
+  border: 2px solid #F2762E; /* Borde naranja (Tu petición) */
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  
+  /* Transición para el "truco" de scale-invertido */
+  transition: transform 0.3s ease;
+}
+
+/* ¡TRUCO! Evita que los tags se agranden con el hover de la card */
+.category li:hover .platforms li {
+  transform: scale(0.97); /* 1 / 1.03 */
 }
 
 
-/* Placeholder para Indicadores de Consola (Tu Petición) 
-  
-  Como pediste, esto está oculto pero indicado en el CSS.
-  Puedes crear una clase .console-icons y aplicarla aquí.
-*/
-.console-icons-placeholder {
-  display: none; 
-}
-
-
-/* Verificación: Textos en blanco */
+/* -------------------------------------------------------------------------- */
+/* 8. Textos (h3, p)                                                          */
+/* -------------------------------------------------------------------------- */
 .info h3 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #FFFFFF; /* --color-text-light */
+  color: #FFFFFF;
   margin: 0 0 0.5rem 0;
   
-  /* Evita que el texto largo se superponga con la llama */
+  /* Evita que el texto largo se rompa en varias líneas */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -178,52 +250,91 @@ body {
 .info p {
   font-size: 0.9rem;
   line-height: 1.5;
-  color: #FFFFFF; /* --color-text-light */
-  margin: 0 0 1.5rem 0;
+  color: #FFFFFF;
+  margin: 0;
   
   /* Limita el texto a 3 líneas */
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: 4.05rem; /* 0.9rem * 1.5 * 3 líneas */
+  
+  /* ¡CLAVE PARA ALINEAR BOTONES! */
+  /* Asegura que el párrafo ocupe 3 líneas (0.9rem * 1.5 * 3) */
+  min-height: 4.05rem;
 }
 
 /* -------------------------------------------------------------------------- */
-/* 7. Botón "Ver más"                                                         */
+/* 9. Rating Flame (.rating)                                                  */
+/* -------------------------------------------------------------------------- */
+.rating {
+  /* ¡CLAVE! Posición fija en la esquina inferior derecha */
+  position: absolute;
+  bottom: 1.5rem; /* A la misma altura del botón */
+  right: 1.5rem;
+  
+  /* Tamaño de la imagen de llama */
+  width: 70px;
+  height: 70px;
+  
+  /* ¡CLAVE! La imagen de la llama */
+  /* La '/' al inicio es crucial para que Angular encuentre la ruta */
+  background-image: url('/flame-rating-images/raiting_videogame_flame.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  
+  /* Flex para centrar el número (span) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating span {
+  font-size: 1.5rem;
+  font-weight: 900; /* Extra negrita para que resalte */
+  color: #FFFFFF;
+  
+  /* ¡CLAVE! Ajuste manual para centrar el número en el círculo gris */
+  transform: translateY(8px);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. Botón "Ver más"                                                        */
 /* -------------------------------------------------------------------------- */
 .info button {
-  /* Verificación: Color del botón de la paleta */
-  background-color: #F2762E; /* --color-orange-medium */
-  color: #FFFFFF; /* --color-text-light */
+  /* ¡CLAVE! Posición fija centrada en la parte de abajo */
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%); /* El truco para centrar un <div> absoluto */
   
+  /* (Ya no necesitamos este margen) */
+  /* margin: 1.5rem auto 0 auto; */
+  
+  background-color: #F2762E;
+  color: #FFFFFF;
   font-weight: 600;
   font-size: 1rem;
-  border: 2px solid #FF9100; /* --color-orange-bright */
+  border: 2px solid #FF9100;
   border-radius: 8px;
   padding: 0.75rem 1.5rem;
   cursor: pointer;
-  
-  /* Transición para los efectos */
   transition: background-color 0.2s ease, filter 0.2s ease;
 }
 
 .info button:hover {
-  /* Usamos el naranja más brillante de la paleta para el hover */
-  background-color: #FF9100; /* --color-orange-bright */
+  background-color: #FF9100;
 }
 
-/* Verificación: El botón se pone un poco más oscuro 
-  al hacer click (sin cambiar de color). 
-*/
 .info button:active {
   filter: brightness(90%);
-  background-color: #F2762E; /* --color-orange-medium */
+  background-color: #F2762E;
 }
 
 /* -------------------------------------------------------------------------- */
-/* 8. Media Queries (Responsive)                                              */
+/* 11. Media Queries (Responsive)                                             */
 /* -------------------------------------------------------------------------- */
 
 /* En pantallas medianas (tablets), mostramos 2 cards */
@@ -235,22 +346,46 @@ body {
 
 /* En pantallas pequeñas (móviles), mostramos 1 card */
 @media (max-width: 768px) {
-  body {
+  #menu {
     padding: 1rem;
   }
   .category li {
-    width: calc(100% - 1rem);
+    width: calc(100% - 1rem); /* Ocupa casi todo el ancho */
     margin-right: 1rem;
   }
+  
   .info {
-    /* En móviles, reducimos el padding para dar más espacio */
-    padding: 1rem;
-    padding-right: 5.5rem;
+    /* En móvil, ajustamos el padding para que la llama y el texto quepan */
+    padding: 1rem 5rem 6rem 1rem;
   }
-  .info::after {
-    right: 1rem;
-    top: 1rem;
-    bottom: 1rem;
+  
+  .rating {
+    /* Hacemos la llama un poco más pequeña en móvil */
     width: 60px;
+    height: 60px;
+    right: 1rem;
+    bottom: 1rem;
   }
+  
+  .rating span {
+    font-size: 1.25rem;
+    transform: translateY(6px); /* Ajuste fino para el nuevo tamaño */
+  }
+  
+  .info button {
+    bottom: 1rem; /* Alinear con la llama */
+  }
+  
+  /* ¡ELIMINADO! Reglas de botones del carrusel en móvil */
+  /*
+  .carousel-button {
+    ... (reglas eliminadas) ...
+  }
+  .carousel-button.prev {
+    ... (reglas eliminadas) ...
+  }
+  .carousel-button.next {
+    ... (reglas eliminadas) ...
+  }
+  */
 }

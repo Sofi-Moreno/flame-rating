@@ -19,7 +19,7 @@ public class News {
     private String textNews;
     @Column(nullable = false)
     private String urlVideo;
-    @Column(nullable = false)
+@Column(nullable = false, columnDefinition = "TEXT")
     private String urlImages;
 
     public News() {

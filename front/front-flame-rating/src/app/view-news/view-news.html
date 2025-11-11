@@ -1,1 +1,45 @@
-<p>view-news works!</p>
+<div class="news-container">
+  <h1>Últimas Noticias</h1>
+  
+  <article class="news-item" *ngFor="let news of newsList">
+    
+    <h2>{{ news.title }}</h2>
+    <p class="publication-date">
+      Publicado: {{ news.publicationDate | date:'d MMMM, yyyy' }}
+    </p>
+    
+    <div class="carousel-container" *ngIf="getImages(news).length > 0 || getVideos(news).length > 0">
+      
+      <div class="carousel-item" *ngFor="let imgUrl of getImages(news)">
+        <img [src]="imgUrl" [alt]="news.title">
+      </div>
+      
+      <div class="carousel-item" *ngFor="let vidUrl of getVideos(news)">
+        
+        <div class="video-wrapper" *ngIf="isYoutube(vidUrl)">
+          <iframe 
+            [src]="getYoutubeEmbedUrl(vidUrl)" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <div *ngIf="!isYoutube(vidUrl)">
+          <video [src]="vidUrl" controls preload="metadata">
+            Tu navegador no soporta videos.
+          </video>
+        </div>
+        
+      </div>
+      </div>
+    
+    <p class="news-text">{{ news.textNews }}</p>
+    
+  </article>
+  
+  <div *ngIf="newsList.length === 0">
+    <p>No hay noticias para mostrar en este momento.</p>
+  </div>
+  
+</div>

@@ -1,0 +1,101 @@
+/* src/app/news-view/view-news.css */
+
+.news-container {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.news-item {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.news-item h2 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.publication-date {
+  font-size: 0.9em;
+  color: #7f8c8d;
+  margin-bottom: 15px;
+}
+
+.news-text {
+  line-height: 1.6;
+  color: #34495e;
+  white-space: pre-wrap;
+}
+
+/* --- Estilos del Carrusel (CSS Scroll Snap) --- */
+
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background-color: #f0f0f0;
+  /* Añadido: Altura máxima para el contenedor del carrusel */
+  max-height: 400px; /* Puedes ajustar este valor si lo prefieres más alto o bajo */
+  align-items: center; /* Centra verticalmente los elementos si tienen diferente altura */
+}
+
+.carousel-item {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  box-sizing: border-box;
+  display: flex; /* Para centrar contenido dentro del item si es necesario */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  height: 100%; /* El item ocupa toda la altura del contenedor */
+}
+
+.carousel-item img,
+.carousel-item video {
+  max-width: 100%; /* Asegura que no se desborde del item */
+  max-height: 100%; /* Asegura que no se desborde del contenedor del carrusel */
+  height: auto; /* Mantiene la proporción */
+  width: auto; /* Mantiene la proporción, puede ser 100% si siempre quieres que ocupe todo el ancho */
+  display: block;
+  object-fit: contain; /* ¡Importante! 'contain' ajusta la imagen/video *dentro* del espacio sin recortar.
+                         'cover' lo recorta para rellenar todo el espacio. Elige el que prefieras. */
+  border-radius: 5px; /* Un poco de borde redondeado para estética */
+}
+
+/* --- Estilos para el IFRAME de YouTube --- */
+
+.video-wrapper {
+  position: relative;
+  width: 100%; /* Ocupa todo el ancho disponible */
+  padding-bottom: 56.25%; /* Proporción 16:9 (9 / 16 * 100) */
+  height: 0;
+  overflow: hidden;
+  max-height: 400px; /* Igual que el carrusel para consistencia */
+  background: #000;
+  border-radius: 5px; /* Consistencia con las imágenes */
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

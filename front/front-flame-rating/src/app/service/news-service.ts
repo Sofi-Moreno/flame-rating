@@ -1,20 +1,33 @@
+// src/app/service/news-service.ts
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { News } from '../model/news';
+import { News } from '../model/news'; // Asegúrate que la ruta sea correcta
 
 @Injectable({
   providedIn: 'root',
 })
 export class NewsService {
-  private apiList:string = "http://localhost:8080/listNews";
-  private apiCreate:string = "https://localhost:8080/create-news";
-  private apiFindById:string = "https://localhost:8080/news-by-id/{id}";
-  private apiDelete:string = "https://localhost:8080/delete-news/{id}";
-  private apiUpdate:string = "https://localhost:8080/update-news";
+  // --- CORRECCIÓN ---
+  // Tu backend usa "/news", no "/listNews"
+  private apiList:string = "http://localhost:8080/news"; 
+  
+  // El resto de tus URLs (create, findById, etc.) parecen tener
+  // un "https" o no coincidir con el controlador.
+  // Revísalas cuando vayas a implementar esas funciones.
+  // Por ahora, solo nos enfocamos en apiList.
+
+  private apiCreate:string = "http://localhost:8080/create-news"; // Debería ser http
+  private apiFindById:string = "http://localhost:8080/news-by-id/{id}"; // No está en tu controller
+  private apiDelete:string = "http://localhost:8080/delete-news/{id}"; // No está en tu controller
+  private apiUpdate:string = "http://localhost:8080/update-news"; // No está en tu controller
+
 
   constructor(private http:HttpClient) { }
-  getNews():Observable<News[]> { //La clase observablwe es un patrón de diseño que permite manejar elementos asincrónicos.
+
+  // Esta función es la que usaremos
+  getNews():Observable<News[]> {
     return this.http.get<News[]>(this.apiList);
   }
 
@@ -33,4 +46,5 @@ export class NewsService {
   updateNews(news:News):Observable<News>{
     return this.http.put<News>(this.apiUpdate, news);
   }
+
 }
