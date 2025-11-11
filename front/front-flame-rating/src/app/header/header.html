@@ -1,18 +1,53 @@
 <header>
     <div class="container">
+        <!-- Logo siempre visible -->
         <a routerLink="/" class="logo">
-            <img src="flame-rating-images/logo_FR.png" alt="">
+            <img src="flame-rating-images/logo_FR.png" alt="Flame Rating Logo">
         </a>
+        
         <nav>
             <ul>
+                <!-- Enlace de Juegos (siempre visible) -->
                 <li>
                     <a routerLink="/" >JUEGOS</a>
                 </li>
+                <!-- Enlace de Noticias (siempre visible) -->
                 <li>
                     <a routerLink="/view-news">NOTICIAS</a>
                 </li>
+                
+                <!-- Enlace para Crear Noticia: SOLO VISIBLE PARA ADMINS -->
+                <li *ngIf="isAdmin">
+                    <a routerLink="/create-news">CREAR NOTICIA (ADMIN)</a>
+                </li>
+
+                <!-- Enlace para Ver Perfil: SOLO VISIBLE SI ESTÁ LOGUEADO -->
+                <li *ngIf="isLoggedIn">
+                    <a routerLink="/view-profile">VER PERFIL</a>
+                </li>
+
             </ul>
         </nav>
-        <button routerLink="/login-register">Iniciar Sesión</button>
+        
+        <!-- Botones de Acción Condicionales -->
+        
+        <!-- Botón 1: Iniciar Sesión / Registro. SOLO visible si NO está logueado -->
+        <button 
+            *ngIf="!isLoggedIn" 
+            routerLink="/login-register"
+            class="action-button primary"
+        >
+            Iniciar Sesión
+        </button>
+
+        <!-- Botón 2: Cerrar Sesión. SOLO visible si SÍ está logueado -->
+        <button 
+            *ngIf="isLoggedIn" 
+            (click)="onLogout()"
+            class="action-button secondary"
+        >
+            Cerrar Sesión
+        </button>
+        
     </div>
 </header>
