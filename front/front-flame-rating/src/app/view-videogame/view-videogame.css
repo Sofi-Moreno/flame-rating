@@ -1,9 +1,158 @@
+/* -------------------------------------------------------------------------- */
+/* 1. Estructura General de la Página                                         */
+/* -------------------------------------------------------------------------- */
+.game-detail-page {
+  /* Centramos la página pero le damos más ancho que al menú */
+  width: 90%;
+  max-width: 1400px;
+  margin: 2rem auto;
+  color: #FFFFFF; /* Texto blanco por defecto */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Título del Juego (H1)                                                   */
+/* -------------------------------------------------------------------------- */
+.game-title {
+  font-size: 3rem; /* ¡Más grande! */
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 1.5rem;
+
+  /* --- El subrayado naranja que pediste --- */
+  display: inline-block;
+  border-bottom: 4px solid #F2762E;
+  padding-bottom: 8px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. Layout Principal (Estilo Steam)                                         */
+/* -------------------------------------------------------------------------- */
+
+/* Este es el nuevo <div> que envuelve la galería y la info */
+.main-content-flex {
+  display: flex;
+  gap: 1.5rem; /* Espacio entre la galería y la info */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Cuadro de Información (Derecha)                                         */
+/* -------------------------------------------------------------------------- */
+.presentationVideogame {
+  /* Ocupa el espacio restante */
+  flex-grow: 1;
+  /* Ancho máximo para que no sea gigante */
+  flex-basis: 35%;
+  max-width: 450px; 
+  
+  background-color: #373535; /* Color de nuestros cards */
+  border-radius: 12px;
+  padding: 1.5rem;
+  
+  /* Hacemos que tenga scroll si el contenido es muy largo */
+  overflow-y: auto;
+  
+  /* ¡CLAVE! Hacemos que la altura se alinee con la galería */
+  /* (Aunque flexbox ya intenta hacer esto por defecto) */
+  align-self: flex-start; /* Se alinea arriba */
+}
+
+/* Imagen pequeña dentro del cuadro de info */
+.info-box-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.presentationVideogame h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-bottom: 1px solid #555;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.presentationVideogame h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 1px solid #555;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+.presentationVideogame p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #dcdcdc; /* Un blanco menos brillante para el párrafo */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. Lista de Detalles y TAGS de Plataforma                                  */
+/* -------------------------------------------------------------------------- */
+.game-metadata {
+  list-style: none;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+.game-metadata li {
+  margin-bottom: 1rem;
+}
+
+.game-metadata li strong {
+  color: #FFFFFF;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.game-metadata li span {
+  color: #dcdcdc;
+}
+
+/* ¡AQUÍ ESTÁ LA MAGIA DE LOS TAGS! */
+/* Estas reglas se aplican a las listas de Géneros y Plataformas 
+  gracias a las clases que pusimos en el HTML 
+*/
+.platform-tags-list,
+.genre-tags-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap; /* Para que bajen si no caben */
+  gap: 0.5rem; /* Espacio entre tags */
+}
+
+.platform-tags-list li,
+.genre-tags-list li {
+  /* Estilos de los tags, como en los cards */
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid #F2762E; /* ¡Tu borde naranja! */
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* 6. TU CÓDIGO DE GALERÍA ORIGINAL (SIN TOCAR)                               */
+/* -------------------------------------------------------------------------- */
+
 .gallery-container {
+    /* Cambiamos esto para que sea flexible pero no más grande que
+      el tamaño original que tenías.
+    */
+    flex-basis: 65%;
+    max-width: 900px;
+    flex-shrink: 0; /* No se encoge */
+
+    /* Tus reglas originales */
     display: flex;
     flex-direction: column;
-    width: 100%; /* O un ancho fijo */
-    max-width: 900px; /* Ejemplo */
-    margin: 0 auto;
+    /* width: 100%; (Reemplazado por flex-basis) */
+    /* margin: 0 auto; (Reemplazado por el layout flex) */
     background-color: #222; /* Fondo oscuro */
     color: white;
     font-family: Arial, sans-serif;

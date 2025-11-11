@@ -3,72 +3,93 @@
   <section class="game-info-section">
     <h1 class="game-title">{{ videoGame.title }}</h1>
 
-    <div class="gallery-container">
-        <div class="main-media-display">  
-            <iframe 
-                *ngIf="safeVideoUrl" 
-                [src]="safeVideoUrl"
-                width="100%" 
-                height="auto" 
-                frameborder="0" 
-                allow="autoplay; fullscreen"
-                allowfullscreen>
-            </iframe>
-            
-            <img 
-                *ngIf="mainImageSrc" 
-                [src]="mainImageSrc" 
-                alt="Imagen principal">
-        </div>
+    <!-- 
+      Este div será nuestro nuevo contenedor flex 
+      para poner la galería y la info lado a lado 
+    -->
+    <div class="main-content-flex">
 
-        <div class="thumbnail-list">
-            <div 
-                class="thumbnail video-thumbnail" 
-                (click)="selectTrailer()"
-                [class.active]="selectedMediaUrl === safeVideoUrl"> 
-                
-                <img [src]="imageList[0].largeSrc" alt="Tráiler">
-                <span class="label">TRÁILER</span>
-            </div>
+      <!-- La galería (tu código original, no se toca) -->
+      <div class="gallery-container">
+          <div class="main-media-display"> 
+              <iframe 
+                  *ngIf="safeVideoUrl" 
+                  [src]="safeVideoUrl"
+                  width="100%" 
+                  height="auto" 
+                  frameborder="0" 
+                  allow="autoplay; fullscreen"
+                  allowfullscreen>
+              </iframe>
+              
+              <img 
+                  *ngIf="mainImageSrc" 
+                  [src]="mainImageSrc" 
+                  alt="Imagen principal">
+          </div>
 
-            <div 
-                *ngFor="let img of imageList" 
-                class="thumbnail image-thumbnail"
-                (click)="selectImage(img)"
-                [class.active]="selectedMediaUrl === img.thumbnailSrc">
-                
-                <img [src]="img.thumbnailSrc" [alt]="img.alt">
-            </div>
-        </div>
-    </div>
+          <div class="thumbnail-list">
+              <div 
+                  class="thumbnail video-thumbnail" 
+                  (click)="selectTrailer()"
+                  [class.active]="selectedMediaUrl === safeVideoUrl"> 
+                  
+                  <img [src]="imageList[0].largeSrc" alt="Tráiler">
+                  <span class="label">TRÁILER</span>
+              </div>
 
-    <div class="presentationVideogame">
-        <img [src]="imageList[0].largeSrc" [alt]="videoGame.title">
+              <div 
+                  *ngFor="let img of imageList" 
+                  class="thumbnail image-thumbnail"
+                  (click)="selectImage(img)"
+                  [class.active]="selectedMediaUrl === img.thumbnailSrc">
+                  
+                  <img [src]="img.thumbnailSrc" [alt]="img.alt">
+              </div>
+          </div>
+      </div> <!-- Fin de gallery-container -->
+
+      <!-- El cuadro de info (tu código original, re-ordenado) -->
+      <div class="presentationVideogame">
+          <img class="info-box-image" [src]="imageList[0].largeSrc" [alt]="videoGame.title">
+          
           <h2>Sinopsis</h2>
           <p>{{ videoGame.synopsis }}</p>
-        <h3>Detalles del Juego</h3>
-        <ul class="game-metadata">
-          <li><strong>Fecha de Estreno:</strong> <span>{{videoGame.releaseDate}}</span></li>
-          <li><strong>Desarrolladora:</strong> <span>{{ videoGame.developer }}</span></li>
-          <li><strong>Categoría:</strong> <span>{{ videoGame.category }}</span></li>
-          <li>
-            <strong>Géneros:</strong>
-            <ul *ngFor="let genero of videoGame.genre">
-                <li>{{ genero }}</li>
-            </ul>
-          </li>
-          <li>
-            <strong>Plataformas:</strong>
-            <ul *ngFor="let platform of videoGame.platform">
-                <li>{{platform}}</li>
-            </ul>
-          </li>
-        </ul>
-    </div>
+          
+          <h3>Detalles del Juego</h3>
+          <ul class="game-metadata">
+            <li><strong>Fecha de Estreno:</strong> <span>{{videoGame.releaseDate}}</span></li>
+            <li><strong>Desarrolladora:</strong> <span>{{ videoGame.developer }}</span></li>
+            <li><strong>Categoría:</strong> <span>{{ videoGame.category }}</span></li>
+            <li>
+              <strong>Géneros:</strong>
+              <!-- 
+                ¡HTML CORREGIDO AQUÍ! 
+                Cambiamos el *ngFor al <li>
+              -->
+              <ul class="genre-tags-list">
+                <li *ngFor="let genero of videoGame.genre">{{ genero }}</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Plataformas:</strong>
+              <!-- 
+                ¡HTML CORREGIDO AQUÍ! 
+                Cambiamos el *ngFor al <li>
+              -->
+              <ul class="platform-tags-list">
+                <li *ngFor="let platform of videoGame.platform">{{platform}}</li>
+              </ul>
+            </li>
+          </ul>
+      </div> <!-- Fin de presentationVideogame -->
+    
+    </div> <!-- Fin de main-content-flex -->
+
   </section> 
 
   <section class="game-review-section">
-
+    <!-- El contenido de las reseñas irá aquí después -->
   </section>
 
 </div>
