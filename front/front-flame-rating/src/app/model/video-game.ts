@@ -6,6 +6,8 @@ urlImages: any;
 image: any;
 title: any;
 synopsis: any;
+averageRating: any;
+  platform: any;
     constructor(
         id: number, // Autogenerado
         title: string, // Único y obligatorio

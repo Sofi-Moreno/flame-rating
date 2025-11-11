@@ -14,7 +14,19 @@
                   <img [src]="videoGame.image" [alt]="videoGame.title"/>
                   <div class="info">
                     <h3>{{ videoGame.title }}</h3>
+                    <div class="platforms">
+                      <ul>
+                        @for (plataforma of getPlatformsArray(videoGame.platform); track plataforma) {
+                          <li>
+                            {{ plataforma }}
+                          </li>
+                        }
+                        </ul>
+                    </div>
                     <p>{{ videoGame.synopsis}}</p>
+                    <div class="rating">
+                      <span>{{ videoGame.averageRating }}</span>
+                    </div>
                     <button>Ver más</button>
                   </div>
                 </a>
