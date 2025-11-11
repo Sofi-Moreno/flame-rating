@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VerPerfil } from './ver-perfil';
+import { Header } from './header';
 
-describe('VerPerfil', () => {
-  let component: VerPerfil;
-  let fixture: ComponentFixture<VerPerfil>;
+describe('Header', () => {
+  let component: Header;
+  let fixture: ComponentFixture<Header>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [VerPerfil]
+      imports: [Header]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(VerPerfil);
+    fixture = TestBed.createComponent(Header);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

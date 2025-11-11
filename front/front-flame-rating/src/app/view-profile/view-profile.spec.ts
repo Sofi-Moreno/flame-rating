@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Encabezado } from './encabezado';
+import { ViewProfile } from './view-profile';
 
-describe('Encabezado', () => {
-  let component: Encabezado;
-  let fixture: ComponentFixture<Encabezado>;
+describe('ViewProfile', () => {
+  let component: ViewProfile;
+  let fixture: ComponentFixture<ViewProfile>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Encabezado]
+      imports: [ViewProfile]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Encabezado);
+    fixture = TestBed.createComponent(ViewProfile);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
