@@ -1,6 +1,8 @@
 html, body {
     margin: 0;
     padding: 0;
+    background-color: #212121;
+    font-family: 'Inter', sans-serif;
     /* Esto es crucial para un diseño full-width */
 }
 

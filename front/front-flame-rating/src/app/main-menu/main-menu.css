@@ -6,13 +6,42 @@
 /* Verificación: Fondo de página solicitado (#212121) y 
   fuente base para un look moderno. 
 */
+/* -> ESTA REGLA 'body' COMPLETA SE VA A BORRAR 
 body {
-  background-color: #212121; /* --page-background */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #FFFFFF; /* --color-text-light */
+  color: #FFFFFF;
   margin: 0;
-  padding: 2rem; /* Espaciado general de la página */
+  padding: 2rem; 
 }
+*/
+
+/* -------------------------------------------------------------------------- */
+/* NUEVO: Estilos para el Banner de Flame Rating                             */
+/* -------------------------------------------------------------------------- */
+#favicon {
+  /* 1. Ocupa todo el ancho de la pantalla */
+  width: 100%;
+  
+  /* 2. Altura fija (AJUSTADO: subimos a 300px o 350px para dar más espacio) */
+  height: 500px; /* <--- PRUEBA CON ESTE VALOR PRIMERO, O CON 350px */
+  
+  /* 3. Asegura que la imagen de adentro no se desborde */
+  overflow: hidden; 
+}
+
+#favicon img {
+  /* 4. Hacemos que la imagen llene el contenedor */
+  width: 100%;
+  height: 100%;
+  
+  /* 5. ¡LA MAGIA! Esto evita que la imagen se deforme.
+     Se escala para "cubrir" el espacio y se centra.
+     Es el mismo efecto de tu imagen de ejemplo.
+  */
+  object-fit: cover;
+  object-position: center center; /* Mantener centrado, pero con más altura debería bastar */
+}
+
 
 /* -------------------------------------------------------------------------- */
 /* 2. Estructura de Categorías                                                */
@@ -21,12 +50,29 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem; /* Espacio entre categorías */
+  padding: 2rem; /* -> AÑADIDO AQUÍ (movido desde 'body') */
+}
+
+#menu h1 {
+  font-size: 2.5rem; /* Más grande que el h2 */
+  font-weight: 700; /* Negrita para que resalte */
+  color: #FFFFFF; /* Color blanco */
+  text-align: center; /* Centrado */
+  margin: 0 0 2rem 0; /* Margen inferior para separarlo */
+  padding-bottom: 0; /* Asegura que no tenga padding */
+  border-bottom: none; /* Asegura que no tenga el subrayado */
 }
 
 .category h2 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
   color: #FFFFFF; /* --color-text-light */
+  font-weight: 400; /* <-- AÑADIDO */
+
+  /* --- CAMBIOS PARA EL SUBRAYADO --- */
+  display: inline-block; /* Para que el borde/subrayado sea solo del ancho del texto */
+  border-bottom: 4px solid #F2762E; /* El subrayado naranja pedido */
+  padding-bottom: 8px; /* Espacio entre el texto y la línea */
 }
 
 .category hr {
@@ -113,7 +159,8 @@ body {
   /* Dejamos espacio a la derecha para el placeholder de la llama 
     que se posicionará de forma absoluta.
   */
-  padding-right: 6rem; 
+  padding-right: 6rem; /* -> RESTAURADO */
+  text-align: center; /* -> MANTENIDO para centrar h3, p, y button */
 }
 
 /* Placeholder para el Fuego/Rating (Tu Petición)
@@ -122,34 +169,33 @@ body {
   el espacio de la llama SIN modificar tu HTML.
   Se posiciona a la derecha del contenido.
 */
+/*
 .info::after {
-  content: ''; /* Aquí iría el número, ej: '4.1' */
+  content: '';
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end; /* Pone el número abajo */
+  justify-content: flex-end; 
   
   position: absolute;
   right: 1.5rem;
   top: 1.5rem;
   bottom: 1.5rem;
-  width: 70px; /* Ancho del placeholder */
+  width: 70px; 
   
-  /* Simulamos el ícono de la llama con un fondo.
-    Aquí es donde pondrías tu 'background-image'.
-  */
-  background-color: #FF641A; /* --color-orange-red */
+  background-color: #FF641A;
   background-size: 60%;
   background-position: center 30%;
   background-repeat: no-repeat;
-  border-radius: 12px; /* Placeholder redondeado */
+  border-radius: 12px; 
   
-  /* Estilo del texto (número) */
-  color: #FFFFFF; /* --color-text-light */
+  color: #FFFFFF; 
   font-size: 1.5rem;
   font-weight: 700;
   padding-bottom: 0.5rem;
 }
+*/
+/* -> ELIMINADA LA REGLA .info::after completa */
 
 
 /* Placeholder para Indicadores de Consola (Tu Petición) 
@@ -168,11 +214,15 @@ body {
   font-weight: 700;
   color: #FFFFFF; /* --color-text-light */
   margin: 0 0 0.5rem 0;
+  text-align: left; /* -> AÑADIDO para anular el centrado */
   
   /* Evita que el texto largo se superponga con la llama */
+  /* Estas propiedades ya no son necesarias si el texto está centrado */
+  /* -> RESTAURADO */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  
 }
 
 .info p {
@@ -180,6 +230,7 @@ body {
   line-height: 1.5;
   color: #FFFFFF; /* --color-text-light */
   margin: 0 0 1.5rem 0;
+  text-align: left; /* -> AÑADIDO para anular el centrado */
   
   /* Limita el texto a 3 líneas */
   display: -webkit-box;
@@ -187,7 +238,7 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: 4.05rem; /* 0.9rem * 1.5 * 3 líneas */
+  min-height: 4.05rem; /* -> RESTAURADO (0.9rem * 1.5 * 3 líneas) */
 }
 
 /* -------------------------------------------------------------------------- */
@@ -235,7 +286,10 @@ body {
 
 /* En pantallas pequeñas (móviles), mostramos 1 card */
 @media (max-width: 768px) {
-  body {
+  /* body { */ /* -> ELIMINADA ESTA REGLA DE BODY */
+  /* padding: 1rem; */
+  /* } */
+  #menu { /* -> AÑADIDO: Ajustamos el padding de #menu en móviles */
     padding: 1rem;
   }
   .category li {
@@ -247,10 +301,5 @@ body {
     padding: 1rem;
     padding-right: 5.5rem;
   }
-  .info::after {
-    right: 1rem;
-    top: 1rem;
-    bottom: 1rem;
-    width: 60px;
-  }
+  /* La regla .info::after ya fue eliminada, así que no hay cambios aquí */
 }

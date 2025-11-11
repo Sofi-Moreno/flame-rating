@@ -1,12 +1,12 @@
 <section id="favicon">
-  <img src="flame-rating-images/flame-rating-background2.png" alt="flame-rating-favicon"/>
+  <img src="flame-rating-images/flame-rating-background.png" alt="flame-rating-favicon"/>
 </section>
 
 <section id="menu">
+  <h1>Explorar por categoría</h1>
   @for (category of categorys; track category) {
     <div class="category">
       <h2>{{ category }}</h2>
-      <hr>
       <ul>
             @for (videoGame of videoGames[category]; track videoGame) {
               <li>
