@@ -4,7 +4,6 @@ import { VideoGameService } from '../service/video-game-service';
 
 @Component({
   selector: 'app-main-menu',
-  imports: [],
   templateUrl: './main-menu.html',
   styleUrl: './main-menu.css',
 })
@@ -31,6 +30,14 @@ export class MainMenu implements OnInit {
       categorizedGames[game.category].push(game);
     }
     return categorizedGames;
+  }
+
+  public getPlatformsArray(platformsString: string | undefined | null): string[] {
+    // Verificación para evitar errores si la propiedad es nula o vacía
+    if (!platformsString) {
+      return [];
+    }
+    return platformsString.split(',').map(plataforma => plataforma.trim());
   }
 
 }
