@@ -48,11 +48,11 @@ public class Review {
         this.userName = userName;
     }
 
-    public Integer getVideoGame() {
+    public Integer getVideoGameId() {
         return videoGameId;
     }
 
-    public void setVideoGame(Integer videoGameId) {
+    public void setVideoGameId(Integer videoGameId) {
         this.videoGameId = videoGameId;
     }
 

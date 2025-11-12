@@ -3,107 +3,146 @@
   <section class="game-info-section">
     <h1 class="game-title">{{ videoGame.title }}</h1>
 
-    <!-- 
-      Este div será nuestro nuevo contenedor flex 
-      para poner la galería y la info lado a lado 
-    -->
     <div class="main-content-flex">
 
-      <!-- La galería (tu código original, no se toca) -->
-      <div class="gallery-container">
-          <div class="main-media-display"> 
-              <iframe 
-                  *ngIf="safeVideoUrl" 
-                  [src]="safeVideoUrl"
-                  width="100%" 
-                  height="auto" 
-                  frameborder="0" 
-                  allow="autoplay; fullscreen"
-                  allowfullscreen>
-              </iframe>
-              
-              <img 
-                  *ngIf="mainImageSrc" 
-                  [src]="mainImageSrc" 
-                  alt="Imagen principal">
+      <!-- 
+        ¡NUEVA ESTRUCTURA! 
+        Esta columna envuelve la Galería (arriba) y las Reseñas (abajo) 
+      -->
+      <div class="left-column">
+
+        <!-- La galería (tu código original, no se toca) -->
+        <div class="gallery-container">
+            <div class="main-media-display"> 
+                <iframe 
+                    *ngIf="safeVideoUrl" 
+                    [src]="safeVideoUrl"
+                    width="100%" 
+                    height="auto" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen"
+                    allowfullscreen>
+                </iframe>
+                
+                <img 
+                    *ngIf="mainImageSrc" 
+                    [src]="mainImageSrc" 
+                    alt="Imagen principal">
+            </div>
+
+            <div class="thumbnail-list">
+                <div 
+                    class="thumbnail video-thumbnail" 
+                    (click)="selectTrailer()"
+                    [class.active]="selectedMediaUrl === safeVideoUrl"> 
+                    
+                    <img [src]="imageList[0].largeSrc" alt="Tráiler">
+                    <span class="label">TRÁILER</span>
+                </div>
+
+                <div 
+                    *ngFor="let img of imageList" 
+                    class="thumbnail image-thumbnail"
+                    (click)="selectImage(img)"
+                    [class.active]="selectedMediaUrl === img.thumbnailSrc">
+                    
+                    <img [src]="img.thumbnailSrc" [alt]="img.alt">
+                </div>
+            </div>
+        </div> <!-- Fin de gallery-container -->
+
+        <!-- 
+          ¡SECCIÓN MOVIDA AQUÍ! 
+          Las reseñas ahora van en la columna izquierda, debajo de la galería.
+        -->
+        <section class="game-review-section">
+          <h3>Reseñas de Usuarios</h3>
+          <div *ngIf="!videoGame.reviews || videoGame.reviews.length === 0" class="no-reviews">
+            <p>Este juego aún no tiene reseñas. ¡Sé el primero en dejar una!</p>
           </div>
-
-          <div class="thumbnail-list">
-              <div 
-                  class="thumbnail video-thumbnail" 
-                  (click)="selectTrailer()"
-                  [class.active]="selectedMediaUrl === safeVideoUrl"> 
-                  
-                  <img [src]="imageList[0].largeSrc" alt="Tráiler">
-                  <span class="label">TRÁILER</span>
-              </div>
-
-              <div 
-                  *ngFor="let img of imageList" 
-                  class="thumbnail image-thumbnail"
-                  (click)="selectImage(img)"
-                  [class.active]="selectedMediaUrl === img.thumbnailSrc">
-                  
-                  <img [src]="img.thumbnailSrc" [alt]="img.alt">
+          <div class="reviews-container" *ngIf="videoGame.reviews.length > 0">
+              <div class="review-card" *ngFor="let review of videoGame.reviews">
+                <h4>{{review.userName}}</h4>
+                <div class="review-rating">
+                  <strong>{{ review.rating }}</strong>
+                </div>
+                <p class="review-comment">
+                  "{{ review.comment }}"
+                </p>
               </div>
           </div>
-      </div> <!-- Fin de gallery-container -->
+        </section> <!-- Fin de game-review-section -->
+      
+      </div> <!-- Fin de left-column -->
 
-      <!-- El cuadro de info (tu código original, re-ordenado) -->
+
+      <!-- El cuadro de info (Sin tocar, sigue siendo la columna derecha) -->
       <div class="presentationVideogame">
-          <img class="info-box-image" [src]="imageList[0].largeSrc" [alt]="videoGame.title">
           
-          <h2>Sinopsis</h2>
-          <p>{{ videoGame.synopsis }}</p>
-          
-          <h3>Detalles del Juego</h3>
-          <ul class="game-metadata">
-            <li><strong>Fecha de Estreno:</strong> <span>{{videoGame.releaseDate}}</span></li>
-            <li><strong>Desarrolladora:</strong> <span>{{ videoGame.developer }}</span></li>
-            <li><strong>Categoría:</strong> <span>{{ videoGame.category }}</span></li>
-            <li>
-              <strong>Géneros:</strong>
-              <!-- 
-                ¡HTML CORREGIDO AQUÍ! 
-                Cambiamos el *ngFor al <li>
-              -->
-              <ul class="genre-tags-list">
-                <li *ngFor="let genero of videoGame.genre">{{ genero }}</li>
-              </ul>
-            </li>
-            <li>
-              <strong>Plataformas:</strong>
-              <!-- 
-                ¡HTML CORREGIDO AQUÍ! 
-                Cambiamos el *ngFor al <li>
-              -->
-              <ul class="platform-tags-list">
-                <li *ngFor="let platform of videoGame.platform">{{platform}}</li>
-              </ul>
-            </li>
-          </ul>
+          <div class="info-scroll-area">
+            <img class="info-box-image" [src]="imageList[0].largeSrc" [alt]="videoGame.title">
+            
+            <h2>Sinopsis</h2>
+            <p>{{ videoGame.synopsis }}</p>
+            
+            <h3>Detalles del Juego</h3>
+            <ul class="game-metadata details-grid">
+              <!-- Fila 1 -->
+              <li class="grid-item">
+                <strong>Fecha de Estreno:</strong> 
+                <span>{{videoGame.releaseDate}}</span>
+              </li>
+              <li class="grid-item">
+                <strong>Desarrolladora:</strong> 
+                <span>{{ videoGame.developer }}</span>
+              </li>
+        
+              <!-- Fila 2 -->
+              <li class="grid-item">
+                <strong>Categoría:</strong> 
+                <span class="value-orange">{{ videoGame.category }}</span>
+              </li>
+              <li class="grid-item">
+                <strong>Géneros:</strong>
+                <span class="value-orange">{{ videoGame.genre.join(', ') }}</span>
+              </li>
+        
+              <!-- Fila 3 (Full Width) -->
+              <li class="grid-item full-width">
+                <strong>Plataformas:</strong>
+                <ul class="platform-tags-list">
+                  <li *ngFor="let platform of videoGame.platform">{{platform}}</li>
+                </ul>
+              </li>
+            </ul>
+          </div> <!-- Fin de info-scroll-area -->
+
+          <div class="review-action-area">
+            <div class="rating-display-placeholder">
+              <span>(Aquí irá la Llama + Rating Promedio)</span>
+            </div>
+            <div class="stars-input-placeholder">
+              <span>(Aquí irán tus 5 Fueguitos para calificar)</span>
+            </div>
+            <button class="review-button-placeholder">
+              (Aquí irá tu Botón "Realizar Comentario")
+            </button>
+          </div>
+      
       </div> <!-- Fin de presentationVideogame -->
     
     </div> <!-- Fin de main-content-flex -->
 
   </section> 
 
+  <!-- 
+    ¡ESTA SECCIÓN YA NO VA AQUÍ!
+    La hemos movido arriba, dentro de .left-column
+  -->
+  <!-- 
   <section class="game-review-section">
-    <h3>Reseñas de Usuarios</h3>
-    <div *ngIf="!videoGame.reviews || videoGame.reviews.length === 0" class="no-reviews">
-      <p>Este juego aún no tiene reseñas. ¡Sé el primero en dejar una!</p>
-    </div>
-    <div class="reviews-container" *ngIf="videoGame.reviews.length > 0">
-        <div class="review-card" *ngFor="let review of videoGame.reviews">
-          <h4>{{review.userName}}</h4>
-          <div class="review-rating">
-            <strong>{{ review.rating }} / 5</strong>
-          </div>
-          <p class="review-comment">
-            "{{ review.comment }}"
-          </p>
-        </div>
-    </div>
+    ...
   </section>
+  -->
 
 </div>

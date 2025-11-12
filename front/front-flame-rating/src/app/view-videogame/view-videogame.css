@@ -2,23 +2,20 @@
 /* 1. Estructura General de la Página                                         */
 /* -------------------------------------------------------------------------- */
 .game-detail-page {
-  /* Centramos la página pero le damos más ancho que al menú */
   width: 90%;
   max-width: 1400px;
   margin: 2rem auto;
-  color: #FFFFFF; /* Texto blanco por defecto */
+  color: #FFFFFF;
 }
 
 /* -------------------------------------------------------------------------- */
 /* 2. Título del Juego (H1)                                                   */
 /* -------------------------------------------------------------------------- */
 .game-title {
-  font-size: 3rem; /* ¡Más grande! */
+  font-size: 3rem;
   font-weight: 700;
   color: #FFFFFF;
   margin-bottom: 1.5rem;
-
-  /* --- El subrayado naranja que pediste --- */
   display: inline-block;
   border-bottom: 4px solid #F2762E;
   padding-bottom: 8px;
@@ -28,43 +25,68 @@
 /* 3. Layout Principal (Estilo Steam)                                         */
 /* -------------------------------------------------------------------------- */
 
-/* Este es el nuevo <div> que envuelve la galería y la info */
 .main-content-flex {
   display: flex;
-  gap: 1.5rem; /* Espacio entre la galería y la info */
+  gap: 1.5rem;
+  
+  /* ¡¡¡LA CORRECCIÓN MÁS IMPORTANTE!!!
+    'flex-start' rompe la conexión de altura.
+    Ahora el contenedor de Info (derecha) NO se estirará.
+  */
+  align-items: flex-start;
+}
+
+/* ¡NUEVO! La columna izquierda (Galería + Reseñas) */
+.left-column {
+  flex-basis: 55%; /* Ocupa el 55% del ancho */
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Espacio entre galería y reseñas */
 }
 
 /* -------------------------------------------------------------------------- */
 /* 4. Cuadro de Información (Derecha)                                         */
 /* -------------------------------------------------------------------------- */
 .presentationVideogame {
-  /* Ocupa el espacio restante */
+  /* ¡MÁS ANCHO! Ocupa el 45% */
+  flex-basis: 45%;
   flex-grow: 1;
-  /* Ancho máximo para que no sea gigante */
-  flex-basis: 35%;
-  max-width: 450px; 
   
-  background-color: #373535; /* Color de nuestros cards */
+  background-color: #373535;
   border-radius: 12px;
-  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
   
-  /* Hacemos que tenga scroll si el contenido es muy largo */
-  overflow-y: auto;
+  /* ¡ELIMINADO! Ya no forzamos el 'stretch'.
+    Este contenedor tendrá su propia altura natural, ESTÁTICA.
+  */
+  /* align-self: stretch; */
   
-  /* ¡CLAVE! Hacemos que la altura se alinee con la galería */
-  /* (Aunque flexbox ya intenta hacer esto por defecto) */
-  align-self: flex-start; /* Se alinea arriba */
+  overflow: hidden;
+  
+  /* ¡CLAVE! Se posiciona relativo a la página */
+  position: sticky;
+  top: 2rem; /* Se "pega" a 2rem del borde superior al scrollear */
 }
 
-/* Imagen pequeña dentro del cuadro de info */
+.info-scroll-area {
+  padding: 1.5rem;
+  flex-grow: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #F2762E #555;
+}
+.info-scroll-area::-webkit-scrollbar { width: 8px; }
+.info-scroll-area::-webkit-scrollbar-track { background: #555; border-radius: 4px; }
+.info-scroll-area::-webkit-scrollbar-thumb { background-color: #F2762E; border-radius: 4px; }
 .info-box-image {
   width: 100%;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 21 / 9;
   object-fit: cover;
 }
-
 .presentationVideogame h2 {
   font-size: 1.5rem;
   font-weight: 600;
@@ -72,7 +94,6 @@
   padding-bottom: 0.5rem;
   margin-top: 0;
 }
-
 .presentationVideogame h3 {
   font-size: 1.25rem;
   font-weight: 600;
@@ -80,92 +101,97 @@
   padding-bottom: 0.5rem;
   margin-top: 2rem;
 }
-
 .presentationVideogame p {
   font-size: 0.9rem;
   line-height: 1.6;
-  color: #dcdcdc; /* Un blanco menos brillante para el párrafo */
+  color: #dcdcdc;
 }
-
-/* -------------------------------------------------------------------------- */
-/* 5. Lista de Detalles y TAGS de Plataforma                                  */
-/* -------------------------------------------------------------------------- */
-.game-metadata {
+.game-metadata.details-grid {
   list-style: none;
   padding: 0;
   font-size: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
 }
-
-.game-metadata li {
-  margin-bottom: 1rem;
-}
-
+.game-metadata.details-grid li.grid-item { margin-bottom: 0; }
+.game-metadata.details-grid li.full-width { grid-column: 1 / -1; }
 .game-metadata li strong {
   color: #FFFFFF;
   display: block;
   margin-bottom: 0.5rem;
 }
-
-.game-metadata li span {
-  color: #dcdcdc;
-}
-
-/* ¡AQUÍ ESTÁ LA MAGIA DE LOS TAGS! */
-/* Estas reglas se aplican a las listas de Géneros y Plataformas 
-  gracias a las clases que pusimos en el HTML 
-*/
-.platform-tags-list,
-.genre-tags-list {
+.game-metadata li span { color: #dcdcdc; }
+.value-orange { color: #F2762E !important; font-weight: 600; }
+.platform-tags-list {
   list-style: none;
   padding: 0;
   display: flex;
-  flex-wrap: wrap; /* Para que bajen si no caben */
-  gap: 0.5rem; /* Espacio entre tags */
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
-
-.platform-tags-list li,
-.genre-tags-list li {
-  /* Estilos de los tags, como en los cards */
+.platform-tags-list li {
   font-size: 0.8rem;
   font-weight: 600;
   color: #FFFFFF;
   background-color: rgba(0, 0, 0, 0.3);
-  border: 2px solid #F2762E; /* ¡Tu borde naranja! */
+  border: 2px solid #F2762E;
   padding: 0.3rem 0.6rem;
   border-radius: 6px;
 }
+.review-action-area {
+  flex-shrink: 0;
+  padding: 1.5rem;
+  border-top: 2px solid #555;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.rating-display-placeholder,
+.stars-input-placeholder,
+.review-button-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #F2762E;
+  padding: 1rem;
+  min-height: 40px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  color: #aaa;
+  font-style: italic;
+  font-size: 0.9rem;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.review-button-placeholder {
+  margin-bottom: 0;
+  font-style: normal;
+  font-weight: 600;
+  color: #FFFFFF;
+  background-color: #F2762E;
+  border-color: #FF9100;
+  cursor: pointer;
+}
 
 
 /* -------------------------------------------------------------------------- */
-/* 6. TU CÓDIGO DE GALERÍA ORIGINAL (SIN TOCAR)                               */
+/* 7. TU CÓDIGO DE GALERÍA (MODIFICADO LEVEMENTE)                             */
 /* -------------------------------------------------------------------------- */
 
 .gallery-container {
-    /* Cambiamos esto para que sea flexible pero no más grande que
-      el tamaño original que tenías.
-    */
-    flex-basis: 65%;
-    max-width: 900px;
-    flex-shrink: 0; /* No se encoge */
-
-    /* Tus reglas originales */
     display: flex;
     flex-direction: column;
-    /* width: 100%; (Reemplazado por flex-basis) */
-    /* margin: 0 auto; (Reemplazado por el layout flex) */
-    background-color: #222; /* Fondo oscuro */
+    background-color: #222;
     color: white;
     font-family: Arial, sans-serif;
+    border-radius: 12px;
+    overflow: hidden;
 }
-
 .main-media-display {
     width: 100%;
-    padding-bottom: 56.25%; /* Relación de aspecto 16:9 para videos/imágenes */
+    padding-bottom: 56.25%; /* Relación de aspecto 16:9 */
     position: relative;
     overflow: hidden;
     background-color: black;
 }
-
 .main-media-display img,
 .main-media-display iframe {
     position: absolute;
@@ -173,39 +199,28 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Para imágenes, asegura que cubran el espacio */
+    object-fit: cover;
 }
-
 .thumbnail-list {
     display: flex;
-    overflow-x: auto; /* Permite desplazamiento horizontal si hay muchas miniaturas */
+    overflow-x: auto;
     padding: 10px 0;
-    gap: 10px; /* Espacio entre miniaturas */
-    background-color: #1a1a1a; /* Fondo más oscuro para la lista */
+    gap: 10px;
+    background-color: #1a1a1a;
     border-top: 1px solid #333;
 }
-
 .thumbnail {
-    flex-shrink: 0; /* Evita que las miniaturas se encojan */
-    width: 120px; /* Ancho fijo para las miniaturas */
-    height: 80px; /* Alto fijo */
+    flex-shrink: 0;
+    width: 120px;
+    height: 80px;
     cursor: pointer;
     border: 2px solid transparent;
     transition: border-color 0.2s ease;
     position: relative;
     overflow: hidden;
 }
-
-.thumbnail:hover, .thumbnail.active {
-    border-color: #007bff; /* Color de realce al pasar el ratón o estar activa */
-}
-
-.thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
+.thumbnail:hover, .thumbnail.active { border-color: #007bff; }
+.thumbnail img { width: 100%; height: 100%; object-fit: cover; }
 .thumbnail .label {
     position: absolute;
     bottom: 0;
@@ -215,7 +230,116 @@
     font-size: 0.7em;
     color: white;
 }
+.video-thumbnail .label { background-color: red; }
 
-.video-thumbnail .label {
-    background-color: red; /* Color diferente para el tráiler */
+/* -------------------------------------------------------------------------- */
+/* 8. ¡REESCRITO! Estilos para la Sección de Reseñas (en su nueva pos.)        */
+/* -------------------------------------------------------------------------- */
+
+.game-review-section {
+  /* Hacemos que la caja de reseñas se vea bien */
+  background-color: #222;
+  border-radius: 12px;
+  overflow: hidden; /* Para que el scroll respete el borde */
+  
+  /* ¡CAMBIO! Quitamos el flex-grow. La sección tendrá altura natural. */
+  /* flex-grow: 1; */ 
+  display: flex;
+  flex-direction: column;
+}
+
+.game-review-section h3 {
+  /* Estilo del título con subrayado */
+  font-size: 2rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  display: inline-block;
+  border-bottom: 4px solid #F2762E; /* ¡Tu subrayado! */
+  padding-bottom: 8px;
+  
+  /* Márgenes para separarlo */
+  margin: 1.5rem 1.5rem 1rem 1.5rem;
+  align-self: flex-start; /* Para que el inline-block funcione */
+  
+  /* No se encoge */
+  flex-shrink: 0;
+}
+
+.no-reviews {
+  background-color: #373535;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  font-style: italic;
+  color: #aaa;
+  margin: 1.5rem;
+}
+
+.reviews-container {
+  /* ¡CLAVE! 
+     1. Le damos una ALTURA MÁXIMA fija. 
+        (¡Puedes ajustar 700px al valor que quieras!)
+     2. Le decimos que ponga un SCROLL si se pasa.
+  */
+  max-height: 700px; /* <-- ¡LA CLAVE DEL SCROLL INDEPENDIENTE! */
+  overflow-y: auto;
+  padding: 0 1.5rem 1.5rem 1.5rem; /* Padding para las cards */
+
+  /* --- ¡TU SOLICITUD! UNA SOLA COLUMNA --- */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  
+  /* ¡CAMBIO! Quitamos el flex-grow. */
+  /* flex-grow: 1; */
+  /* ¡CAMBIO! Quitamos el min-height. */
+  /* min-height: 0; */
+  
+  /* Estilos de scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #F2762E #555;
+}
+
+.reviews-container::-webkit-scrollbar {
+  width: 8px;
+}
+.reviews-container::-webkit-scrollbar-track {
+  background: #555;
+  border-radius: 4px;
+}
+.reviews-container::-webkit-scrollbar-thumb {
+  background-color: #F2762E;
+  border-radius: 4px;
+}
+
+
+.review-card {
+  background-color: #373535;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border-top: 4px solid #F2762E;
+  flex-shrink: 0; /* Evita que las cards se encojan */
+}
+
+.review-card h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 0.5rem 0;
+}
+
+.review-rating {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FF9100;
+  margin-bottom: 1rem;
+}
+
+.review-comment {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #dcdcdc;
+  font-style: italic;
+  margin: 0;
+  word-wrap: break-word;
 }
