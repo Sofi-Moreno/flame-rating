@@ -1,16 +1,13 @@
 package com.flamerating.back_flame_rating.model;
 
 import java.time.LocalDate;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "video_games")
@@ -40,15 +37,13 @@ public class VideoGame {
     private String category;
     @Column(nullable = false)
     private Double averageRating;
-    @Transient
-    private List<Review> reviews;
     
     public VideoGame() {
     }
 
     public VideoGame(Integer id, String title, LocalDate releaseDate, String synopsis, String urlTrailer,
             String developer, String urlImages, String platform, String genre, String category,
-            Double averageRating, List<Review> reviews) {
+            Double averageRating) {
         this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -60,7 +55,6 @@ public class VideoGame {
         this.genre = genre;
         this.category = category;
         this.averageRating = averageRating;
-        this.reviews = reviews;
     }
 
     public Integer getId() {
@@ -138,12 +132,5 @@ public class VideoGame {
     }
     public void setAverageRating(Double averageRating) {
         this.averageRating = averageRating;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
     }
 }

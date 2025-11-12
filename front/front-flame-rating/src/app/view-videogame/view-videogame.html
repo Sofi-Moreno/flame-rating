@@ -68,7 +68,22 @@
   </section> 
 
   <section class="game-review-section">
-
+    <h3>Reseñas de Usuarios</h3>
+    <div *ngIf="!videoGame.reviews || videoGame.reviews.length === 0" class="no-reviews">
+      <p>Este juego aún no tiene reseñas. ¡Sé el primero en dejar una!</p>
+    </div>
+    <div class="reviews-container" *ngIf="videoGame.reviews.length > 0">
+        <div class="review-card" *ngFor="let review of videoGame.reviews">
+          <h4>{{review.userName}}</h4>
+          <div class="review-rating">
+            <strong>{{ review.rating }} / 5</strong>
+          </div>
+          <p class="review-comment">
+            "{{ review.comment }}"
+          </p>
+        </div>
+    </div>
+    
   </section>
 
 </div>

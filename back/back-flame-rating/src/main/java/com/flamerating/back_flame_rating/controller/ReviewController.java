@@ -102,7 +102,7 @@ cliente en un objeto de tipo Review(Java) si tener que usar alguna librería.*/
     public ResponseEntity<?> updateReview(@RequestBody Review review) {
         try {
                 Review reviewDb = reviewService.findById(review.getId());
-                reviewDb.setIdUser(review.getIdUser());
+                reviewDb.setUserName(review.getUserName());
                 reviewDb.setRating(review.getRating());
                 reviewDb.setComment(review.getComment());
                 Review updatedReview = reviewService.saveReview(reviewDb);

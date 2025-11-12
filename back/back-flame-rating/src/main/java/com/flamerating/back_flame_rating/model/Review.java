@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,10 +15,9 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false)
-    private Integer idUser;
-    @ManyToOne
-    @JoinColumn(name = "video_game_id", nullable = false)
-    private VideoGame videoGame;
+    private String userName;
+    @Column(nullable = false)
+    private Integer videoGameId;
     @Column(nullable = false)
     private Float rating;
     @Column(nullable = true, length = 500)
@@ -29,10 +26,10 @@ public class Review {
     public Review() {
     }
 
-    public Review(Integer id, Integer idUser, VideoGame videoGame, Float rating, String comment) {
+    public Review(Integer id, String userName, Integer videoGameId, Float rating, String comment) {
         this.id = id;
-        this.idUser = idUser;
-        this.videoGame = videoGame;
+        this.userName = userName;
+        this.videoGameId = videoGameId;
         this.rating = rating;
         this.comment = comment;
     }
@@ -43,19 +40,20 @@ public class Review {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getIdUser() {
-        return idUser;
+
+    public String getUserName() {
+        return userName;
     }
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public VideoGame getVideoGame() {
-        return videoGame;
+    public Integer getVideoGame() {
+        return videoGameId;
     }
 
-    public void setVideoGame(VideoGame videoGame) {
-        this.videoGame = videoGame;
+    public void setVideoGame(Integer videoGameId) {
+        this.videoGameId = videoGameId;
     }
 
     public Float getRating() {

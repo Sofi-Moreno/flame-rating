@@ -6,6 +6,8 @@ import { Observable } from 'rxjs/internal/Observable';
 import { switchMap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Review } from '../model/review';
+import { ReviewService } from '../service/review-service';
 
 export interface GameImage {
   thumbnailSrc: string; // La imagen pequeña
@@ -36,6 +38,7 @@ export class ViewVideogame implements OnInit{
   constructor(
     private route: ActivatedRoute,
     private gameService: VideoGameService,
+    private reviewService: ReviewService,
     private sanitizer: DomSanitizer
   ) { }
 
@@ -71,9 +74,18 @@ export class ViewVideogame implements OnInit{
                                 .split(',')
                                 .map(c => c.trim());
             }
-
+            this.reviewService.findByVideoGameId(game.id).subscribe(reviews => {
+              
+              // 3. Guardamos el array de reviews DENTRO del objeto 'game'
+              game.reviews = reviews;
+              
+              // 4. AHORA SÍ, asignamos el 'game' (con reviews) a la variable del componente              
+              
+            });
           }
           this.videoGame = game;
+          console.log('Juego y reviews cargados:', this.videoGame);
+          console.log('Arreglo de reviews:', this.videoGame.reviews);
         });
       }
     });

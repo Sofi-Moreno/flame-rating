@@ -13,6 +13,7 @@ export class VideoGame {
     developer: any;
     id: any|string;
     genre: any;
+    reviews:any;
     constructor(
         id: number, // Autogenerado
         title: string, // Único y obligatorio
@@ -25,7 +26,7 @@ export class VideoGame {
         genre: string, // Máximo 500 caracteres
         category: string, // Máximo 500 caracteres
         averageRating: number,
-        reviews: Review[] // Transitorio, opcional
+        reviews: Review[][] // Transitorio, opcional
     ){}
     
 }
