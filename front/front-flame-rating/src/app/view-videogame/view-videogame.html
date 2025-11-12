@@ -63,9 +63,26 @@
           <div class="reviews-container" *ngIf="videoGame.reviews.length > 0">
               <div class="review-card" *ngFor="let review of videoGame.reviews">
                 <h4>{{review.userName}}</h4>
+                
+                <!-- 
+                  ¡¡¡CAMBIO AQUÍ!!!
+                  Reemplazamos el <strong> por la nueva estructura de llamas
+                -->
                 <div class="review-rating">
-                  <strong>{{ review.rating }}</strong>
+                  <span>Su calificación:</span>
+                  <div class="flame-display">
+                    <!-- 
+                      Usamos la nueva función 'createArrayFromNumber' 
+                      para repetir la imagen 'review.rating' veces 
+                    -->
+                    <img 
+                      *ngFor="let i of createArrayFromNumber(review.rating)"
+                      src="/flame-rating-images/flame-calification.png"
+                      alt="flame icon"
+                    >
+                  </div>
                 </div>
+                
                 <p class="review-comment">
                   "{{ review.comment }}"
                 </p>
@@ -118,14 +135,31 @@
           </div> <!-- Fin de info-scroll-area -->
 
           <div class="review-action-area">
-            <div class="rating-display-placeholder">
-              <span>(Aquí irá la Llama + Rating Promedio)</span>
+            
+            <!-- ¡NUEVA LÍNEA! Este es el "escenario" para las partículas -->
+            <div class="particle-container" #particleContainer></div>
+
+            <div class="average-rating-container">
+              <div class="rating">
+                <span>{{ videoGame.averageRating }}</span>
+              </div>
+              <strong>Calificación promedia</strong>
             </div>
-            <div class="stars-input-placeholder">
-              <span>(Aquí irán tus 5 Fueguitos para calificar)</span>
+            
+            <div class="flame-rating-input">
+              <img 
+                *ngFor="let i of [1, 2, 3, 4, 5]" 
+                src="/flame-rating-images/flame-calification.png" 
+                alt="flame rating"
+                [class.active]="i <= (hoveredRating || selectedRating)"
+                (click)="rate(i)"
+                (mouseover)="handleMouseOver(i)"
+                (mouseleave)="handleMouseLeave()"
+              >
             </div>
+            
             <button class="review-button-placeholder">
-              (Aquí irá tu Botón "Realizar Comentario")
+              Dejar Comentario
             </button>
           </div>
       
@@ -134,15 +168,5 @@
     </div> <!-- Fin de main-content-flex -->
 
   </section> 
-
-  <!-- 
-    ¡ESTA SECCIÓN YA NO VA AQUÍ!
-    La hemos movido arriba, dentro de .left-column
-  -->
-  <!-- 
-  <section class="game-review-section">
-    ...
-  </section>
-  -->
 
 </div>
