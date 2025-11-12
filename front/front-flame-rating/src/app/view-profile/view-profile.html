@@ -1,1 +1,54 @@
-<p>view-profile works!</p>
+<div class="profile-container">
+    <div *ngIf="isLoading" class="loading-message">
+        Cargando datos del perfil...
+    </div>
+
+    <!-- Se muestra solo si el usuario existe (está logueado) -->
+    <div *ngIf="!isLoading && currentUser" class="profile-card">
+        
+        <!-- Título principal de la tarjeta -->
+        <h2 class="title">Visualizar Perfil</h2>
+        <hr class="separator">
+
+        <!-- Contenido principal: Grid de 2 columnas -->
+        <div class="profile-content">
+            
+            <!-- Columna Izquierda: Campos de información -->
+            <div class="profile-info">
+                
+                <!-- Campo de Email -->
+                <div class="input-group">
+                    <label for="email-field">Email</label>
+                    <input 
+                        id="email-field" 
+                        type="email" 
+                        [value]="currentUser.email" 
+                        readonly 
+                        class="profile-input"
+                    >
+                </div>
+
+                <!-- Campo de Nombre de Usuario -->
+                <div class="input-group">
+                    <label for="username-field">Nombre de usuario</label>
+                    <input 
+                        id="username-field" 
+                        type="text" 
+                        [value]="currentUser.username" 
+                        readonly 
+                        class="profile-input"
+                    >
+                </div>
+                
+            </div>
+            <div class="profile-avatar-container">
+                <img src="flame-rating-images/perfil.png" alt="">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mensaje si no hay usuario logueado-->
+    <div *ngIf="!isLoading && !currentUser" class="error-message">
+        No se pudo cargar la información del perfil. Por favor, inicie sesión.
+    </div>
+</div>

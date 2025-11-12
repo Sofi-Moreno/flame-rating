@@ -44,11 +44,12 @@ button:hover {
     font-size: 16px;
     padding: 10px;
     border: 0;
-    background: #212121;
+    background: #d3c9c9;
     outline: none;
 }
 
 .switch-link{
     font-weight: bold;
     text-decoration: underline;
+
 }

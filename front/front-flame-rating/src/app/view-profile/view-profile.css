@@ -1,0 +1,129 @@
+/* ------------------------------------------- */
+/* Contenedor Principal y Tarjeta de Perfil */
+/* ------------------------------------------- */
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinea al inicio, no en el centro vertical */
+    padding: 40px 20px;
+    min-height: 80vh; /* Asegura que la tarjeta esté bien separada del header/footer */
+    background-color: #121212; /* Fondo oscuro */
+    color: #f0f0f0; /* Texto claro */
+    font-family: 'Inter', sans-serif;
+}
+
+.profile-card {
+    background-color: #1f1f1f; /* Color más claro para la tarjeta */
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    width: 100%;
+    max-width: 800px;
+    transition: transform 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-3px);
+}
+
+/* ------------------------------------------- */
+/* Título y Separador */
+/* ------------------------------------------- */
+
+.title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.separator {
+    border: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff7f50, #e9967a); /* Gradiente del logo */
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+/* ------------------------------------------- */
+/* Contenido (Grid de 2 Columnas) */
+/* ------------------------------------------- */
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Info (2 partes) | Avatar (1 parte) */
+    gap: 40px;
+    align-items: center;
+}
+
+/* ------------------------------------------- */
+/* Estilos de Campos de Entrada */
+/* ------------------------------------------- */
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    color: #aaaaaa;
+}
+
+.profile-input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #333333; /* Fondo del input gris claro */
+    color: #f0f0f0;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+    cursor: default; /* Indica que es de solo lectura */
+    opacity: 0.9;
+}
+
+/* Estilo para inputs de solo lectura */
+.profile-input[readonly] {
+    opacity: 0.7;
+}
+
+/* ------------------------------------------- */
+/* Avatar (SVG) */
+/* ------------------------------------------- */
+
+
+.profile-avatar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+}
+
+.profile-avatar-container img {
+    width: 100%;
+    max-width: 200px; /* Tamaño máximo del avatar */
+    height: auto;
+}
+
+
+
+/* ------------------------------------------- */
+/* Media Queries para Responsividad (Mobile) */
+/* ------------------------------------------- */
+
+@media (max-width: 768px) {
+    .profile-content {
+        /* En pantallas pequeñas, apila la información y el avatar */
+        grid-template-columns: 1fr; 
+    }
+
+    .profile-card {
+        padding: 20px;
+    }
+}
