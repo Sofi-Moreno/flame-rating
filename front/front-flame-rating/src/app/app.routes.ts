@@ -5,6 +5,7 @@ import { MainMenu } from './main-menu/main-menu';
 import { ViewNews } from './view-news/view-news';
 import { CreateNews } from './create-news/create-news';
 import { ViewVideogame } from './view-videogame/view-videogame';
+import { CreateVideogame } from './create-videogame/create-videogame';
 
 export const routes: Routes = [
     { path: 'login-register', component: LoginRegister },
@@ -12,5 +13,6 @@ export const routes: Routes = [
     {path:"", component: MainMenu},
     { path: 'view-news', component: ViewNews},
     { path: 'create-news', component: CreateNews},
-    { path: 'videogame/:id', component: ViewVideogame}
+    { path: 'videogame/:id', component: ViewVideogame},
+    {path: 'create-videogame', component: CreateVideogame}
 ];
