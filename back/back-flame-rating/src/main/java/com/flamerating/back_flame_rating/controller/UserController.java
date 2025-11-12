@@ -69,4 +69,5 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED); // Código 401 Unauthorized
         }
     }
+
 }
