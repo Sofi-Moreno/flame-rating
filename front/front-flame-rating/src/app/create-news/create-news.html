@@ -1,1 +1,78 @@
-<p>create-news works!</p>
+<div class="form-container">
+  <h2>Crear Nueva Noticia</h2>
+  <p>Rellena los campos para añadir una nueva noticia a la base de datos.</p>
+
+  <form (ngSubmit)="onSubmit()" #newsForm="ngForm">
+
+    <div class="form-group">
+      <label for="title">Título</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        [(ngModel)]="news.title"
+        required
+        placeholder="Ej: Anunciado nuevo juego...">
+    </div>
+
+    <div class="form-group">
+      <label for="textNews">Texto de la Noticia</label>
+      <textarea
+        id="textNews"
+        name="textNews"
+        [(ngModel)]="news.textNews"
+        required
+        rows="8"
+        placeholder="Escribe el contenido de la noticia aquí...">
+      </textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="urlImages">URLs de Imágenes</label>
+      <input
+        type="text"
+        id="urlImages"
+        name="urlImages"
+        [(ngModel)]="news.urlImages"
+        required
+        placeholder="URL1.jpg,URL2.png...">
+      <small>Separa las URLs con una coma (,) y sin espacios</small>
+    </div>
+
+    <div class="form-group">
+      <label for="urlVideo">URLs de Videos</label>
+      <input
+        type="text"
+        id="urlVideo"
+        name="urlVideo"
+        [(ngModel)]="news.urlVideo"
+        required
+        placeholder="youtube.com/watch?v=...,video.mp4...">
+      <small>Separa las URLs con una coma (,) y sin espacios</small>
+    </div>
+
+    <div class="button-group">
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="!newsForm.form.valid">
+        Crear Noticia
+      </button>
+      <button
+        type="button"
+        class="btn-cancel"
+        (click)="goBack()">
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+
+  <div *ngIf="successMessage" class="message success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="message error">
+    {{ errorMessage }}
+  </div>
+
+</div>

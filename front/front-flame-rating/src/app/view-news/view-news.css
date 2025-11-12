@@ -1,5 +1,6 @@
 /* src/app/news-view/view-news.css */
 
+/* --- Contenedor General --- */
 .news-container {
   font-family: Arial, sans-serif;
   max-width: 800px;
@@ -7,88 +8,134 @@
   padding: 20px;
 }
 
+/* --- Título "Últimas Noticias" --- */
 h1 {
   text-align: center;
-  color: #333;
-  border-bottom: 2px solid #eee;
+  color: #ffffff; /* Color blanco (ya lo tenías) */
+  font-size: 2.2em; /* Un poco más grande */
+  font-weight: 600;
+  border-bottom: 2px solid #444; /* Borde oscuro, no blanco */
   padding-bottom: 10px;
+  margin-bottom: 30px; /* Más espacio */
 }
 
+/* --- Tarjeta de Noticia Individual --- */
 .news-item {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
+  /* Tema oscuro para la tarjeta */
+  background-color: #2c2c34; /* Mismo fondo que tu formulario */
+  border: 1px solid #444;    /* Borde sutil oscuro */
+  
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  padding: 25px 30px; /* Un poco más de espacio interno */
+  margin-bottom: 30px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  
+  /* Efecto "lift" al pasar el mouse */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.news-item:hover {
+  transform: translateY(-5px); /* Se levanta un poco */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* --- Título de la Noticia (en la tarjeta) --- */
 .news-item h2 {
   margin-top: 0;
-  color: #2c3e50;
+  margin-bottom: 8px;
+  color: #f0f0f0; /* Color de texto claro */
+  font-size: 1.8em;
+  font-weight: 600;
+  
+  /* Opcional: un sutil color dorado en hover */
+  transition: color 0.3s ease;
 }
 
+.news-item h2:hover {
+  color: #ffc107; /* Color dorado de tu marca */
+}
+
+/* --- Fecha de Publicación --- */
 .publication-date {
   font-size: 0.9em;
-  color: #7f8c8d;
-  margin-bottom: 15px;
+  color: #aaaaaa; /* Color gris claro */
+  margin-bottom: 20px;
+  font-style: italic;
 }
 
+/* --- Texto de la Noticia --- */
 .news-text {
   line-height: 1.6;
-  color: #34495e;
+  color: #dddddd; /* Color de texto principal, blanco suave */
   white-space: pre-wrap;
 }
 
-/* --- Estilos del Carrusel (CSS Scroll Snap) --- */
-
+/* --- Contenedor del Carrusel --- */
 .carousel-container {
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   border-radius: 8px;
-  margin-bottom: 15px;
-  background-color: #f0f0f0;
-  /* Añadido: Altura máxima para el contenedor del carrusel */
-  max-height: 400px; /* Puedes ajustar este valor si lo prefieres más alto o bajo */
-  align-items: center; /* Centra verticalmente los elementos si tienen diferente altura */
+  margin-bottom: 20px; /* Más espacio después del carrusel */
+  
+  /* Fondo oscuro para el carrusel */
+  background-color: #1e1e22; 
+  
+  max-height: 400px;
+  align-items: center;
+
+  /* Estilizando la barra de scroll (opcional pero recomendado) */
+  scrollbar-width: thin;
+  scrollbar-color: #ffc107 #1e1e22; /* Scrollbar dorada (para Firefox) */
 }
 
+/* Estilo de scrollbar para Chrome/Safari/Edge */
+.carousel-container::-webkit-scrollbar {
+  height: 8px;
+}
+.carousel-container::-webkit-scrollbar-track {
+  background: #1e1e22;
+  border-radius: 4px;
+}
+.carousel-container::-webkit-scrollbar-thumb {
+  background-color: #ffc107; /* Scrollbar dorada */
+  border-radius: 4px;
+}
+
+/* --- Cada "slide" del carrusel --- */
 .carousel-item {
   flex: 0 0 100%;
   scroll-snap-align: center;
   scroll-snap-stop: always;
   box-sizing: border-box;
-  display: flex; /* Para centrar contenido dentro del item si es necesario */
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
-  height: 100%; /* El item ocupa toda la altura del contenedor */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .carousel-item img,
 .carousel-item video {
-  max-width: 100%; /* Asegura que no se desborde del item */
-  max-height: 100%; /* Asegura que no se desborde del contenedor del carrusel */
-  height: auto; /* Mantiene la proporción */
-  width: auto; /* Mantiene la proporción, puede ser 100% si siempre quieres que ocupe todo el ancho */
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
   display: block;
-  object-fit: contain; /* ¡Importante! 'contain' ajusta la imagen/video *dentro* del espacio sin recortar.
-                         'cover' lo recorta para rellenar todo el espacio. Elige el que prefieras. */
-  border-radius: 5px; /* Un poco de borde redondeado para estética */
+  object-fit: contain; /* 'contain' es mejor para no recortar las imágenes */
+  border-radius: 5px; 
 }
 
-/* --- Estilos para el IFRAME de YouTube --- */
-
+/* --- Estilos para Video de YouTube --- */
 .video-wrapper {
   position: relative;
-  width: 100%; /* Ocupa todo el ancho disponible */
-  padding-bottom: 56.25%; /* Proporción 16:9 (9 / 16 * 100) */
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
   height: 0;
   overflow: hidden;
-  max-height: 400px; /* Igual que el carrusel para consistencia */
+  max-height: 400px;
   background: #000;
-  border-radius: 5px; /* Consistencia con las imágenes */
+  border-radius: 5px;
 }
 
 .video-wrapper iframe {
