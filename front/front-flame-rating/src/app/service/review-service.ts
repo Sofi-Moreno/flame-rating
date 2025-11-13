@@ -2,7 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Review } from '../model/review';
 import { Observable } from 'rxjs';
-
+interface ReviewPayload {
+  videoGameId: number;
+  rating: number;
+  comment: string;
+  userName: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -15,6 +20,11 @@ export class ReviewService {
   private apiUpdate:string = "http://localhost:8080/update-review";
 
   constructor(private http:HttpClient){}
+
+    saveReview(review: ReviewPayload): Observable<Review> {
+      // Reutiliza tu método createReview (que asume que acepta la estructura de ReviewPayload)
+      return this.http.post<Review>(this.apiCreate, review);
+    }
 
     getReviews():Observable<Review[]> { 
       return this.http.get<Review[]>(this.apiList);

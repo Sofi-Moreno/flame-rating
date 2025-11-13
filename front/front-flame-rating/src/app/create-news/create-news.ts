@@ -2,63 +2,135 @@
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
 import { News } from '../model/news';
 import { NewsService } from '../service/news-service';
-import { FormsModule } from '@angular/forms'; // <-- ¡IMPORTANTE! Para [(ngModel)]
-import { CommonModule } from '@angular/common'; // <-- Para *ngIf
 
 @Component({
   selector: 'app-create-news',
   standalone: true,
   imports: [
-    FormsModule,    // <-- ¡Añadir aquí!
-    CommonModule    // <-- ¡Añadir aquí!
+    FormsModule,
+    CommonModule
   ],
   templateUrl: './create-news.html',
   styleUrls: ['./create-news.css']
 })
 export class CreateNewsComponent {
 
-  // Creamos un objeto "News" vacío que se rellenará con el formulario
   public news: News = new News();
-  public successMessage: string = '';
+  
+  // Estados para el diagrama de flujo
+  public isPreviewing: boolean = false; 
+  public showSuccessModal: boolean = false; 
   public errorMessage: string = '';
 
   constructor(
     private newsService: NewsService,
-    private router: Router // Inyectamos el Router
+    private router: Router,
+    private sanitizer: DomSanitizer
   ) { }
 
-  // Esta función se llama cuando el formulario se envía
-  onSubmit() {
-    // Reseteamos mensajes
-    this.successMessage = '';
+  // --- PASO 1: Revisar (Validación) ---
+  onReview() {
     this.errorMessage = '';
+    this.isPreviewing = true; 
+  }
 
-    // Llamamos al servicio con la noticia del formulario
+  // --- PASO 2A: Modificar ---
+  onModify() {
+    this.isPreviewing = false; 
+  }
+
+  // --- PASO 2B: Eliminar/Descartar ---
+  onDiscard() {
+    if(confirm("¿Estás seguro de que deseas eliminar la noticia redactada?")) {
+      this.goBack(); 
+    }
+  }
+
+  // --- PASO 2C: Publicar ---
+  onPublish() {
+    // 1. LIMPIEZA DE DATOS: Quitamos espacios en blanco accidentales en las URLs
+    if (this.news.urlImages) {
+      this.news.urlImages = this.news.urlImages.replace(/\s/g, ''); 
+    }
+    if (this.news.urlVideo) {
+      this.news.urlVideo = this.news.urlVideo.replace(/\s/g, ''); 
+    }
+
+    // 2. SEGURIDAD: Forzamos que el ID sea null para crear una nueva entrada
+    // @ts-ignore
+    this.news.id = null; 
+
+    // 3. Enviar al backend
     this.newsService.createNews(this.news).subscribe(
       (createdNews) => {
-        // ¡Éxito!
-        this.successMessage = `Noticia "${createdNews.title}" creada con éxito.`;
-
-        // Opcional: limpiar el formulario
-        this.news = new News();
-
-        // Opcional: Redirigir al usuario a la lista de noticias después de 2 seg
-        setTimeout(() => {
-          this.router.navigate(['/news']); // Asegúrate que '/news' es tu ruta de ver noticias
-        }, 2000);
+        this.showSuccessModal = true;
       },
       (error) => {
-        // Error
         console.error('Error al crear la noticia:', error);
-        this.errorMessage = 'Error al crear la noticia. Revisa los campos o la conexión.';
+        this.errorMessage = 'Ocurrió un error al publicar. Verifica que las URLs no sean demasiado largas.';
+        // Nos quedamos en el preview para que el usuario pueda intentar arreglarlo
       }
     );
   }
 
-  // Función simple para volver
+  // --- PASO 3: Post-Publicación ---
+  
+  createAnother() {
+    this.news = new News(); // Reiniciar formulario
+    this.isPreviewing = false;
+    this.showSuccessModal = false;
+    this.errorMessage = '';
+  }
+
+  finish() {
+    this.goBack();
+  }
+
   goBack() {
-    this.router.navigate(['/news']); // Cambia '/news' si tu ruta es otra
+    this.router.navigate(['/view-news']); 
+  }
+
+  // --- Funciones para la Vista Previa ---
+  
+  getImagesArray(): string[] {
+    if (this.news.urlImages) {
+      // Divide por comas y limpia espacios para la vista previa
+      return this.news.urlImages.split(',').map(u => u.trim()).filter(u => u.length > 0);
+    }
+    return [];
+  }
+
+  getVideosArray(): string[] {
+    if (this.news.urlVideo) {
+      return this.news.urlVideo.split(',').map(u => u.trim()).filter(u => u.length > 0);
+    }
+    return [];
+  }
+
+  // Detecta si es YouTube para mostrar iframe o video normal en la preview
+  isYoutube(url: string): boolean {
+    return url.includes('youtube.com/watch') || url.includes('youtu.be');
+  }
+
+  // Sanitiza la URL de YouTube para el iframe
+  getYoutubeEmbedUrl(url: string): SafeResourceUrl {
+    let videoId = '';
+    try {
+      if (url.includes('youtube.com/watch')) {
+        videoId = url.split('v=')[1].split('&')[0];
+      } else if (url.includes('youtu.be')) {
+        videoId = url.split('youtu.be/')[1];
+      }
+      const embedUrl = 'https://www.youtube.com/embed/' + videoId;
+      return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+    } catch (e) {
+      return ''; // Retorna vacío si la URL es inválida
+    }
   }
 }

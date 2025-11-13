@@ -157,9 +157,16 @@
               >
             </div>
             
-            <button class="review-button-placeholder">
-              Dejar Comentario
-            </button>
+            <div *ngIf="videoGame && !showReviewModal" class="review-button-container">
+              <button (click)="openReviewModal()">Dejar Comentario</button>
+          </div>
+
+            <app-create-review 
+                *ngIf="showReviewModal && videoGame"
+                [videoGameId]="videoGame.id"
+                (closeDialog)="closeReviewModal()"
+                (reviewSaved)="handleReviewSaved()"
+            ></app-create-review>
           </div>
       
       </div> <!-- Fin de presentationVideogame -->
