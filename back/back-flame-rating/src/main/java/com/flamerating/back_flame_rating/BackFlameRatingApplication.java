@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class BackFlameRatingApplication implements WebMvcConfigurer{
-	// ⬇️ 1. INYECTAR LA RUTA CONFIGURADA ⬇️
     @Value("${app.upload.dir}")
     private String uploadDirRelative;
 
@@ -21,18 +20,15 @@ public class BackFlameRatingApplication implements WebMvcConfigurer{
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         
-        // 2. CONSTRUIR LA RUTA ABSOLUTA A PARTIR DE LA PROPIEDAD INYECTADA
         String absoluteUploadPath = Paths.get(uploadDirRelative)
             .toAbsolutePath()
             .normalize()
             .toString(); 
 
-        // 3. REGISTRAR LA RUTA EN SPRING
         registry.addResourceHandler("/flame-rating-images/**")
                 .addResourceLocations("file:" + absoluteUploadPath + "/");
         
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
-    // ⬆️ FIN DEL MÉTODO DE CONFIGURACIÓN ⬆️
 
 }

@@ -1,0 +1,14 @@
+<div class="modal-backdrop" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()">
+            <label for="comment">Deja tu comentario:</label>
+            <textarea id="comment" formControlName="comment" rows="5" maxlength="500"></textarea>
+
+            <div class="modal-actions">
+                <button type="button" (click)="close()">Cancelar</button>
+                <button type="submit" [disabled]="selectedRating <= 0">Guardar</button> 
+            </div>
+        </form>
+    </div>
+</div>

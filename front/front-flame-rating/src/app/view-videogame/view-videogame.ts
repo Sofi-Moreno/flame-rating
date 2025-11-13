@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Review } from '../model/review';
 import { ReviewService } from '../service/review-service';
+import { CreateReview } from '../create-review/create-review';
+import { ReactiveFormsModule } from '@angular/forms';
 
 export interface GameImage {
   thumbnailSrc: string; // La imagen pequeña
@@ -18,7 +20,9 @@ export interface GameImage {
 @Component({
   selector: 'app-view-videogame',
   imports: [
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
+    CreateReview
   ],
   templateUrl: './view-videogame.html',
   styleUrl: './view-videogame.css',
@@ -38,6 +42,7 @@ export class ViewVideogame implements OnInit{
   // --- Propiedades para los fueguitos ---
   public selectedRating: number = 0; 
   public hoveredRating: number = 0;  
+  showReviewModal: boolean = false;
 
   // --- ¡NUEVA PROPIEDAD! Para encontrar el contenedor de partículas ---
   // Busca el #particleContainer en el HTML
@@ -257,6 +262,37 @@ export class ViewVideogame implements OnInit{
     
     // Si no se pudo "traducir", devuelve la URL original
     return url;
+  }
+
+  rateAndOpenModal(rating: number): void {
+    // 1. Guarda la puntuación seleccionada
+    this.selectedRating = rating;
+    
+    // 2. Abre la ventana modal
+    this.showReviewModal = true;
+  }
+
+  openReviewModal(): void {
+    if (this.videoGame) {
+      this.showReviewModal = true;
+    }
+  }
+
+  closeReviewModal(): void {
+    this.showReviewModal = false;
+  }
+
+  handleReviewSaved(): void {
+    // Si un comentario se guardó con éxito, recarga las reviews del juego
+    console.log('Comentario guardado. Recargando reviews...');
+    if (this.videoGame) {
+      // Necesitas recargar las reviews o todo el juego
+      this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
+         // Asume que tienes un campo 'reviews' en videoGame
+         this.videoGame!.reviews = reviews; 
+      });
+    }
+    // Opcional: Mostrar una notificación al usuario (p. ej., "Comentario publicado")
   }
 
 }
