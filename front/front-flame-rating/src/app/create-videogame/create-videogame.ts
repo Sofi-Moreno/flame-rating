@@ -68,7 +68,7 @@ export class CreateVideogame implements OnInit{
 
    this.videogameService.saveVideogame(formData).pipe(
         // Añadir un retardo de 400ms después de que la respuesta del servidor sea exitosa
-        delay(400) // ⬅️ Nuevo operador para esperar
+        delay(1000) // ⬅️ Nuevo operador para esperar
     ).subscribe({
         next: (videojuegoGuardado) => {
             // ÉXITO: Este código se ejecuta 400ms después de recibir la respuesta 201

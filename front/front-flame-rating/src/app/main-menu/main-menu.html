@@ -19,7 +19,7 @@
         @for (videoGame of videoGames[category]; track videoGame) {
           <li>
             <a>
-              <img [src]="videoGame.urlImages[0]" [alt]="videoGame.title"/>
+              <img [src]="videoGame.coverImageUrl" [alt]="videoGame.title"/>
               <div class="info">
                 <h3>{{ videoGame.title }}</h3>
                 <div class="platforms">

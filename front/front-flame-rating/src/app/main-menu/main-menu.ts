@@ -15,6 +15,7 @@ export class MainMenu implements OnInit {
   // --- Propiedades existentes ---
   videoGames: {[key: string]: VideoGame[]} = {};
   categorys: string[] = ["Un Jugador","Multijugador","En linea"];
+  private readonly SERVER_URL = 'http://localhost:8080';
 
   // --- NUEVA PROPIEDAD para la lógica de arrastre ---
   // Usamos un Map para guardar el estado de CADA carrusel por separado
@@ -32,18 +33,34 @@ export class MainMenu implements OnInit {
   // --- ngOnInit existente ---
   ngOnInit(): void {
     this.videoGameService.getVideoGames().subscribe((data: VideoGame[]) => {
-      // Si cada juego puede traer urlImages como string, convertirlo a array por juego
-      data.forEach(game => {
-        if ((game as any).urlImages && typeof (game as any).urlImages === 'string') {
-          (game as any).urlImages = ((game as any).urlImages as string)
-                                  .split(',')
-                                  .map((url: string) => url.trim()); // .trim() quita espacios extra
-        }
+      
+      // ⬇️ 1. PROCESAR LA LISTA AÑADIENDO UN CAMPO DE PORTADA ⬇️
+      const processedGames = data.map(game => {
+          // Si el juego tiene rutas de imágenes Y es una cadena
+          if (game.urlImages && typeof game.urlImages === 'string') {
+              
+              // a) Tomar la primera ruta (portada) y limpiar espacios
+              const firstImagePath = game.urlImages.split(',')[0].trim();
+              
+              // b) Concatenar la URL del servidor
+              const fullImageUrl = this.SERVER_URL + firstImagePath;
+              
+              // ⬇️ c) AÑADIR UN NUEVO CAMPO TEMPORAL (COVER URL) ⬇️
+              // TypeScript permite añadir propiedades a objetos si el modelo no está sellado
+              (game as any).coverImageUrl = fullImageUrl; 
+          }
+          return game; // Devolver el juego con el nuevo campo temporal
       });
+      // ⬆️ FIN DE PROCESAMIENTO ⬆️
 
-      this.videoGames = this.organizeByCategory(data);
 
-      console.log('Datos de juegos recibidos:', this.videoGames);
+      // --- 2. El resto de tu lógica de agrupación sigue igual ---
+      processedGames.forEach(game => {
+        if (!this.videoGames[game.category]) {
+          this.videoGames[game.category] = [];
+        }
+        this.videoGames[game.category].push(game);
+      });
     });
   }
   

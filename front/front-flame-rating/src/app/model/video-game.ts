@@ -14,6 +14,7 @@ export class VideoGame {
     id: any|string;
     genre: any;
     reviews:any;
+coverImageUrl: any;
     constructor(
         id: number, // Autogenerado
         title: string, // Único y obligatorio

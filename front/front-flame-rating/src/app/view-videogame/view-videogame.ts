@@ -33,6 +33,7 @@ export class ViewVideogame implements OnInit{
   mainImageSrc: string | null = null;
   selectedMediaUrl: string | SafeResourceUrl = '';
   imageList: GameImage[] = [];
+  private readonly SERVER_URL = 'http://localhost:8080';
 
   // --- Propiedades para los fueguitos ---
   public selectedRating: number = 0; 
@@ -64,18 +65,28 @@ export class ViewVideogame implements OnInit{
             // Guardamos la URL "traducida" para marcarla como activa
             this.selectedMediaUrl = embedUrl; 
             
-            if (game.urlImages && typeof game.urlImages === 'string') {
-              const urlArray = (game.urlImages as string)
-                .split(',')
-                .map(url => url.trim()); 
-              this.imageList = urlArray.map((url, index) => {
-                return {
-                  largeSrc: url,     
-                  thumbnailSrc: url, 
-                  alt: `Imagen de galería ${index + 1}` 
-                };
-              });
-            }
+            if (game.urlImages) {
+              this.imageList = game.urlImages
+                  .split(',')
+                  .map((c: string) => c.trim())
+                  .map((relativePath: string) => {
+                      // ⬇️ CONCATENACIÓN CLAVE: Agrega la URL del servidor ⬇️
+                      const fullUrl = this.SERVER_URL + relativePath; 
+                      return {
+                          thumbnailSrc: fullUrl,
+                          largeSrc: fullUrl,
+                          alt: 'Imagen de videojuego'
+                      } as GameImage;
+                  });
+
+              // Inicializar la imagen principal (si existe)
+              if (this.imageList.length > 0) {
+                  this.mainImageSrc = this.imageList[0].largeSrc;
+              }
+          } else {
+              this.imageList = [];
+              this.mainImageSrc = null;
+          }
 
             if (game.platform && typeof game.platform === 'string') {
               game.platform = (game.platform as string)

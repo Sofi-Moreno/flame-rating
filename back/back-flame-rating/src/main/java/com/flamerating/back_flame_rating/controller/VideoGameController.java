@@ -51,19 +51,6 @@ public class VideoGameController {
         this.videoGameService = videoGameService;
     }
 
-    //localhost:8080
-    /*@PostMapping ("/create-videogame")
-    public ResponseEntity<?> saveVideoGame(@RequestBody VideoGame videoGame) {
-        try {
-            VideoGame saved = videoGameService.saveVideoGame(videoGame);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
-        
-    }*/
-
     @PostMapping("/create-videogame")
     public ResponseEntity<?> saveVideoGame(
         @RequestParam("videoGame") String videoGameJson, 
@@ -73,26 +60,14 @@ public class VideoGameController {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             VideoGame videoGame = objectMapper.readValue(videoGameJson, VideoGame.class);
-
-           // ⬇️ 2. CONSTRUIR LA RUTA ABSOLUTA USANDO LA PROPIEDAD ⬇️
-            // Paths.get(uploadDirRelative) toma la ruta relativa desde el punto de inicio.
-            // .toAbsolutePath() y .normalize() se aseguran de que la ruta sea limpia y completa.
             Path uploadDir = Paths.get(uploadDirRelative)
                 .toAbsolutePath()
-                .normalize();
-
-            // Esto resuelve la ruta de manera estable, ya que Spring sabe dónde está su base.
-            
+                .normalize();            
             if (!Files.exists(uploadDir)) {
                 Files.createDirectories(uploadDir);
             }
-
             List<String> imagePaths = new ArrayList<>();
-
-            // --- 1. Guardar Imagen Principal (CON CORRECCIÓN) ---
             String originalMainFilename = mainImageFile.getOriginalFilename();
-            
-            // <-- MIRA AQUÍ: Comprobamos si el nombre es nulo o vacío
             if (originalMainFilename == null || originalMainFilename.trim().isEmpty()) {
                 originalMainFilename = "default-main-image.jpg"; // Un nombre de respaldo
             }
@@ -101,13 +76,9 @@ public class VideoGameController {
             Path mainImagePath = uploadDir.resolve(mainImageName);
             Files.copy(mainImageFile.getInputStream(), mainImagePath, StandardCopyOption.REPLACE_EXISTING);
             imagePaths.add("/flame-rating-images/" + mainImageName);
-
-            // --- 2. Guardar Imágenes Extras (CON CORRECCIÓN) ---
             if (extraImageFiles != null && extraImageFiles.length > 0) {
                 for (MultipartFile file : extraImageFiles) {
                     String originalExtraFilename = file.getOriginalFilename();
-                    
-                    // <-- MIRA AQUÍ: Hacemos la misma comprobación
                     if (originalExtraFilename == null || originalExtraFilename.trim().isEmpty()) {
                         originalExtraFilename = "default-extra-image.jpg";
                     }
@@ -119,7 +90,6 @@ public class VideoGameController {
                 }
             }
 
-            // --- 3. Actualizar y Guardar ---
             String allImagesString = String.join(",", imagePaths);
             videoGame.setUrlImages(allImagesString); 
 
