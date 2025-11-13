@@ -297,7 +297,7 @@
   color: #FFFFFF;
   
   /* ¡CLAVE! Ajuste manual para centrar el número en el círculo gris */
-  transform: translateY(8px);
+  transform: translateY(13px);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -375,17 +375,4 @@
   .info button {
     bottom: 1rem; /* Alinear con la llama */
   }
-  
-  /* ¡ELIMINADO! Reglas de botones del carrusel en móvil */
-  /*
-  .carousel-button {
-    ... (reglas eliminadas) ...
-  }
-  .carousel-button.prev {
-    ... (reglas eliminadas) ...
-  }
-  .carousel-button.next {
-    ... (reglas eliminadas) ...
-  }
-  */
 }

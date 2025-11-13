@@ -11,3 +11,29 @@ app-root {
     display: block;
     height: 100%;
 }
+
+.flame-particle {
+  position: absolute;
+  /* Tamaño pequeño para las partículas */
+  width: 20px;
+  height: auto;
+  /* ¡CLAVE! La animación de 2 segundos */
+  animation: fallAndFade 2s linear forwards;
+  
+  /* Asegura que no tape los botones de abajo */
+  pointer-events: none; 
+}
+
+/* @keyframes TAMBIÉN debe ser global para que .flame-particle lo encuentre.
+*/
+@keyframes fallAndFade {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    /* Cae 150px, gira, y desaparece */
+    transform: translateY(150px) rotate(360deg);
+    opacity: 0;
+  }
+}

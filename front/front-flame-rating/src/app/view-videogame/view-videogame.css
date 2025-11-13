@@ -144,36 +144,149 @@
   padding: 1.5rem;
   border-top: 2px solid #555;
   background-color: rgba(0, 0, 0, 0.1);
+  
+  /* ¡NUEVO! Contenedor padre para las partículas */
+  position: relative;
 }
-.rating-display-placeholder,
-.stars-input-placeholder,
-.review-button-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px dashed #F2762E;
-  padding: 1rem;
-  min-height: 40px;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  color: #aaa;
-  font-style: italic;
-  font-size: 0.9rem;
-  background-color: rgba(0, 0, 0, 0.2);
-}
-.review-button-placeholder {
-  margin-bottom: 0;
-  font-style: normal;
-  font-weight: 600;
-  color: #FFFFFF;
-  background-color: #F2762E;
-  border-color: #FF9100;
-  cursor: pointer;
+
+/* ¡NUEVO! Contenedor invisible para la lluvia de partículas */
+.particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 
 /* -------------------------------------------------------------------------- */
-/* 7. TU CÓDIGO DE GALERÍA (MODIFICADO LEVEMENTE)                             */
+/* 6. Estilos para la Llama de Rating                                         */
+/* -------------------------------------------------------------------------- */
+.average-rating-container {
+  display: flex;
+  align-items: center; /* Centra el texto y la llama verticalmente */
+  gap: 1rem; 
+  margin-bottom: 1rem; /* Espacio antes del siguiente placeholder */
+}
+
+.average-rating-container strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-left: 0.5rem; /* Espacio extra para el texto */
+}
+
+/* Usamos una especificidad alta para sobre-escribir el .rating de las reseñas */
+.presentationVideogame .rating {
+  position: relative;
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el TAMAÑO de la llama (puedes cambiar 80px) */
+  width: 80px; 
+  height: 80px;
+
+  /* Esta es la ruta correcta que arreglaste (con 'raiting') */
+  background-image: url('/flame-rating-images/raiting_videogame_flame.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  
+  flex-shrink: 0; /* Para que no se encoja */
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+}
+
+.presentationVideogame .rating span {
+  position: static; 
+  color: #FFFFFF; 
+  font-size: 1.25rem;
+  font-weight: 900; 
+  
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el ajuste vertical del NÚMERO (puedes cambiar 10px) */
+  transform: translateY(16px); 
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. ¡NUEVO! Estilos para los FUEGUITOS de Calificación                      */
+/* -------------------------------------------------------------------------- */
+
+.flame-rating-input {
+  display: flex;
+  justify-content: center; /* Centra los 5 fueguitos */
+  
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el espacio entre cada flamita */
+  gap: 29px; 
+  
+  margin-bottom: 1.5rem; /* Espacio antes del botón de reseña */
+}
+
+.flame-rating-input img {
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el TAMAÑO de cada flamita */
+  width: 40px; 
+  height: auto;
+  
+  cursor: pointer;
+  
+  /* Por defecto, están en GRIS */
+  filter: grayscale(100%) brightness(1.5); /* Grises y un poco más claras */
+  opacity: 0.7;
+  
+  transition: all 0.2s ease;
+}
+
+/* Este es el estilo de la flama "activa" (hover o seleccionada) */
+.flame-rating-input img.active {
+  filter: none; /* Quita el filtro gris */
+  opacity: 1;
+  transform: scale(1.1); /* La hace un poquito más grande */
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* 8. ¡NUEVO! Estilos para el BOTÓN "Dejar Comentario"                        */
+/* -------------------------------------------------------------------------- */
+.review-button-placeholder {
+  /* ¡CAMBIOS PARA CENTRAR! */
+  display: block;
+  margin: 0 auto;
+  width: fit-content; /* Se ajusta al texto */
+  
+  /* Estilos copiados del main-menu button */
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  background-color: #F2762E; 
+  border: 2px solid #FF9100;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  
+  /* Quitamos estilos de placeholder viejos */
+  font-style: normal;
+  
+  /* Transición para el hover/active */
+  transition: background-color 0.2s ease, filter 0.2s ease;
+}
+
+.review-button-placeholder:hover {
+  /* ¡EFECTO HOVER! Se pone más claro */
+  background-color: #FF9100;
+}
+
+.review-button-placeholder:active {
+  /* ¡EFECTO ACTIVE! Se pone más oscuro */
+  filter: brightness(90%);
+  background-color: #F2762E;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* 9. TU CÓDIGO DE GALERÍA (MODIFICADO LEVEMENTE)                             */
 /* -------------------------------------------------------------------------- */
 
 .gallery-container {
@@ -233,35 +346,26 @@
 .video-thumbnail .label { background-color: red; }
 
 /* -------------------------------------------------------------------------- */
-/* 8. ¡REESCRITO! Estilos para la Sección de Reseñas (en su nueva pos.)        */
+/* 10. ¡REESCRITO! Estilos para la Sección de Reseñas (en su nueva pos.)       */
 /* -------------------------------------------------------------------------- */
 
 .game-review-section {
-  /* Hacemos que la caja de reseñas se vea bien */
   background-color: #222;
   border-radius: 12px;
-  overflow: hidden; /* Para que el scroll respete el borde */
-  
-  /* ¡CAMBIO! Quitamos el flex-grow. La sección tendrá altura natural. */
-  /* flex-grow: 1; */ 
+  overflow: hidden; 
   display: flex;
   flex-direction: column;
 }
 
 .game-review-section h3 {
-  /* Estilo del título con subrayado */
   font-size: 2rem;
   font-weight: 600;
   color: #FFFFFF;
   display: inline-block;
   border-bottom: 4px solid #F2762E; /* ¡Tu subrayado! */
   padding-bottom: 8px;
-  
-  /* Márgenes para separarlo */
   margin: 1.5rem 1.5rem 1rem 1.5rem;
-  align-self: flex-start; /* Para que el inline-block funcione */
-  
-  /* No se encoge */
+  align-self: flex-start; 
   flex-shrink: 0;
 }
 
@@ -275,14 +379,16 @@
   margin: 1.5rem;
 }
 
+/*
+  ¡¡¡AQUÍ ESTÁ EL ARREGLO PARA EL SCROLL TRAP!!!
+*/
 .reviews-container {
-  /* ¡CLAVE! 
-     1. Le damos una ALTURA MÁXIMA fija. 
-        (¡Puedes ajustar 700px al valor que quieras!)
-     2. Le decimos que ponga un SCROLL si se pasa.
-  */
-  max-height: 700px; /* <-- ¡LA CLAVE DEL SCROLL INDEPENDIENTE! */
-  overflow-y: auto;
+  /* ¡LA CLAVE DEL SCROLL INDEPENDIENTE! */
+  max-height: 700px; 
+  
+  /* ¡CAMBIO! El scroll está oculto por defecto */
+  overflow-y: hidden;
+  
   padding: 0 1.5rem 1.5rem 1.5rem; /* Padding para las cards */
 
   /* --- ¡TU SOLICITUD! UNA SOLA COLUMNA --- */
@@ -290,15 +396,22 @@
   flex-direction: column;
   gap: 1.5rem;
   
-  /* ¡CAMBIO! Quitamos el flex-grow. */
-  /* flex-grow: 1; */
-  /* ¡CAMBIO! Quitamos el min-height. */
-  /* min-height: 0; */
-  
   /* Estilos de scrollbar */
   scrollbar-width: thin;
   scrollbar-color: #F2762E #555;
+  
+  /* ¡CAMBIO! Evita que el contenido "salte" cuando aparece el scroll */
+  scrollbar-gutter: stable;
+  
+  /* Añadimos una transición suave para el 'overflow' */
+  transition: overflow-y 0.3s ease;
 }
+
+/* ¡CAMBIO! El scroll solo aparece cuando el mouse está encima */
+.reviews-container:hover {
+  overflow-y: auto;
+}
+
 
 .reviews-container::-webkit-scrollbar {
   width: 8px;
@@ -328,12 +441,40 @@
   margin: 0 0 0.5rem 0;
 }
 
+/* --- ¡SECCIÓN MODIFICADA! --- */
 .review-rating {
+  /* Centra el texto y las llamas */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Espacio entre "Su calificación:" y las llamas */
+  
   font-size: 1rem;
   font-weight: 600;
-  color: #FF9100;
+  color: #FFFFFF; /* ¡Texto blanco, como pediste! */
   margin-bottom: 1rem;
 }
+
+/* Contenedor de las llamas en la reseña */
+.flame-display {
+  display: flex;
+  
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el espacio entre cada flamita */
+  /* Lo puse más pequeño que 29px para que quepa bien */
+  gap: 8px; 
+}
+
+.flame-display img {
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el TAMAÑO de cada flamita (pequeño) */
+  width: 20px; 
+  height: auto;
+  
+  /* A color, sin filtro */
+  filter: none;
+  opacity: 1;
+}
+
 
 .review-comment {
   font-size: 0.9rem;
