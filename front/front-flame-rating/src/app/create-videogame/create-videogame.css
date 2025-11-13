@@ -1,0 +1,357 @@
+/* -------------------------------------------------------------------------- */
+/* 1. Estructura General de la Página                                         */
+/* -------------------------------------------------------------------------- */
+#create-videogame {
+  width: 100%;
+  min-height: 100vh; /* Asegura que ocupe al menos toda la pantalla */
+  display: flex;
+  flex-direction: column; /* ¡CAMBIO! Para alinear h1 y form verticalmente */
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1rem; /* Espacio arriba/abajo y a los lados */
+  box-sizing: border-box; /* Incluye el padding en el ancho/alto */
+}
+
+/* Título "Crear Videojuego" */
+#create-videogame h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. El Contenedor del Formulario                                            */
+/* -------------------------------------------------------------------------- */
+.game-form {
+  width: 100%;
+  max-width: 1000px; /* Ancho máximo del formulario */
+}
+
+.form-container {
+  /* ¡Tu color de fondo! */
+  background-color: #2C2C34;
+  
+  padding: 2.5rem;
+  border-radius: 16px;
+  
+  /* Layout de Grid para alinear todo */
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+  gap: 2rem; /* Espacio entre filas y columnas */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. Estilos de Campos (Inputs, Labels, Textarea)                            */
+/* -------------------------------------------------------------------------- */
+
+/* Contenedor de cada grupo (label + input + error) */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Para los campos que ocupan 2 columnas */
+.form-group.span-2 {
+  grid-column: 1 / -1; /* Ocupa todo el ancho */
+}
+
+/* Estilo de TODOS los labels (títulos de campo) */
+.form-group label {
+  /* ¡Tu color de texto de label! */
+  color: #FFFFFF; /* Actualizado a blanco */
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* Estilo de TODOS los inputs y textareas */
+input[type="text"],
+input[type="url"],
+input[type="date"],
+textarea {
+  width: 100%;
+  background-color: #1E1E22; /* Fondo del input */
+  border: 1px solid #4A4A4A;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #FFFFFF; /* Texto que escribe el usuario */
+  box-sizing: border-box; /* Importante para el padding */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: 'Inter', sans-serif; /* Hereda la fuente */
+}
+
+/* Placeholder (texto de ejemplo) */
+input::placeholder,
+textarea::placeholder {
+  /* ¡Tu estilo de placeholder! */
+  color: #FFFFFF; /* Actualizado a blanco */
+  font-weight: 200; /* Fino */
+  opacity: 0.6;
+}
+
+/* Foco en los inputs */
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #F2762E;
+  box-shadow: 0 0 0 3px rgba(242, 118, 46, 0.3);
+}
+
+/* Estilo específico para Textarea */
+textarea {
+  resize: vertical; /* Permite al usuario cambiar la altura */
+  min-height: 100px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Estilo del Input de Fecha                                               */
+/* -------------------------------------------------------------------------- */
+
+/* ¡Icono del calendario blanco! */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  /* ¡Tu color blanco! */
+  filter: invert(1);
+  /* Aumentamos el tamaño y le damos la manita */
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px; /* Más área de clic */
+}
+
+/* Estilo del texto "dd/mm/aaaa" */
+input[type="date"] {
+  color: #FFFFFF;
+  font-weight: 200;
+  opacity: 0.8;
+  
+  /* Hacemos que TODO el input parezca un botón */
+  cursor: pointer;
+}
+input[type="date"]:valid {
+  opacity: 1;
+  font-weight: 400;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. TRUCO: Estilos para Radios y Checkboxes personalizados                  */
+/* -------------------------------------------------------------------------- */
+
+/* Ocultamos los inputs feos originales */
+.custom-radio-group input[type="radio"],
+.custom-radio-group input[type="checkbox"],
+.custom-checkbox-group input[type="checkbox"] {
+  display: none;
+}
+
+/* Contenedor de las opciones (iconos o etiquetas) */
+.options-container,
+.tags-container {
+  display: flex;
+  flex-wrap: wrap; /* Para que bajen si no caben */
+  
+  /* ¡Tu espaciado de 25px! */
+  gap: 25px; 
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5A. Estilos para Categorías y Plataformas (Iconos)                         */
+/* -------------------------------------------------------------------------- */
+.radio-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* El <label> que ahora ES el botón */
+.radio-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  padding: 1rem;
+  border-radius: 12px;
+  
+  /* ¡Tu borde naranja! */
+  border: 3px solid #F2762E;
+  
+  background-color: #1E1E22;
+  transition: all 0.2s ease;
+  width: 120px; /* Ancho fijo para alinear */
+  height: 120px; /* Alto fijo */
+  justify-content: center;
+  box-sizing: border-box; /* Incluye padding y borde en el tamaño */
+}
+
+.radio-label img {
+  width: 50px; /* Tamaño pequeño del icono */
+  height: 50px;
+  object-fit: contain;
+}
+
+.radio-label span {
+  /* ¡Tu texto blanco! */
+  color: #FFFFFF;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* ¡LA MAGIA! El estilo cuando el input está :checked */
+.custom-radio-group input:checked + .radio-label {
+  /* ¡Tu iluminación leve! */
+  background-color: #4a4a4a; 
+  box-shadow: 0 0 15px rgba(242, 118, 46, 0.5); /* Sombrita naranja */
+  transform: scale(1.05); /* Se agranda un poco */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5B. Estilos para Géneros (Etiquetas/Tags)                                  */
+/* -------------------------------------------------------------------------- */
+.tag-label {
+  /* ¡Tu estilo de etiqueta! */
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  background-color: #1E1E22;
+  border: 1px solid #4A4A4A;
+  color: #FFFFFF;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tag-label:hover {
+  border-color: #F2762E;
+}
+
+/* ¡LA MAGIA! El estilo cuando el input está :checked */
+.custom-checkbox-group input:checked + .tag-label {
+  /* ¡Tu tono más claro y sombrita! */
+  background-color: #F2762E;
+  border-color: #FF9100;
+  color: #FFFFFF;
+  font-weight: 700;
+  
+  /* ¡Tu sombrita abajo! */
+  box-shadow: 0 4px 10px rgba(242, 118, 46, 0.3);
+  transform: translateY(-2px);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. Estilo Carga de Archivos (CSS Puro)                                     */
+/* -------------------------------------------------------------------------- */
+.file-upload-label {
+  background-color: #1E1E22;
+  border: 1px solid #4A4A4A;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block; /* Hacemos que el <label> sea un bloque */
+  position: relative; /* Para que el input oculto se posicione bien */
+}
+
+.file-upload-label:hover {
+  border-color: #F2762E;
+}
+
+/* Estilo del texto "Seleccionar archivo..." */
+.file-upload-label span {
+  /* ¡Tu texto fino blanco! */
+  color: #FFFFFF;
+  font-weight: 200;
+  opacity: 0.6;
+  font-size: 1rem;
+
+  /* ¡NUEVO! Para que los nombres largos no se desborden */
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ¡NUEVO! Estilo para el nombre del archivo cuando SÍ hay uno */
+.file-upload-label span.is-file-selected {
+  color: #FFFFFF;
+  font-weight: 400; /* Peso normal */
+  opacity: 1;
+}
+
+
+/* ¡LA CORRECCIÓN DEL BUG! */
+.file-upload-group input[type="file"] {
+  /* Ocultamos visualmente PERO lo mantenemos funcional */
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. Botones de Acción (Cancelar / Guardar)                                  */
+/* -------------------------------------------------------------------------- */
+.form-buttons {
+  display: flex;
+  justify-content: space-between; /* Uno a cada esquina */
+  padding-top: 1rem;
+  margin-top: 1rem; /* Espacio extra */
+  border-top: 1px solid #4A4A4A;
+}
+
+.form-buttons button {
+  /* ¡Tu texto blanco! */
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Botón Guardar */
+#save {
+  /* ¡Tu color naranja! */
+  background-color: #F2762E;
+}
+
+#save:hover {
+  background-color: #FF9100; /* Más claro al pasar el mouse */
+}
+
+/* Botón Guardar Deshabilitado */
+#save:disabled {
+  background-color: #555;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Botón Cancelar */
+#cancel {
+  /* ¡Tu color rojo! */
+  background-color: #DA3426;
+}
+
+#cancel:hover {
+  background-color: #F85A4C; /* Más claro al pasar el mouse */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 8. Mensajes de Error                                                       */
+/* -------------------------------------------------------------------------- */
+.error-message {
+  color: #F85A4C; /* Rojo para errores */
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  padding-left: 0.25rem;
+}
