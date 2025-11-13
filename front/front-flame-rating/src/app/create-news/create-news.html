@@ -1,76 +1,110 @@
 <div class="form-container">
-  <h2>Crear Nueva Noticia</h2>
-  <p>Rellena los campos para añadir una nueva noticia a la base de datos.</p>
 
-  <form (ngSubmit)="onSubmit()" #newsForm="ngForm">
+  <div *ngIf="!isPreviewing && !showSuccessModal">
+    <h2>Redactar Noticia</h2>
+    <p>Ingresa los datos de la noticia.</p>
 
-    <div class="form-group">
-      <label for="title">Título</label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        [(ngModel)]="news.title"
-        required
-        placeholder="Ej: Anunciado nuevo juego...">
-    </div>
+    <form (ngSubmit)="onReview()" #newsForm="ngForm">
+      
+      <div class="form-group">
+        <label for="title">Título</label>
+        <input 
+          type="text" id="title" name="title" 
+          [(ngModel)]="news.title" 
+          required 
+          placeholder="Ej: Nuevo lanzamiento...">
+      </div>
 
-    <div class="form-group">
-      <label for="textNews">Texto de la Noticia</label>
-      <textarea
-        id="textNews"
-        name="textNews"
-        [(ngModel)]="news.textNews"
-        required
-        rows="8"
-        placeholder="Escribe el contenido de la noticia aquí...">
-      </textarea>
-    </div>
+      <div class="form-group">
+        <label for="textNews">Texto de la Noticia</label>
+        <textarea 
+          id="textNews" name="textNews" 
+          [(ngModel)]="news.textNews" 
+          required rows="8" maxlength="1000" 
+          placeholder="Escribe aquí...">
+        </textarea>
+        <div class="char-count">{{ news.textNews.length || 0 }} / 1000 caracteres</div>
+      </div>
 
-    <div class="form-group">
-      <label for="urlImages">URLs de Imágenes</label>
-      <input
-        type="text"
-        id="urlImages"
-        name="urlImages"
-        [(ngModel)]="news.urlImages"
-        required
-        placeholder="URL1.jpg,URL2.png...">
-      <small>Separa las URLs con una coma (,) y sin espacios</small>
-    </div>
+      <div class="form-group">
+        <label for="urlImages">URLs de Imágenes (Opcional)</label>
+        <input 
+          type="text" id="urlImages" name="urlImages" 
+          [(ngModel)]="news.urlImages" 
+          #urlImages="ngModel" 
+          pattern="^https?://\S+(,https?://\S+)*$" 
+          placeholder="URL1.jpg,URL2.png...">
+        <small *ngIf="urlImages.invalid && (urlImages.dirty || urlImages.touched)" class="error-text">
+          Formato inválido: Usa comas para separar y NO uses espacios.
+        </small>
+      </div>
 
-    <div class="form-group">
-      <label for="urlVideo">URLs de Videos</label>
-      <input
-        type="text"
-        id="urlVideo"
-        name="urlVideo"
-        [(ngModel)]="news.urlVideo"
-        required
-        placeholder="youtube.com/watch?v=...,video.mp4...">
-      <small>Separa las URLs con una coma (,) y sin espacios</small>
-    </div>
+      <div class="form-group">
+        <label for="urlVideo">URLs de Videos (Opcional)</label>
+        <input 
+          type="text" id="urlVideo" name="urlVideo" 
+          [(ngModel)]="news.urlVideo" 
+          #urlVideo="ngModel" 
+          pattern="^https?://\S+(,https?://\S+)*$" 
+          placeholder="youtube.com...">
+        <small *ngIf="urlVideo.invalid && (urlVideo.dirty || urlVideo.touched)" class="error-text">
+          Formato inválido: Sin espacios.
+        </small>
+      </div>
 
-    <div class="button-group">
-      <button
-        type="submit"
-        class="btn-submit"
-        [disabled]="!newsForm.form.valid">
-        Crear Noticia
-      </button>
-      <button
-        type="button"
-        class="btn-cancel"
-        (click)="goBack()">
-        Cancelar
-      </button>
-    </div>
-
-  </form>
-
-  <div *ngIf="successMessage" class="message success">
-    {{ successMessage }}
+      <div class="button-group">
+        <button type="submit" class="btn-submit" [disabled]="!newsForm.form.valid">
+          Revisar y Guardar
+        </button>
+        <button type="button" class="btn-cancel" (click)="goBack()">
+          Cancelar
+        </button>
+      </div>
+    </form>
   </div>
+
+  <div *ngIf="isPreviewing && !showSuccessModal">
+    <h2>Vista Previa</h2>
+    <p>Así se verá tu noticia. ¿Qué deseas hacer?</p>
+
+    <div class="preview-card">
+      <h3>{{ news.title }}</h3>
+      <span class="preview-date">Fecha: Hoy</span>
+      
+      <div class="preview-media">
+        <div *ngFor="let img of getImagesArray()" class="preview-img-container">
+          <img [src]="img" alt="Preview">
+        </div>
+        
+        <div *ngFor="let vid of getVideosArray()" class="video-placeholder">
+           <p *ngIf="!isYoutube(vid)">🎥 Video adjunto (.mp4)</p>
+           <div *ngIf="isYoutube(vid)" class="iframe-container">
+             <iframe [src]="getYoutubeEmbedUrl(vid)" frameborder="0" allowfullscreen></iframe>
+           </div>
+        </div>
+      </div>
+
+      <p class="preview-text">{{ news.textNews }}</p>
+    </div>
+
+    <div class="button-group action-buttons">
+      <button type="button" class="btn-publish" (click)="onPublish()">Publicar</button>
+      <button type="button" class="btn-modify" (click)="onModify()">Modificar</button>
+      <button type="button" class="btn-delete" (click)="onDiscard()">Eliminar</button>
+    </div>
+  </div>
+
+  <div *ngIf="showSuccessModal" class="success-modal">
+    <div class="success-icon">✅</div>
+    <h2>¡Noticia publicada con éxito!</h2>
+    <p>¿Deseas publicar otra noticia?</p>
+    
+    <div class="button-group center-buttons">
+      <button type="button" class="btn-submit" (click)="createAnother()">Sí, crear otra</button>
+      <button type="button" class="btn-cancel" (click)="finish()">No, salir</button>
+    </div>
+  </div>
+
   <div *ngIf="errorMessage" class="message error">
     {{ errorMessage }}
   </div>

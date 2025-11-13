@@ -1,148 +1,123 @@
 /* src/app/create-news/create-news.component.css */
 
-/* --- Contenedor Principal del Formulario --- */
+/* --- Contenedor Principal --- */
 .form-container {
   max-width: 700px;
   margin: 40px auto;
-  padding: 30px 40px; /* Un poco más de padding horizontal */
-  
-  /* Adoptamos el tema oscuro */
-  background-color: #2c2c34; /* Fondo gris oscuro, no blanco */
-  border: 1px solid #444; /* Un borde sutil */
+  padding: 30px 40px;
+  background-color: #2c2c34;
+  border: 1px solid #444;
   border-radius: 8px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
   font-family: Arial, sans-serif;
 }
 
-/* --- Títulos y Texto --- */
+/* --- Tipografía --- */
 h2 {
   text-align: center;
-  color: #ffffff; /* Título en blanco */
-  font-size: 2em; /* Más grande y con más peso */
-  font-weight: 600;
+  color: #ffffff;
+  font-size: 2em;
   margin-bottom: 10px;
 }
-
 p {
   text-align: center;
-  color: #aaaaaa; /* Texto de párrafo más suave */
+  color: #aaaaaa;
   margin-bottom: 30px;
 }
 
-/* --- Grupos del Formulario (Label + Input) --- */
-.form-group {
-  margin-bottom: 22px;
-}
-
+/* --- Formulario --- */
+.form-group { margin-bottom: 22px; }
 .form-group label {
   display: block;
-  font-weight: 600; /* Un poco más audaz que 'bold' */
+  font-weight: 600;
   margin-bottom: 8px;
-  color: #f0f0f0; /* Color de label en blanco suave */
-  letter-spacing: 0.5px; /* Un toque de estilo */
+  color: #f0f0f0;
 }
-
-/* --- Estilo de Inputs y Textarea --- */
 .form-group input[type="text"],
 .form-group textarea {
   width: 100%;
   padding: 12px 15px;
-  
-  /* Estilo oscuro para los inputs */
-  background-color: #1e1e22; /* Fondo de input aún más oscuro */
-  border: 1px solid #555;     /* Borde gris oscuro */
-  color: #ffffff;           /* Texto que escribes en blanco */
-  
+  background-color: #1e1e22;
+  border: 1px solid #555;
+  color: #ffffff;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
-/* --- Efecto de Foco (¡Importante!) --- */
-.form-group input[type="text"]:focus,
-.form-group textarea:focus {
-  border-color: #ffc107; /* Borde dorado (como tu botón de login) al hacer clic */
-  box-shadow: 0 0 8px rgba(255, 193, 7, 0.3); /* Un brillo sutil a juego */
-  outline: none; /* Quitamos el feo brillo azul por defecto */
+.form-group input:focus, .form-group textarea:focus {
+  border-color: #ff4d07;
+  outline: none;
 }
+.char-count { text-align: right; color: #888; font-size: 0.8em; }
+.error-text { color: #ff6b6b; }
 
-/* --- Color del Texto de Placeholder --- */
-.form-group input[type="text"]::placeholder,
-.form-group textarea::placeholder {
-  color: #777;
-}
-
-.form-group small {
-  display: block;
-  margin-top: 6px;
-  font-size: 0.85em;
-  color: #999; /* Color de texto pequeño más claro */
-}
-
-/* --- Grupo de Botones --- */
+/* --- Botones Generales --- */
 .button-group {
   display: flex;
   justify-content: space-between;
   margin-top: 30px;
-  flex-direction: row-reverse; /* <-- ¡AQUÍ ESTÁ EL CAMBIO DE POSICIÓN! */
 }
-
-.btn-submit, .btn-cancel {
+button {
   padding: 12px 20px;
   border: none;
   border-radius: 4px;
-  font-size: 1em;
-  font-weight: 700; /* Más audaz */
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 1em;
+  transition: 0.3s;
 }
 
-/* --- Botón de Crear (Submit) --- */
-.btn-submit {
-  /* ¡Cambiado! De verde a dorado para que coincida con tu botón "Iniciar Sesión" */
-  background-color: #ffc107; 
-  color: #1a1a1a; /* Texto oscuro sobre botón claro */
+/* --- Estilos de Botones Específicos --- */
+.btn-submit, .btn-publish {
+  background-color: #ff7207;
+  color: #1a1a1a;
 }
+.btn-submit:hover, .btn-publish:hover { background-color: #ff4907; }
+.btn-submit:disabled { background-color: #555; color: #888; cursor: not-allowed; }
 
-.btn-submit:hover {
-  background-color: #ffda6a; /* Un poco más claro al pasar el mouse */
+.btn-cancel { background-color: #555; color: white; }
+.btn-cancel:hover { background-color: #666; }
+
+.btn-modify { background-color: #17a2b8; color: white; }
+.btn-modify:hover { background-color: #138496; }
+
+.btn-delete { background-color: #dc3545; color: white; }
+.btn-delete:hover { background-color: #c82333; }
+
+/* --- Estilos de la Preview Card --- */
+.preview-card {
+  background-color: #1e1e22;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-bottom: 20px;
 }
+.preview-card h3 { color: #ff7207; margin-top: 0; }
+.preview-date { color: #777; font-size: 0.9em; display: block; margin-bottom: 10px; }
+.preview-text { color: #ddd; white-space: pre-wrap; line-height: 1.5; }
 
-.btn-submit:disabled {
-  background-color: #555; /* Deshabilitado oscuro */
-  color: #888;
-  cursor: not-allowed;
-}
-
-/* --- Botón de Cancelar --- */
-.btn-cancel {
-  background-color: #dc3545;
-  color: white;
-}
-
-.btn-cancel:hover {
-  background-color: #e54e5c; /* Un poco más claro al pasar el mouse */
-}
-
-/* --- Mensajes de Feedback (Error/Éxito) --- */
-.message {
-  padding: 15px;
-  margin-top: 20px;
+.preview-media img {
+  max-width: 100%;
   border-radius: 4px;
+  margin-bottom: 10px;
+  max-height: 300px;
+  object-fit: contain;
+}
+.video-placeholder {
+  background: #000;
+  color: #fff;
+  padding: 20px;
   text-align: center;
-  font-weight: bold;
+  border-radius: 4px;
 }
 
-/* Tema oscuro para los mensajes */
-.success {
-  background-color: #1a4a2a; /* Fondo verde oscuro */
-  border: 1px solid #28a745;
-  color: #a6f7c1; /* Texto verde claro */
+/* --- Estilos para la sección de Acción (Preview) --- */
+.action-buttons {
+  justify-content: center;
+  gap: 15px;
 }
 
-.error {
-  background-color: #4a1a1a; /* Fondo rojo oscuro */
-  border: 1px solid #dc3545;
-  color: #f7a6a6; /* Texto rojo claro */
-}
+/* --- Estilos para el Modal de Éxito --- */
+.success-modal { text-align: center; }
+.success-icon { font-size: 3em; margin-bottom: 10px; }
+.center-buttons { justify-content: center; gap: 20px; }
