@@ -23,6 +23,11 @@ export class VideoGameService {
     return this.http.post<VideoGame>(this.apiCreate, videoGame);
   }
 
+  saveVideogame(formData: FormData): Observable<VideoGame> {
+  // 'apiCreate' debe ser tu endpoint de POST
+    return this.http.post<VideoGame>(this.apiCreate, formData);
+  }
+
   findByTitle(title:string):Observable<VideoGame>{
     return this.http.get<VideoGame>(this.apiFindByTitle.replace("{title}", title));
   }

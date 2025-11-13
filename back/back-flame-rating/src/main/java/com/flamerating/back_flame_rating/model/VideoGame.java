@@ -1,6 +1,4 @@
 package com.flamerating.back_flame_rating.model;
-
-import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,14 +18,14 @@ public class VideoGame {
     private String title;
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
-    private LocalDate releaseDate;
+    private String releaseDate;
     @Column(nullable = false, length = 2000)
     private String synopsis;
-    @Column(nullable = false)
+    @Column(nullable = false,length = 2000)
     private String urlTrailer;
     @Column(nullable = false)
     private String developer;
-    @Column(nullable = false)
+    @Column(nullable = false,length = 2000)
     private String urlImages;
     @Column(nullable = false, length = 500)
     private String platform;
@@ -41,7 +39,7 @@ public class VideoGame {
     public VideoGame() {
     }
 
-    public VideoGame(Integer id, String title, LocalDate releaseDate, String synopsis, String urlTrailer,
+    public VideoGame(Integer id, String title, String releaseDate, String synopsis, String urlTrailer,
             String developer, String urlImages, String platform, String genre, String category,
             Double averageRating) {
         this.id = id;
@@ -71,10 +69,10 @@ public class VideoGame {
         this.title = title;
     }
 
-    public LocalDate getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
-    public void setReleaseDate(LocalDate releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
