@@ -23,7 +23,6 @@ public class UserService {
         }
 
         // B. (¡Punto débil! En producción NO se debe hacer)
-        // Como no usamos BCrypt, guardamos la contraseña en texto plano.
         // newUser.setPassword(newUser.getPassword()); // No hace falta, pero ilustra el
         // punto
 
@@ -39,33 +38,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    // --- 3. LÓGICA DE ACTUALIZACIÓN DE PERFIL ---
-    public User updateProfile(String currentUsername, User updatedDetails) throws Exception {
-
-        User userToUpdate = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new Exception("Usuario no encontrado."));
-
-        // Se pueden actualizar campos como email o nombre de usuario
-        if (updatedDetails.getEmail() != null && !updatedDetails.getEmail().equals(userToUpdate.getEmail())) {
-            // Se necesitaría validación extra aquí si el nuevo email ya existe
-            userToUpdate.setEmail(updatedDetails.getEmail());
-        }
-
-        if (updatedDetails.getUsername() != null
-                && !updatedDetails.getUsername().equals(userToUpdate.getUsername())) {
-            // Se necesitaría validación extra aquí si el nuevo nombre ya existe
-            userToUpdate.setUsername(updatedDetails.getUsername());
-        }
-
-        // Lógica para cambio de contraseña (Si el campo no es nulo y no usamos BCrypt)
-        if (updatedDetails.getPassword() != null && !updatedDetails.getPassword().isEmpty()) {
-            userToUpdate.setPassword(updatedDetails.getPassword());
-        }
-
-        return userRepository.save(userToUpdate);
-    }
-
-    // --- 4. LÓGICA DE INICIO DE SESIÓN ---
+    // --- 3. LÓGICA DE INICIO DE SESIÓN ---
     // Este método es crucial para el login, sin usar Spring Security.
     public User authenticate(String username, String rawPassword) throws Exception {
 

@@ -38,12 +38,14 @@ import java.util.UUID;
 import org.springframework.util.StringUtils;
 import org.springframework.http.ResponseEntity; // ¡Asegúrate de que todos estos imports estén!
 import org.springframework.http.HttpStatus;
+import com.flamerating.back_flame_rating.service.ReviewService;
 
 @SuppressWarnings("unused")
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 public class VideoGameController {
     private final VideoGameService videoGameService;
+    private ReviewService reviewService;
     @Value("${app.upload.dir}")
     private String uploadDirRelative;
 

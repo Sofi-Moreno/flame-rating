@@ -37,9 +37,9 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public void deleteReview(Integer id) { /*This elimation is by Id */
-        iReviewRepository.deleteById(id);
-    }
+    public void deleteByVideoGameId(Integer id) {
+        iReviewRepository.deleteByVideoGameId(id);
+    }  
 
     @Override
     public Review updateReview(Review review) {

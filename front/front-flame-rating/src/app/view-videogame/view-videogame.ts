@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'; 
+import { Component, OnInit, ViewChild, ElementRef, inject} from '@angular/core'; 
 import { VideoGameService } from '../service/video-game-service';
 import { ActivatedRoute } from '@angular/router';
 import { VideoGame } from '../model/video-game';
@@ -9,7 +9,12 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Review } from '../model/review';
 import { ReviewService } from '../service/review-service';
 import { CreateReview } from '../create-review/create-review';
+import { DeleteVideoGame } from '../delete-video-game/delete-video-game';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../service/auth'; 
+import { User } from '../model/user'; 
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 export interface GameImage {
   thumbnailSrc: string; // La imagen pequeña
@@ -22,7 +27,8 @@ export interface GameImage {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    CreateReview
+    CreateReview,
+    DeleteVideoGame
   ],
   templateUrl: './view-videogame.html',
   styleUrl: './view-videogame.css',
@@ -42,20 +48,41 @@ export class ViewVideogame implements OnInit{
   // --- Propiedades para los fueguitos ---
   public selectedRating: number = 0; 
   public hoveredRating: number = 0;  
-  showReviewModal: boolean = false;
+  public showReviewModal: boolean = false;
+  public updateMode: boolean = false;
+  public deleteMode: boolean = false;
 
   // --- ¡NUEVA PROPIEDAD! Para encontrar el contenedor de partículas ---
   // Busca el #particleContainer en el HTML
   @ViewChild('particleContainer') particleContainer!: ElementRef;
+   public isAdmin: boolean = false;
+
+   // --- observable del usuario actual ---
+   private authService = inject(AuthService);
+  
+  // Observable que rastrea el estado del usuario.
+  currentUser$: Observable<User | null> = this.authService.currentUser;
+  
+  // Variables que el HTML utiliza (se actualizan en ngOnInit)
+  isLoggedIn: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private gameService: VideoGameService,
     private reviewService: ReviewService,
-    private sanitizer: DomSanitizer
-  ) { }
+    private sanitizer: DomSanitizer,
+    private router: Router
+    ) { }
 
   ngOnInit(): void {
+    // Suscripción reactiva: se actualiza cada vez que el estado del usuario cambia (login/logout)
+    this.currentUser$.subscribe(user => {
+      // Si 'user' tiene un valor (no es null), isLoggedIn es true.
+      this.isLoggedIn = !!user; 
+      // Si 'user' tiene un valor, usa user.isAdmin; de lo contrario, es false.
+      this.isAdmin = user ? user.isAdmin : false; 
+    });
+    
     this.route.paramMap.subscribe(params => {
       const id = Number(params.get('id'));
       if (id) {
@@ -295,4 +322,49 @@ export class ViewVideogame implements OnInit{
     // Opcional: Mostrar una notificación al usuario (p. ej., "Comentario publicado")
   }
 
+  updateGame(): void {
+    if (this.videoGame) {
+      this.updateMode = true;
+    }
+  }
+
+  openDeleteModal(): void {
+    if (this.videoGame) {
+      this.deleteMode = true;
+    }
+  }
+
+  closeDeleteModal(): void {
+    this.deleteMode = false;
+  }
+
+  onConfirmDelete(id: number): void {
+    this.gameService.deleteVideoGame(id).subscribe({
+      next: () => {
+        // 2. Usar el "Toast" de SweetAlert2
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+        });
+
+        Toast.fire({
+          icon: 'success',
+          title: '¡Videojuego eliminado con éxito!'
+        });
+
+        this.deleteMode = false;
+        this.router.navigate(['']);
+      },
+      error: (err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar el videojuego',
+        });
+      }
+    });
+  }
 }

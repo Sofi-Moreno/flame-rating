@@ -2,7 +2,10 @@
 
   <section class="game-info-section">
     <h1 class="game-title">{{ videoGame.title }}</h1>
-
+    <div class="buttons" *ngIf="isAdmin">
+      <button (click)="updateGame()">Editar</button>
+      <button (click)="openDeleteModal()">Eliminar</button>
+    </div>
     <div class="main-content-flex">
 
       <!-- 
@@ -60,7 +63,7 @@
           <div *ngIf="!videoGame.reviews || videoGame.reviews.length === 0" class="no-reviews">
             <p>Este juego aún no tiene reseñas. ¡Sé el primero en dejar una!</p>
           </div>
-          <div class="reviews-container" *ngIf="videoGame.reviews.length > 0">
+          <div class="reviews-container" *ngIf="videoGame.reviews?.length > 0">
               <div class="review-card" *ngFor="let review of videoGame.reviews">
                 <h4>{{review.userName}}</h4>
                 <!-- 
@@ -176,3 +179,11 @@
   </section> 
 
 </div>
+
+<app-delete-video-game 
+  *ngIf="deleteMode"
+  [videoGameId]="videoGame?.id"
+  [videoGameName]="videoGame?.title"
+  (closeDialog)="closeDeleteModal()"
+  (confirmedDelete)="onConfirmDelete($event)">
+</app-delete-video-game>

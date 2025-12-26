@@ -6,13 +6,17 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.flamerating.back_flame_rating.model.VideoGame;
 import com.flamerating.back_flame_rating.repository.IVideoGameRepository;
+import com.flamerating.back_flame_rating.repository.IReviewRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class VideoGameService implements IVideoGameService {
     private final IVideoGameRepository videoGameRepository;
+    private final IReviewRepository reviewRepository;
 
-    public VideoGameService(IVideoGameRepository videoGameRepository) {
+    public VideoGameService(IVideoGameRepository videoGameRepository, IReviewRepository reviewRepository) {
         this.videoGameRepository = videoGameRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -36,8 +40,10 @@ public class VideoGameService implements IVideoGameService {
        return videoGameRepository.findById(id).get();
     }
 
+    @Transactional
     @Override
     public void deleteVideoGame(Integer id) {
+        reviewRepository.deleteByVideoGameId(id);
         videoGameRepository.deleteById(id);
     }
 
