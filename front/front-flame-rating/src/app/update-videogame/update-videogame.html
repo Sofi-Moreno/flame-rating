@@ -179,9 +179,11 @@
       <!-- Fila 9: Botones -->
       <div class="form-buttons span-2">
         <button type="button" id="cancel" routerLink="/main-menu">Cancelar</button>
-        <button type="submit" id="update" [disabled]="videoGameForm.invalid">Guardar</button>
+        <!--videoGameForm.pristine Mantiene el botón bloqueado 
+        si el usuario no ha modificado ningún valor desde que se cargó el 
+        formulario.-->
+        <button type="submit" id="update" [disabled]="videoGameForm.invalid || videoGameForm.pristine">Actualizar</button>
       </div>
 
     </div> <!-- Fin de .form-container -->
-
   </form> </section>

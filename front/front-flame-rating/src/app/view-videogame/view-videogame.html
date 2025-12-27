@@ -8,13 +8,9 @@
     </div>
     <div class="main-content-flex">
 
-      <!-- 
-        ¡NUEVA ESTRUCTURA! 
-        Esta columna envuelve la Galería (arriba) y las Reseñas (abajo) 
-      -->
       <div class="left-column">
 
-        <!-- La galería (tu código original, no se toca) -->
+        <!-- Inicio gallery-container -->
         <div class="gallery-container">
             <div class="main-media-display"> 
                 <iframe 
@@ -54,10 +50,7 @@
             </div>
         </div> <!-- Fin de gallery-container -->
 
-        <!-- 
-          ¡SECCIÓN MOVIDA AQUÍ! 
-          Las reseñas ahora van en la columna izquierda, debajo de la galería.
-        -->
+        <!-- Las reseñas van en la columna izquierda, debajo de la galería. -->
         <section class="game-review-section">
           <h3>Reseñas de Usuarios</h3>
           <div *ngIf="!videoGame.reviews || videoGame.reviews.length === 0" class="no-reviews">
@@ -66,10 +59,7 @@
           <div class="reviews-container" *ngIf="videoGame.reviews?.length > 0">
               <div class="review-card" *ngFor="let review of videoGame.reviews">
                 <h4>{{review.userName}}</h4>
-                <!-- 
-                  ¡¡¡CAMBIO AQUÍ!!!
-                  Reemplazamos el <strong> por la nueva estructura de llamas
-                -->
+                <!-- Calificaciones de llamas -->
                 <div class="review-rating">
                   <span>Su calificación:</span>
                   <div class="flame-display">
@@ -91,13 +81,12 @@
               </div>
           </div>
         </section> <!-- Fin de game-review-section -->
-      
-      </div> <!-- Fin de left-column -->
+      </div>
 
 
-      <!-- El cuadro de info (Sin tocar, sigue siendo la columna derecha) -->
+      <!-- cuadro de info de videogame -->
       <div class="presentationVideogame">
-          
+          <!-- Inicio de info-scroll-area para scrollear por la info del videogame-->
           <div class="info-scroll-area">
             <img class="info-box-image" [src]="imageList[0].largeSrc" [alt]="videoGame.title">
             
@@ -138,7 +127,7 @@
 
           <div class="review-action-area">
             
-            <!-- ¡NUEVA LÍNEA! Este es el "escenario" para las partículas -->
+            <!-- "Escenario" para las partículas al dar a alguna flama de reseña -->
             <div class="particle-container" #particleContainer></div>
 
             <div class="average-rating-container">
@@ -148,7 +137,7 @@
               <strong>Calificación promedia</strong>
             </div>
             
-            <div class="flame-rating-input">
+            <div *ngIf="!isAdmin" class="flame-rating-input">
               <img 
                 *ngFor="let i of [1, 2, 3, 4, 5]" 
                 src="/flame-rating-images/flame-calification.png" 
@@ -160,7 +149,7 @@
               >
             </div>
             
-            <div *ngIf="videoGame && !showReviewModal" class="review-button-container">
+            <div *ngIf="videoGame && !showReviewModal && !isAdmin" class="review-button-container">
               <button (click)="openReviewModal()">Dejar Comentario</button>
           </div>
 
