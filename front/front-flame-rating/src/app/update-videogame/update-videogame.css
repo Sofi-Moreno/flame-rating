@@ -299,14 +299,13 @@ input[type="date"]:valid {
 /* -------------------------------------------------------------------------- */
 .form-buttons {
   display: flex;
-  justify-content: space-between; /* Uno a cada esquina */
+  justify-content: space-between;
   padding-top: 1rem;
-  margin-top: 1rem; /* Espacio extra */
+  margin-top: 1rem;
   border-top: 1px solid #4A4A4A;
 }
 
 .form-buttons button {
-  /* ¡Tu texto blanco! */
   color: #FFFFFF;
   font-size: 1rem;
   font-weight: 700;
@@ -318,19 +317,19 @@ input[type="date"]:valid {
 }
 
 /* Botón Guardar */
-#save {
+#update {
   background-color: #F2762E;
   border: 2px solid #F2762E;
   border-radius: 6px;
 }
 
-#save:hover {
+/* Solo aplicamos hover si NO está deshabilitado */
+#update:hover {
   background-color: rgba(211, 94, 26, 0.944);
   box-shadow: 0 0 10px rgba(246, 125, 55, 0.523);
 }
 
-/* Botón Guardar Deshabilitado */
-#save:disabled {
+#update:disabled {
   background-color: #555;
   color: #999;
   border: 2px solid #555;
@@ -338,6 +337,7 @@ input[type="date"]:valid {
   border-radius: 6px;
   cursor: not-allowed;
   opacity: 0.7;
+  pointer-events: auto ; /* Asegura que el cursor detecte el estado deshabilitado */
 }
 
 /* Botón Cancelar */
@@ -350,15 +350,4 @@ input[type="date"]:valid {
 #cancel:hover {
   background-color: #DA3426;
   box-shadow: 0 0 10px rgba(240, 121, 112, 0.523); 
-}
-
-/* -------------------------------------------------------------------------- */
-/* 8. Mensajes de Error                                                       */
-/* -------------------------------------------------------------------------- */
-.error-message {
-  color: #F85A4C; /* Rojo para errores */
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-top: 0.5rem;
-  padding-left: 0.25rem;
 }

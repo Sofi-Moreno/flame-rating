@@ -324,7 +324,7 @@ export class ViewVideogame implements OnInit{
 
   updateGame(): void {
     if (this.videoGame) {
-      this.updateMode = true;
+      this.router.navigate(['/update-videogame', this.videoGame.id]);
     }
   }
 

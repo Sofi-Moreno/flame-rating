@@ -22,6 +22,53 @@
 }
 
 /* -------------------------------------------------------------------------- */
+/* 2.1. BOTONES DE ADMINISTRADOR (Editar / Eliminar)                          */
+/* -------------------------------------------------------------------------- */
+
+/* Contenedor de los botones (.buttons) */
+/* Lo posicionamos flotando a la derecha del título */
+.buttons {
+  display: inline-flex; /* Para que se ponga al lado si hay espacio, o baje */
+  gap: 1.5rem; /* Separación entre botones */
+  margin-bottom: 1.5rem; /* Separación con la galería de abajo */
+  vertical-align: middle; /* Alineación vertical con el título */
+  
+  /* Ajuste fino para que quede visualmente equilibrado */
+  position: relative;
+  top: 10px; 
+  margin-left: 72.4rem;
+}
+
+/* Estilo base para los botones dentro de .buttons */
+.buttons button {
+  background-color: #F2762E; /* Fondo naranja */
+  color: #FFFFFF; /* Texto blanco */
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  
+  /* Borde naranja del color que usamos (#F2762E) */
+  border: 2px solid #F2762E;
+  border-radius: 6px;
+  
+  cursor: pointer;
+  transition: all 0.3s ease; /* Transición suave para el hover */
+}
+
+/* Efecto Hover: Iluminación sutil */
+.buttons button:hover {
+  /* Fondo naranja muy tenue (casi transparente) */
+  background-color: rgba(211, 94, 26, 0.944);
+  
+  /* Resplandor naranja alrededor del botón */
+  box-shadow: 0 0 10px rgba(246, 125, 55, 0.523);
+  
+  /* Pequeño levantamiento para dar sensación de "flotar" */
+  /*transform: translateY(-2px);*/
+}
+
+
+/* -------------------------------------------------------------------------- */
 /* 3. Layout Principal (Estilo Steam)                                         */
 /* -------------------------------------------------------------------------- */
 
