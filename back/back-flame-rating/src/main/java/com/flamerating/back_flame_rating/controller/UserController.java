@@ -3,6 +3,9 @@ package com.flamerating.back_flame_rating.controller;
 import com.flamerating.back_flame_rating.service.UserService;
 import com.flamerating.back_flame_rating.model.User;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +40,6 @@ public class UserController {
 
     // 2. ENDPOINT PARA OBTENER DATOS DEL PERFIL
     // RUTA: GET /api/users/{username}
-    // Requiere autenticación (JWT) para asegurar que el usuario esté logueado.
     @GetMapping("/{username}")
     // En una implementación real, se debería usar @AuthenticationPrincipal
     // para obtener el usuario logueado, en lugar de pasar el {username}
@@ -67,6 +69,37 @@ public class UserController {
         } catch (Exception e) {
             // El servicio lanza la excepción si las credenciales son inválidas
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED); // Código 401 Unauthorized
+        }
+    }
+
+    // 4. ENDPOINT PARA MODIFICAR USUARIO
+    // RUTA: PUT /api/users/update/{idUser}
+    @PutMapping("/update/{idUser}")
+    public ResponseEntity<?> updateUser(@PathVariable Integer idUser, @RequestBody User userDetails) {
+        try {
+            // Llama al servicio para realizar la actualización
+            User updatedUser = userService.updateUser(idUser, userDetails);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (Exception e) {
+            // Maneja casos donde el usuario no existe o hay conflictos de datos
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 5. NUEVO: ENDPOINT PARA ELIMINAR USUARIO
+    // RUTA: DELETE /api/users/delete/{idUser}
+    @DeleteMapping("/delete/{idUser}")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer idUser) {
+        try {
+            userService.deleteUser(idUser);
+
+            // Devolvemos un JSON simple confirmando la eliminación
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Usuario eliminado exitosamente.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
