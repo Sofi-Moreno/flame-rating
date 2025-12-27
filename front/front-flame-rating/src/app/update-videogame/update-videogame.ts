@@ -7,31 +7,34 @@ import { VideoGameService } from '../service/video-game-service';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError, debounceTime, switchMap, first, delay } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-create-videogame',
+  selector: 'app-update-videogame',
   standalone: true,
   imports: [
     ReactiveFormsModule,
     CommonModule,
     RouterLink 
   ],
-  templateUrl: './create-videogame.html',
-  styleUrl: './create-videogame.css',
+  templateUrl: './update-videogame.html',
+  styleUrl: './update-videogame.css',
 })
-export class CreateVideogame implements OnInit{
 
+export class UpdateVideogame implements OnInit{
   constructor(
     private fb: FormBuilder,
     private videogameService: VideoGameService,
     private router: Router,
-    // --- ¡CAMBIO 2! ---
-    // Inyecta el 'ChangeDetectorRef' (el "despertador")
+    private route: ActivatedRoute, // Para leer el ID
     private cdr: ChangeDetectorRef
   ){}
-
   videoGameForm!: FormGroup;
-  // ... (todas tus otras propiedades (regex, listas, etc.) están perfectas) ...
+  gameId!: number;
+  mainImageName: string = 'Cambiar imagen principal...';
+  extraImagesName: string = 'Cambiar imágenes extra...';
+  public currentMainImage: string = '';
+  public currentExtraImages: string[] = [];
   youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
   videoGame: VideoGame | null = null;
   generosLista = [
@@ -41,27 +44,80 @@ export class CreateVideogame implements OnInit{
   consolasLista = [
     'Xbox', 'Nintendo Switch 1', 'Nintendo Switch 2', 'PlayStation 5', 'PC'
   ];
-  
-  // --- ¡NUEVAS PROPIEDADES! ---
-  // Para mostrar los nombres de los archivos en el HTML
-  public mainImageName: string = 'Seleccionar archivo...';
-  public extraImagesName: string = 'Seleccionar archivos...';
 
-
-  // ... (todos tus 'getters' (title, developer, etc.) están perfectos) ...
   get title() { return this.videoGameForm.get('title'); }
   get developer() { return this.videoGameForm.get('developer'); }
   get synopsis() { return this.videoGameForm.get('synopsis'); }
   get releaseDate() { return this.videoGameForm.get('releaseDate'); }
   get category() { return this.videoGameForm.get('category'); }
   get genres() { return this.videoGameForm.get('genres'); }
-  
-  // ¡¡¡CORRECCIÓN DEL BUG!!!
-  // El getter 'consoles' (con 'e') debe apuntar al control 'consoles' (con 'e')
   get consoles() { return this.videoGameForm.get('consoles'); } 
-  
   get image() { return this.videoGameForm.get('image'); }
   get youtubeLink() { return this.videoGameForm.get('youtubeLink'); }
+
+  ngOnInit(): void {
+    this.gameId = this.route.snapshot.params['id'];
+    this.initForm();
+    this.loadGameData();
+  }
+
+  private initForm() {
+    // Replicamos exactamente tu estructura de creación
+    this.videoGameForm = this.fb.group({
+      title: ['', [Validators.required]],
+      developer: ['', Validators.required],
+      synopsis: ['', Validators.required],
+      releaseDate: ['', Validators.required],
+      category: ['', Validators.required],
+      genres: this.fb.group(this.generosGroup), 
+      consoles: this.fb.group(this.consolasGroup),
+      image: [null], // OPCIONAL en editar (si no sube nada, se queda la anterior)
+      images: [null],
+      youtubeLink: ['', [Validators.required, Validators.pattern(this.youtubeRegex)]]
+    });
+  }
+
+  private loadGameData() {
+    this.videogameService.findById(this.gameId).subscribe(game => {
+      // 1. Separar las URLs que vienen en el string (ej: "url1,url2,url3")
+      const imagesArray = game.urlImages ? game.urlImages.split(',') : [];
+      
+      // 2. La primera suele ser la principal, las demás las extras
+      this.currentMainImage = imagesArray[0] || '';
+      this.currentExtraImages = imagesArray.slice(1);
+
+      // 3. Quitar el validador 'required' de la imagen
+      // Como ya tiene imagen, no es obligatorio subir una nueva
+      this.videoGameForm.get('image')?.clearValidators();
+      this.videoGameForm.get('image')?.updateValueAndValidity();
+      
+      // MAPEAMOS GÉNEROS: El string "Accion,Terror" se vuelve objeto {Accion: true, Terror: true}
+      const genresMap: any = {};
+      this.generosLista.forEach(g => {
+        genresMap[g] = game.genre.split(',').includes(g);
+      });
+
+      // MAPEAMOS CONSOLAS
+      const consolesMap: any = {};
+      this.consolasLista.forEach(c => {
+        consolesMap[c] = game.platform.split(',').includes(c);
+      });
+
+      // Precargamos el formulario
+      this.videoGameForm.patchValue({
+        title: game.title,
+        developer: game.developer,
+        synopsis: game.synopsis,
+        releaseDate: game.releaseDate,
+        category: game.category,
+        youtubeLink: game.urlTrailer,
+        genres: genresMap,
+        consoles: consolesMap
+      });
+      
+      this.cdr.detectChanges();
+    });
+  }
 
   onSubmit(): void {
     this.videoGameForm.markAllAsTouched();
@@ -73,12 +129,12 @@ export class CreateVideogame implements OnInit{
     this.videogameService.saveVideogame(formData).pipe(
         delay(1000) 
     ).subscribe({
-        next: (videojuegoGuardado) => {
-          console.log('¡Videojuego guardado con éxito!', videojuegoGuardado);
-          this.router.navigate(['/videogame', videojuegoGuardado.id]); 
+        next: (videojuegoEditado) => {
+          console.log('¡Videojuego editado con éxito!', videojuegoEditado);
+          this.router.navigate(['/videogame', videojuegoEditado.id]); 
         },
         error: (err) => {
-          console.error('Error al guardar el videojuego', err);
+          console.error('Error al editar el videojuego', err);
         }
     });
   }
@@ -92,40 +148,6 @@ export class CreateVideogame implements OnInit{
     acc[consola] = [false];
     return acc;
   }, {});
-
-  ngOnInit(): void {
-   this.videoGameForm = this.fb.group({
-      title:     ['', [Validators.required],
-        [this.titleExistsValidator()]],
-      developer: ['', Validators.required],
-      synopsis:  ['', Validators.required],
-      releaseDate: ['', Validators.required],
-      category:    ['', Validators.required],
-      genres: this.fb.group(this.generosGroup, { 
-        validators: this.minCheckboxesSelected(1) 
-      }),
-      
-      // Este nombre 'consoles' (con 'e') es el correcto y coincide con el getter
-      consoles: this.fb.group(this.consolasGroup, { 
-        validators: this.minCheckboxesSelected(1) 
-      }),
-      
-      image:   [null, Validators.required],
-      images: [null],
-      youtubeLink: ['', [
-        Validators.required, 
-        Validators.pattern(this.youtubeRegex)
-      ]]
-   });
-
-   // --- ¡CAMBIO 3! (La Solución Fuerte) ---
-   // Usamos setTimeout para forzar la detección de cambios DESPUÉS
-   // de que el formulario se haya inicializado por completo.
-   setTimeout(() => this.cdr.detectChanges(), 0);
-  }
-
-  // ... (todos tus otros métodos (minCheckboxesSelected, 
-  // titleExistsValidator, createFormData) están perfectos) ...
   
   minCheckboxesSelected(min = 1) {
     return (formGroup: FormGroup): ValidationErrors | null => {
@@ -162,7 +184,6 @@ export class CreateVideogame implements OnInit{
         this.mainImageName = input.files[0].name; 
       }
     } else {
-      // --- LÓGICA SI EL USUARIO CANCELA ---
       fileToStore = null;
       if (controlName === 'images') {
         this.extraImagesName = 'Seleccionar archivos...';
@@ -224,8 +245,6 @@ export class CreateVideogame implements OnInit{
       .filter(key => formValue.genres[key] === true) 
       .join(','); 
 
-    // ¡¡¡CORRECCIÓN DEL BUG!!!
-    // Ahora busca 'consoles' (con 'e'), que es el nombre correcto del FormGroup
     const selectedPlatforms = Object.keys(formValue.consoles) 
       .filter(key => formValue.consoles[key] === true)
       .join(',');
