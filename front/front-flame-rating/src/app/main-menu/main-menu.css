@@ -61,7 +61,7 @@
   padding-bottom: 8px; /* Espacio entre el texto y la línea */
 }
 
- .category hr {
+.category hr {
   /* Esta línea la habíamos ocultado para usar el border-bottom */
   display: none;
 }
@@ -71,13 +71,6 @@
 /* 3. Carrusel (<ul>)                                                         */
 /* -------------------------------------------------------------------------- */
 
-/* ¡ELIMINADO! Ya no necesitamos el .carousel-wrapper */
-/*
-.carousel-wrapper {
-  position: relative;
-}
-*/
-
 .category ul {
   display: flex;
   overflow-x: auto; /* Permite el scroll horizontal */
@@ -85,10 +78,6 @@
   padding: 1rem 0; /* Espacio para que la sombra del hover se vea */
   margin: 0;
   
-  /* ¡ELIMINADO! El scroll-behavior: smooth era para los botones */
-  /* scroll-behavior: smooth; */
-
-  /* --- ¡NUEVO! --- */
   /* Estilos de cursor para la sensación de "arrastrar" */
   cursor: grab; /* Manita abierta */
   user-select: none; /* Evita que el texto se seleccione al arrastrar */
@@ -99,31 +88,10 @@
   -ms-overflow-style: none;  /* IE y Edge */
 }
 
-/* --- ¡NUEVO! --- */
 /* Cuando el usuario hace clic en el carrusel, se muestra el puño */
 .category ul:active {
   cursor: grabbing; /* Puño cerrado */
 }
-
-
-/* -------------------------------------------------------------------------- */
-/* ¡ELIMINADO! 3.5. Botones del Carrusel                                       */
-/* -------------------------------------------------------------------------- */
-/*
-.carousel-button {
-  ... (reglas eliminadas) ...
-}
-.carousel-button:hover {
-  ... (reglas eliminadas) ...
-}
-.carousel-button.prev {
-  ... (reglas eliminadas) ...
-}
-.carousel-button.next {
-  ... (reglas eliminadas) ...
-}
-*/
-
 
 /* -------------------------------------------------------------------------- */
 /* 4. Card (<li>)                                                             */
@@ -166,7 +134,6 @@
   object-fit: cover; /* Asegura que la imagen cubra */
   display: block;
   
-  /* --- ¡CAMBIO AÑADIDO! --- */
   /* Prioriza la parte superior de la imagen al cortar */
   object-position: center top; 
 }
@@ -331,7 +298,7 @@
 
 .info button:active {
   filter: brightness(90%);
-  background-moco: #F2762E;
+  background-color: #F2762E;
 }
 
 /* -------------------------------------------------------------------------- */
