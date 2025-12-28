@@ -1,16 +1,22 @@
 package com.flamerating.back_flame_rating.service;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import com.flamerating.back_flame_rating.model.VideoGame;
 import com.flamerating.back_flame_rating.repository.IVideoGameRepository;
+import com.flamerating.back_flame_rating.repository.IReviewRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class VideoGameService implements IVideoGameService {
     private final IVideoGameRepository videoGameRepository;
+    private final IReviewRepository reviewRepository;
 
-    public VideoGameService(IVideoGameRepository videoGameRepository) {
+    public VideoGameService(IVideoGameRepository videoGameRepository, IReviewRepository reviewRepository) {
         this.videoGameRepository = videoGameRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -20,26 +26,30 @@ public class VideoGameService implements IVideoGameService {
 
     @Override
     public List<VideoGame> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return videoGameRepository.findAll();
+    }
+
+    @Override
+    public VideoGame findByTitle(String title) {
+        Optional<VideoGame> optionalVideoGame = videoGameRepository.findByTitle(title);
+        return optionalVideoGame.orElse(null);
     }
 
     @Override
     public VideoGame findById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+       return videoGameRepository.findById(id).get();
     }
 
+    @Transactional
     @Override
     public void deleteVideoGame(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteVideoGame'");
+        reviewRepository.deleteByVideoGameId(id);
+        videoGameRepository.deleteById(id);
     }
 
     @Override
     public VideoGame updateVideoGame(VideoGame videoGame) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateVideoGame'");
+        return videoGameRepository.save(videoGame);
     }
 
 }

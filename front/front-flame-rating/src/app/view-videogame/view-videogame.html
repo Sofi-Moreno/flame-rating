@@ -1,0 +1,191 @@
+<div *ngIf="videoGame" class="game-detail-page">
+
+  <section class="game-info-section">
+    <h1 class="game-title">{{ videoGame.title }}</h1>
+    <div class="buttons" *ngIf="isAdmin">
+      <button (click)="updateGame()">Editar</button>
+      <button (click)="openDeleteModal()">Eliminar</button>
+    </div>
+    <div class="main-content-flex">
+
+      <div class="left-column">
+
+        <!-- Inicio gallery-container -->
+        <div class="gallery-container">
+            <div class="main-media-display"> 
+                <iframe 
+                    *ngIf="safeVideoUrl" 
+                    [src]="safeVideoUrl"
+                    width="100%" 
+                    height="auto" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen"
+                    allowfullscreen>
+                </iframe>
+                
+                <img 
+                    *ngIf="mainImageSrc" 
+                    [src]="mainImageSrc" 
+                    alt="Imagen principal">
+            </div>
+
+            <div class="thumbnail-list">
+                <div 
+                    class="thumbnail video-thumbnail" 
+                    (click)="selectTrailer()"
+                    [class.active]="selectedMediaUrl === safeVideoUrl"> 
+                    
+                    <img [src]="imageList[0].largeSrc" alt="Tráiler">
+                    <span class="label">TRÁILER</span>
+                </div>
+
+                <div 
+                    *ngFor="let img of imageList" 
+                    class="thumbnail image-thumbnail"
+                    (click)="selectImage(img)"
+                    [class.active]="selectedMediaUrl === img.thumbnailSrc">
+                    
+                    <img [src]="img.thumbnailSrc" [alt]="img.alt">
+                </div>
+            </div>
+        </div> <!-- Fin de gallery-container -->
+
+        <!-- Las reseñas van en la columna izquierda, debajo de la galería. -->
+        <section class="game-review-section">
+          <h3>Reseñas de Usuarios</h3>
+          <div *ngIf="!videoGame.reviews || videoGame.reviews.length === 0" class="no-reviews">
+            <p>Este juego aún no tiene reseñas. ¡Sé el primero en dejar una!</p>
+          </div>
+          <div class="reviews-container" *ngIf="videoGame.reviews?.length > 0">
+              <div class="review-card" *ngFor="let review of videoGame.reviews">
+                <h4>{{review.userName}}</h4>
+                
+                <div *ngIf="currentUserName === review.userName" class="edit-buttons-review">
+                  <button>Editar</button>
+                  <button>Eliminar</button>
+                </div>
+
+                <div *ngIf="isAdmin" class="edit-buttons-review">
+                  <button>Eliminar</button>
+                </div>
+                <!-- Calificaciones de llamas -->
+                <div class="review-rating">
+                  <span>Su calificación:</span>
+                  <div class="flame-display">
+                    <!-- 
+                      Usamos la nueva función 'createArrayFromNumber' 
+                      para repetir la imagen 'review.rating' veces 
+                    -->
+                    <img 
+                      *ngFor="let i of createArrayFromNumber(review.rating)"
+                      src="/flame-rating-images/flame-calification.png"
+                      alt="flame icon"
+                    >
+                  </div>
+                </div>
+                
+                <p class="review-comment">
+                  "{{ review.comment }}"
+                </p>
+              </div>
+          </div>
+        </section> <!-- Fin de game-review-section -->
+      </div>
+
+
+      <!-- cuadro de info de videogame -->
+      <div class="presentationVideogame">
+          <!-- Inicio de info-scroll-area para scrollear por la info del videogame-->
+          <div class="info-scroll-area">
+            <img class="info-box-image" [src]="imageList[0].largeSrc" [alt]="videoGame.title">
+            
+            <h2>Sinopsis</h2>
+            <p>{{ videoGame.synopsis }}</p>
+            
+            <h3>Detalles del Juego</h3>
+            <ul class="game-metadata details-grid">
+              <!-- Fila 1 -->
+              <li class="grid-item">
+                <strong>Fecha de Estreno:</strong> 
+                <span>{{videoGame.releaseDate}}</span>
+              </li>
+              <li class="grid-item">
+                <strong>Desarrolladora:</strong> 
+                <span>{{ videoGame.developer }}</span>
+              </li>
+        
+              <!-- Fila 2 -->
+              <li class="grid-item">
+                <strong>Categoría:</strong> 
+                <span class="value-orange">{{ videoGame.category }}</span>
+              </li>
+              <li class="grid-item">
+                <strong>Géneros:</strong>
+                <span class="value-orange">{{ videoGame.genre.join(', ') }}</span>
+              </li>
+        
+              <!-- Fila 3 (Full Width) -->
+              <li class="grid-item full-width">
+                <strong>Plataformas:</strong>
+                <ul class="platform-tags-list">
+                  <li *ngFor="let platform of videoGame.platform">{{platform}}</li>
+                </ul>
+              </li>
+            </ul>
+          </div> <!-- Fin de info-scroll-area -->
+
+          <div class="review-action-area">
+            
+            <!-- "Escenario" para las partículas al dar a alguna flama de reseña -->
+            <div class="particle-container" #particleContainer></div>
+
+            <div class="average-rating-container">
+              <div class="rating">
+                <!-- El promedio se actualiza desde el objeto videoGame -->
+                <span>{{ videoGame.averageRating }}</span>
+              </div>
+              <strong>Calificación promedia</strong>
+            </div>
+            
+            <div *ngIf="!isAdmin" class="flame-rating-input">
+              <img 
+                *ngFor="let i of [1, 2, 3, 4, 5]" 
+                src="/flame-rating-images/flame-calification.png" 
+                alt="flame rating"
+                [class.active]="i <= (hoveredRating || selectedRating)"
+                (click)="rate(i)"
+                (mouseover)="handleMouseOver(i)"
+                (mouseleave)="handleMouseLeave()"
+              >
+            </div>
+            
+            <div *ngIf="videoGame && !showReviewModal && !isAdmin && selectedRating > 0" class="review-button-container">
+                <button (click)="openReviewModal()">
+                 Dejar Comentario
+                </button>
+            </div>
+
+            <app-create-review 
+                *ngIf="showReviewModal && videoGame"
+                [videoGameId]="videoGame.id"
+                [selectedRating]="selectedRating"
+                [userName]="currentUserName"
+                (closeDialog)="closeReviewModal()"
+                (reviewSaved)="closeReviewModal(); reviewSaved()"
+            ></app-create-review>
+      
+      </div> <!-- Fin de presentationVideogame -->
+    
+    </div> <!-- Fin de main-content-flex -->
+    </div>  
+  </section> 
+
+</div>
+
+<app-delete-video-game 
+  *ngIf="deleteMode"
+  [videoGameId]="videoGame?.id"
+  [videoGameName]="videoGame?.title"
+  (closeDialog)="closeDeleteModal()"
+  (confirmedDelete)="onConfirmDelete($event)">
+</app-delete-video-game>

@@ -8,9 +8,13 @@ import com.flamerating.back_flame_rating.model.User;
 @Repository
 public interface IUserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> findByNombreDeUsuario(String nombreDeUsuario);
+    Optional<User> findByIdUser(Integer idUser);
 
-    boolean existsByNombreDeUsuario(String nombreDeUsuario);
+    Optional<User> findByUsername(String username);
+
+    boolean existsByIdUser(Integer idUser);
+
+    boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
 }

@@ -1,0 +1,227 @@
+/* src/app/news-view/view-news.css */
+
+/* --- Contenedor General --- */
+.news-container {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #1a1a1a; 
+  color: #f0f0f0;
+}
+
+/* --- Título "Últimas Noticias" --- */
+h1 {
+  text-align: center;
+  color: #ffffff;
+  font-size: 2.2em;
+  font-weight: 600;
+  border-bottom: 2px solid #444;
+  padding-bottom: 10px;
+  margin-bottom: 30px; 
+}
+
+/* --- Estilos del Spinner de Carga --- */
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+}
+.spinner-container p {
+  color: #aaaaaa;
+  font-size: 1.1em;
+  margin-top: 15px;
+}
+.spinner {
+  border: 4px solid #444; 
+  border-top: 4px solid #ffc107; 
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Mensaje de "No hay noticias" --- */
+.empty-state {
+  text-align: center;
+  padding: 60px;
+  background-color: #2c2c34;
+  border: 1px solid #444;
+  border-radius: 8px;
+}
+.empty-state p {
+  color: #aaaaaa;
+  font-size: 1.2em;
+  margin: 0;
+}
+
+/* --- Tarjeta de Noticia Individual --- */
+.news-item {
+  background-color: #2c2c34; 
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 25px 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease; 
+}
+.news-item:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+.news-item h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #f0f0f0;
+  font-size: 1.8em;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+.news-item h2:hover {
+  color: #ea5200e8;
+}
+.publication-date {
+  font-size: 0.9em;
+  color: #aaaaaa;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+.news-text {
+  line-height: 1.6;
+  color: #dddddd;
+  white-space: pre-wrap;
+}
+
+/* --- Contenedor para posicionar los botones (carousel-wrapper) --- */
+.carousel-wrapper {
+  position: relative; 
+  width: 100%;
+  min-height: 150px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* --- Contenedor del Carrusel (carousel-container) --- */
+.carousel-container {
+  display: flex;
+  overflow-x: auto; 
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  background-color: #1e1e22; 
+  max-height: 400px;
+  width: 100%;
+
+  /* Oculta la barra de scroll */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.carousel-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- ESTILOS DE LOS BOTONES < > --- */
+.carousel-btn {
+  position: absolute;
+  z-index: 10;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Colores y efecto de vidrio */
+  background-color: rgba(44, 44, 52, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); 
+  
+  color: #f0f0f0; 
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 50px; 
+  height: 50px;
+  font-size: 2.2em;
+  font-weight: bold;
+  cursor: pointer;
+  
+  opacity: 0; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); 
+  
+  transition: all 0.25s ease-out;
+}
+
+/* Muestra los botones al pasar el mouse sobre el wrapper */
+.carousel-wrapper:hover .carousel-btn {
+  opacity: 1;
+}
+
+/* Animación de HOVER */
+.carousel-btn:hover {
+  background-color: #fb7500;
+  color: #1a1a1a; 
+  border-color: #fb5800;
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(255, 193, 7, 0.4);
+}
+
+/* Animación de CLIC */
+.carousel-btn:active {
+  transform: scale(0.95);
+  transition-duration: 0.1s; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Posición y ajuste fino de las flechas */
+.carousel-btn.prev {
+  left: 10px;
+}
+
+.carousel-btn.next {
+  right: 10px;
+}
+
+/* --- (Resto del CSS sin cambios) --- */
+.carousel-item {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.carousel-item img,
+.carousel-item video {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 5px; 
+}
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  max-height: 400px;
+  background: #000;
+  border-radius: 5px;
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

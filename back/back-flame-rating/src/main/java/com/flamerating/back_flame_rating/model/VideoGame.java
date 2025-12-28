@@ -1,15 +1,10 @@
 package com.flamerating.back_flame_rating.model;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,15 +16,16 @@ public class VideoGame {
     private Integer id;
     @Column(unique = true, nullable = false)
     private String title;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
-    private LocalDate releaseDate;
+    private String releaseDate;
     @Column(nullable = false, length = 2000)
     private String synopsis;
-    @Column(nullable = false)
+    @Column(nullable = false,length = 2000)
     private String urlTrailer;
     @Column(nullable = false)
     private String developer;
-    @Column(nullable = false)
+    @Column(nullable = false,length = 2000)
     private String urlImages;
     @Column(nullable = false, length = 500)
     private String platform;
@@ -37,18 +33,15 @@ public class VideoGame {
     private String genre;
     @Column(nullable = false, length = 500)
     private String category;
-    @Column(nullable = false, length = 500)
-    private String console;
-    @Column(nullable = false, length = 500)
-    @OneToMany(mappedBy = "videoGame", cascade = CascadeType.ALL)
-    private List<Review> reviews;
+    @Column(nullable = false)
+    private Double averageRating;
     
     public VideoGame() {
     }
 
-    public VideoGame(Integer id, String title, LocalDate releaseDate, String synopsis, String urlTrailer,
-            String developer, String urlImages, String platform, String genre, String category, String console,
-            List<Review> reviews) {
+    public VideoGame(Integer id, String title, String releaseDate, String synopsis, String urlTrailer,
+            String developer, String urlImages, String platform, String genre, String category,
+            Double averageRating) {
         this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -59,8 +52,7 @@ public class VideoGame {
         this.platform = platform;
         this.genre = genre;
         this.category = category;
-        this.console = console;
-        this.reviews = reviews;
+        this.averageRating = averageRating;
     }
 
     public Integer getId() {
@@ -77,10 +69,10 @@ public class VideoGame {
         this.title = title;
     }
 
-    public LocalDate getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
-    public void setReleaseDate(LocalDate releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -133,17 +125,10 @@ public class VideoGame {
         this.category = category;
     }
 
-    public String getConsole() {
-        return console;
+    public Double getAverageRating() {
+        return averageRating;
     }
-    public void setConsole(String console) {
-        this.console = console;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 }

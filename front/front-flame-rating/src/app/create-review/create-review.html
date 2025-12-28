@@ -1,0 +1,38 @@
+<div class="modal-backdrop" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()">
+      <label for="comment">Deja tu comentario:</label>
+      <div class="textarea-wrapper">
+        <textarea id="comment" 
+                  formControlName="comment" 
+                  rows="5" 
+                  [maxlength]="max_chars"
+                  placeholder="Escribe tu opinión aquí...">
+        </textarea>
+        
+        <div class="footer-info">
+          <div class="error-message">
+            <small *ngIf="reviewForm.get('comment')?.touched && reviewForm.get('comment')?.errors?.['minlength']">
+              Mínimo {{ min_chars }} caracteres requeridos
+            </small>
+          </div>
+          
+          <div class="char-counter" [class.limit-reached]="remainingChars === 0">
+            {{ remainingChars }} / {{ max_chars }}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="close()">Cancelar</button>
+        <!-- CORRECCIÓN: Quitamos el (click) del botón submit para evitar doble trigger -->
+        <button type="submit" 
+                class="btn-submit" 
+                [disabled]="selectedRating <= 0 || reviewForm.invalid">
+          Publicar
+        </button> 
+      </div>
+    </form>
+  </div>
+</div>

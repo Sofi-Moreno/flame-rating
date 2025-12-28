@@ -1,0 +1,534 @@
+/* -------------------------------------------------------------------------- */
+/* 1. Estructura General de la Página                                         */
+/* -------------------------------------------------------------------------- */
+.game-detail-page {
+  width: 90%;
+  max-width: 1400px;
+  margin: 2rem auto;
+  color: #FFFFFF;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Título del Juego (H1)                                                   */
+/* -------------------------------------------------------------------------- */
+.game-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  border-bottom: 4px solid #F2762E;
+  padding-bottom: 8px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2.1. BOTONES DE ADMINISTRADOR (Editar / Eliminar)                          */
+/* -------------------------------------------------------------------------- */
+
+/* Contenedor de los botones (.buttons) */
+/* Lo posicionamos flotando a la derecha del título */
+.buttons {
+  display: inline-flex; /* Para que se ponga al lado si hay espacio, o baje */
+  gap: 1.5rem; /* Separación entre botones */
+  margin-bottom: 1.5rem; /* Separación con la galería de abajo */
+  vertical-align: middle; /* Alineación vertical con el título */
+  
+  /* Ajuste fino para que quede visualmente equilibrado */
+  position: relative;
+  top: 10px; 
+  margin-left: 72.4rem;
+}
+
+/* Estilo base para los botones dentro de .buttons */
+.buttons button {
+  background-color: #F2762E; /* Fondo naranja */
+  color: #FFFFFF; /* Texto blanco */
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  
+  /* Borde naranja del color que usamos (#F2762E) */
+  border: 2px solid #F2762E;
+  border-radius: 6px;
+  
+  cursor: pointer;
+  transition: all 0.3s ease; /* Transición suave para el hover */
+}
+
+/* Efecto Hover: Iluminación sutil */
+.buttons button:hover {
+  /* Fondo naranja muy tenue (casi transparente) */
+  background-color: rgba(211, 94, 26, 0.944);
+  
+  /* Resplandor naranja alrededor del botón */
+  box-shadow: 0 0 10px rgba(246, 125, 55, 0.523);
+  
+  /* Pequeño levantamiento para dar sensación de "flotar" */
+  /*transform: translateY(-2px);*/
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. Layout Principal (Estilo Steam)                                         */
+/* -------------------------------------------------------------------------- */
+
+.main-content-flex {
+  display: flex;
+  gap: 1.5rem;
+  
+  /* ¡¡¡LA CORRECCIÓN MÁS IMPORTANTE!!!
+    'flex-start' rompe la conexión de altura.
+    Ahora el contenedor de Info (derecha) NO se estirará.
+  */
+  align-items: flex-start;
+}
+
+/* ¡NUEVO! La columna izquierda (Galería + Reseñas) */
+.left-column {
+  flex-basis: 55%; /* Ocupa el 55% del ancho */
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Espacio entre galería y reseñas */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Cuadro de Información (Derecha)                                         */
+/* -------------------------------------------------------------------------- */
+.presentationVideogame {
+  /* ¡MÁS ANCHO! Ocupa el 45% */
+  flex-basis: 45%;
+  flex-grow: 1;
+  
+  background-color: #373535;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  
+  /* ¡ELIMINADO! Ya no forzamos el 'stretch'.
+    Este contenedor tendrá su propia altura natural, ESTÁTICA.
+  */
+  /* align-self: stretch; */
+  
+  overflow: hidden;
+  
+  /* ¡CLAVE! Se posiciona relativo a la página */
+  position: sticky;
+  top: 2rem; /* Se "pega" a 2rem del borde superior al scrollear */
+}
+
+.info-scroll-area {
+  padding: 1.5rem;
+  flex-grow: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #F2762E #555;
+}
+.info-scroll-area::-webkit-scrollbar { width: 8px; }
+.info-scroll-area::-webkit-scrollbar-track { background: #555; border-radius: 4px; }
+.info-scroll-area::-webkit-scrollbar-thumb { background-color: #F2762E; border-radius: 4px; }
+.info-box-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  aspect-ratio: 21 / 9;
+  object-fit: cover;
+}
+.presentationVideogame h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-bottom: 1px solid #555;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+.presentationVideogame h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 1px solid #555;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+.presentationVideogame p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #dcdcdc;
+}
+.game-metadata.details-grid {
+  list-style: none;
+  padding: 0;
+  font-size: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.game-metadata.details-grid li.grid-item { margin-bottom: 0; }
+.game-metadata.details-grid li.full-width { grid-column: 1 / -1; }
+.game-metadata li strong {
+  color: #FFFFFF;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.game-metadata li span { color: #dcdcdc; }
+.value-orange { color: #F2762E !important; font-weight: 600; }
+.platform-tags-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.platform-tags-list li {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid #F2762E;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+}
+.review-action-area {
+  flex-shrink: 0;
+  padding: 1.5rem;
+  border-top: 2px solid #555;
+  background-color: rgba(0, 0, 0, 0.1);
+  
+  /* ¡NUEVO! Contenedor padre para las partículas */
+  position: relative;
+}
+
+/* ¡NUEVO! Contenedor invisible para la lluvia de partículas */
+.particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* 6. Estilos para la Llama de Rating                                         */
+/* -------------------------------------------------------------------------- */
+.average-rating-container {
+  display: flex;
+  align-items: center; /* Centra el texto y la llama verticalmente */
+  gap: 1rem; 
+  margin-bottom: 1rem; /* Espacio antes del siguiente placeholder */
+}
+
+.average-rating-container strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-left: 0.5rem; /* Espacio extra para el texto */
+}
+
+/* Usamos una especificidad alta para sobre-escribir el .rating de las reseñas */
+.presentationVideogame .rating {
+  position: relative;
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el TAMAÑO de la llama (puedes cambiar 80px) */
+  width: 80px; 
+  height: 80px;
+
+  /* Esta es la ruta correcta que arreglaste (con 'raiting') */
+  background-image: url('/flame-rating-images/raiting_videogame_flame.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  
+  flex-shrink: 0; /* Para que no se encoja */
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+}
+
+.presentationVideogame .rating span {
+  position: static; 
+  color: #FFFFFF; 
+  font-size: 1.25rem;
+  font-weight: 900; 
+  
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el ajuste vertical del NÚMERO (puedes cambiar 10px) */
+  transform: translateY(16px); 
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. ¡NUEVO! Estilos para los FUEGUITOS de Calificación                      */
+/* -------------------------------------------------------------------------- */
+
+.flame-rating-input {
+  display: flex;
+  justify-content: center; /* Centra los 5 fueguitos */
+  
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el espacio entre cada flamita */
+  gap: 29px; 
+  
+  margin-bottom: 1.5rem; /* Espacio antes del botón de reseña */
+}
+
+.flame-rating-input img {
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el TAMAÑO de cada flamita */
+  width: 40px; 
+  height: auto;
+  
+  cursor: pointer;
+  
+  /* Por defecto, están en GRIS */
+  filter: grayscale(100%) brightness(1.5); /* Grises y un poco más claras */
+  opacity: 0.7;
+  
+  transition: all 0.2s ease;
+}
+
+/* Este es el estilo de la flama "activa" (hover o seleccionada) */
+.flame-rating-input img.active {
+  filter: none; /* Quita el filtro gris */
+  opacity: 1;
+  transform: scale(1.1); /* La hace un poquito más grande */
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* 8. Estilos para el BOTÓN "Dejar Comentario"                        */
+/* -------------------------------------------------------------------------- */
+.review-button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.5rem;
+  
+}
+
+.review-button-container button {
+background-color: #F2762E;
+color: #FFFFFF;
+font-weight: 600;
+font-size: 1rem; 
+padding: 0.5rem 1.5rem;
+  
+  /* Borde naranja del color que usamos (#F2762E) */
+  border: 2px solid #F2762E;
+  border-radius: 6px;
+  
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.review-button-container button:hover {
+/* Fondo naranja muy tenue (casi transparente) */
+  background-color: rgba(211, 94, 26, 0.944);
+  
+  /* Resplandor naranja alrededor del botón */
+  box-shadow: 0 0 10px rgba(246, 125, 55, 0.523);
+}
+
+/* Efecto Active: Cuando se presiona */
+.review-button-container button:active {
+transform: scale(0.98);
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 9. TU CÓDIGO DE GALERÍA (MODIFICADO LEVEMENTE)                             */
+/* -------------------------------------------------------------------------- */
+
+.gallery-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    color: white;
+    font-family: Arial, sans-serif;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.main-media-display {
+    width: 100%;
+    padding-bottom: 56.25%; /* Relación de aspecto 16:9 */
+    position: relative;
+    overflow: hidden;
+    background-color: black;
+}
+.main-media-display img,
+.main-media-display iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.thumbnail-list {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+    gap: 10px;
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+}
+.thumbnail {
+    flex-shrink: 0;
+    width: 120px;
+    height: 80px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+.thumbnail:hover, .thumbnail.active { border-color: #007bff; }
+.thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+.thumbnail .label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 2px 5px;
+    font-size: 0.7em;
+    color: white;
+}
+.video-thumbnail .label { background-color: red; }
+
+/* -------------------------------------------------------------------------- */
+/* 10. ¡REESCRITO! Estilos para la Sección de Reseñas (en su nueva pos.)       */
+/* -------------------------------------------------------------------------- */
+
+.game-review-section {
+  background-color: #222;
+  border-radius: 12px;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+}
+
+.game-review-section h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  display: inline-block;
+  border-bottom: 4px solid #F2762E; /* ¡Tu subrayado! */
+  padding-bottom: 8px;
+  margin: 1.5rem 1.5rem 1rem 1.5rem;
+  align-self: flex-start; 
+  flex-shrink: 0;
+}
+
+.no-reviews {
+  background-color: #373535;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  font-style: italic;
+  color: #aaa;
+  margin: 1.5rem;
+}
+
+/*
+  ¡¡¡AQUÍ ESTÁ EL ARREGLO PARA EL SCROLL TRAP!!!
+*/
+.reviews-container {
+  /* ¡LA CLAVE DEL SCROLL INDEPENDIENTE! */
+  max-height: 700px; 
+  
+  /* ¡CAMBIO! El scroll está oculto por defecto */
+  overflow-y: hidden;
+  
+  padding: 0 1.5rem 1.5rem 1.5rem; /* Padding para las cards */
+
+  /* --- ¡TU SOLICITUD! UNA SOLA COLUMNA --- */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  
+  /* Estilos de scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #F2762E #555;
+  
+  /* ¡CAMBIO! Evita que el contenido "salte" cuando aparece el scroll */
+  scrollbar-gutter: stable;
+  
+  /* Añadimos una transición suave para el 'overflow' */
+  transition: overflow-y 0.3s ease;
+}
+
+/* ¡CAMBIO! El scroll solo aparece cuando el mouse está encima */
+.reviews-container:hover {
+  overflow-y: auto;
+}
+
+
+.reviews-container::-webkit-scrollbar {
+  width: 8px;
+}
+.reviews-container::-webkit-scrollbar-track {
+  background: #555;
+  border-radius: 4px;
+}
+.reviews-container::-webkit-scrollbar-thumb {
+  background-color: #F2762E;
+  border-radius: 4px;
+}
+
+
+.review-card {
+  background-color: #373535;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border-top: 4px solid #F2762E;
+  flex-shrink: 0; /* Evita que las cards se encojan */
+}
+
+.review-card h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 0.5rem 0;
+}
+
+/* --- ¡SECCIÓN MODIFICADA! --- */
+.review-rating {
+  /* Centra el texto y las llamas */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Espacio entre "Su calificación:" y las llamas */
+  
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF; /* ¡Texto blanco, como pediste! */
+  margin-bottom: 1rem;
+}
+
+/* Contenedor de las llamas en la reseña */
+.flame-display {
+  display: flex;
+  
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el espacio entre cada flamita */
+  /* Lo puse más pequeño que 29px para que quepa bien */
+  gap: 8px; 
+}
+
+.flame-display img {
+  /* --- ¡AJUSTE MANUAL AQUÍ! --- */
+  /* Este es el TAMAÑO de cada flamita (pequeño) */
+  width: 20px; 
+  height: auto;
+  
+  /* A color, sin filtro */
+  filter: none;
+  opacity: 1;
+}
+
+
+.review-comment {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #dcdcdc;
+  font-style: italic;
+  margin: 0;
+  word-wrap: break-word;
+}

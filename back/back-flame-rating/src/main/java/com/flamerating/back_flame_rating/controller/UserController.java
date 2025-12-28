@@ -3,7 +3,8 @@ package com.flamerating.back_flame_rating.controller;
 import com.flamerating.back_flame_rating.service.UserService;
 import com.flamerating.back_flame_rating.model.User;
 
-import javax.xml.crypto.Data;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -23,55 +25,45 @@ public class UserController {
     // No requiere autenticación.
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // La lógica de verificación de unicidad, hashing de contraseña y guardado
-        // se hará dentro del UserService.
+        try {
+            // A. Llama al servicio para validar y guardar el usuario
+            User registeredUser = userService.registerNewUser(user);
 
-        // return userService.register(user);
-        return ResponseEntity.ok("Usuario registrado exitosamente");
+            // B. Devuelve el objeto creado con el código de estado 201 Created
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            // C. Maneja errores de validación (ej. usuario/email ya existen)
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     // 2. ENDPOINT PARA OBTENER DATOS DEL PERFIL
     // RUTA: GET /api/users/{username}
-    // Requiere autenticación (JWT) para asegurar que el usuario esté logueado.
     @GetMapping("/{username}")
     // En una implementación real, se debería usar @AuthenticationPrincipal
     // para obtener el usuario logueado, en lugar de pasar el {username}
     public ResponseEntity<User> getUserProfile(@PathVariable String username) {
         // La lógica de búsqueda se hace en el UserService.
 
-        // Optional<User> user = userService.findByUsername(username);
-        // if (user.isPresent()) {
-        // return ResponseEntity.ok(user.get());
-        // }
-        return ResponseEntity.notFound().build();
+        return userService.findByUsername(username)
+                .map(user -> ResponseEntity.ok(user)) // Si encuentra, devuelve 200 OK
+                .orElseGet(() -> ResponseEntity.notFound().build()); // Si no encuentra, devuelve 404 Not Found
     }
 
-    // 3. ENDPOINT PARA ACTUALIZAR PERFIL
-    // RUTA: PUT /api/users/{username}
-    // Requiere autenticación y autorización (solo el usuario puede modificar su
-    // propio perfil).
-    @PutMapping("/{username}")
-    public ResponseEntity<User> updateUserProfile(@PathVariable String username, @RequestBody User updatedUser) {
-        // La lógica de actualización y verificación de permisos va aquí.
-
-        // return userService.updateProfile(username, updatedUser);
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    /* 4. ENDPOINT PARA INICIO DE SESIÓN (LOGIN) */
-
+    // 3. ENDPOINT PARA INICIO DE SESIÓN (LOGIN)
+    // RUTA: POST /api/users/login
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody User loginRequest) {
-        // En una implementación real, se usaría un DTO, no la entidad User
-        // directamente.
+        // Nota: En un proyecto real, usarías un DTO, no la entidad User.
 
         try {
             User authenticatedUser = userService.authenticate(
-                    loginRequest.getNombreDeUsuario(),
+                    // OJO: Asegúrate de que estos getters coincidan con tu clase User
+                    loginRequest.getUsername(),
                     loginRequest.getPassword());
 
-            // Devuelve la información del usuario autenticado (se puede simplificar en el
-            // futuro)
+            // Si las credenciales son correctas, devuelve el objeto User
             return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -79,4 +71,36 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED); // Código 401 Unauthorized
         }
     }
+
+    // 4. ENDPOINT PARA MODIFICAR USUARIO
+    // RUTA: PUT /api/users/update/{idUser}
+    @PutMapping("/update/{idUser}")
+    public ResponseEntity<?> updateUser(@PathVariable Integer idUser, @RequestBody User userDetails) {
+        try {
+            // Llama al servicio para realizar la actualización
+            User updatedUser = userService.updateUser(idUser, userDetails);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (Exception e) {
+            // Maneja casos donde el usuario no existe o hay conflictos de datos
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 5. NUEVO: ENDPOINT PARA ELIMINAR USUARIO
+    // RUTA: DELETE /api/users/delete/{idUser}
+    @DeleteMapping("/delete/{idUser}")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer idUser) {
+        try {
+            userService.deleteUser(idUser);
+
+            // Devolvemos un JSON simple confirmando la eliminación
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Usuario eliminado exitosamente.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

@@ -1,0 +1,99 @@
+<div class="profile-container">
+    <div *ngIf="isLoading" class="loading-message">
+        Cargando datos del perfil...
+    </div>
+
+    <!-- Se muestra solo si el usuario existe (está logueado) -->
+    <div *ngIf="!isLoading && currentUser" class="profile-card">
+        
+        <!-- Título dinámico -->
+        <h2 class="title">{{ isEditing ? 'Modificar Perfil' : 'Visualizar Perfil' }}</h2>
+        <hr class="separator">
+
+        <!-- Mensajes de éxito o error -->
+        <div *ngIf="message" [ngClass]="{'message-success': messageType === 'success', 'message-error': messageType === 'error'}" class="status-message">
+            {{ message }}
+        </div>
+
+        <!-- Contenido principal: Grid de 2 columnas -->
+        <div class="profile-content">
+            
+            <!-- Columna Izquierda: Campos de información -->
+            <div class="profile-info">
+                
+                <!-- Campo de Email -->
+                <div class="input-group">
+                    <label for="email-field">Email</label>
+                    <input 
+                        id="email-field" 
+                        type="email" 
+                        [(ngModel)]="editData.email"
+                        [readonly]="!isEditing" 
+                        class="profile-input"
+                        [ngClass]="{'editable-input': isEditing}"
+                    >
+                </div>
+
+                <!-- Campo de Nombre de Usuario -->
+                <div class="input-group">
+                    <label for="username-field">Nombre de usuario</label>
+                    <input 
+                        id="username-field" 
+                        type="text" 
+                        [(ngModel)]="editData.username"
+                        [readonly]="!isEditing" 
+                        class="profile-input"
+                        [ngClass]="{'editable-input': isEditing}"
+                    >
+                </div>
+
+
+                <!-- Campo de Rol (solo lectura siempre) -->
+                <div class="input-group" *ngIf="!isEditing">
+                    <label>Rol</label>
+                    <input 
+                        type="text" 
+                        [value]="getRoleText()" 
+                        readonly 
+                        class="profile-input readonly-field"
+                    >
+                </div>
+
+                <!-- Acciones del perfil -->
+                <div class="profile-actions">
+                    <ng-container *ngIf="!isEditing">
+                        <button (click)="toggleEdit()" class="btn-modify">Modificar Datos</button>
+                        <button (click)="showDeleteModal = true" class="btn-delete-trigger">Eliminar Cuenta</button>
+                    </ng-container>
+
+                    <ng-container *ngIf="isEditing">
+                        <button (click)="onUpdate()" class="btn-save">Confirmar Cambios</button>
+                        <button (click)="toggleEdit()" class="btn-cancel">Cancelar</button>
+                    </ng-container>
+                </div>
+                
+            </div>
+
+            <div class="profile-avatar-container">
+                <img src="flame-rating-images/perfil.png" alt="Avatar de usuario">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mensaje si no hay usuario logueado-->
+    <div *ngIf="!isLoading && !currentUser" class="error-message">
+        No se pudo cargar la información del perfil. Por favor, inicie sesión.
+    </div>
+
+    <!-- Modal de confirmación para eliminar cuenta -->
+    <div class="modal-overlay" *ngIf="showDeleteModal">
+        <div class="modal-content">
+            <h3 class="modal-title">¿Estás seguro de borrar tu cuenta?</h3>
+            <p class="modal-text">Esta acción es permanente y no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button (click)="onConfirmDelete()" class="btn-confirm-delete">Sí, eliminar</button>
+                <button (click)="showDeleteModal = false" class="btn-cancel-delete">No, mantener cuenta</button>
+            </div>
+        </div>
+    </div>
+</div>

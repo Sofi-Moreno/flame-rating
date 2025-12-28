@@ -1,0 +1,187 @@
+<section id="create-videogame">
+  
+  <form [formGroup]="videoGameForm" (ngSubmit)="onSubmit()" class="game-form">
+    
+    <!-- Título Principal del Formulario -->
+    <h1>Crear Videojuego</h1>
+
+    <!-- Contenedor Principal del Formulario (fondo #2C2C34) -->
+    <div class="form-container">
+
+      <!-- Fila 1: Título (ocupa 2 columnas) -->
+      <div class="form-group span-2">
+        <label for="title-videogame">Título del Videojuego:</label>
+        <input type="text" id="title-videogame" formControlName="title" placeholder="Ej: The Last of Us" maxlength="255">
+        <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="error-message">
+          <div *ngIf="title?.hasError('required')">El título es requerido.</div>
+          <div *ngIf="title?.hasError('titleExists')">¡Error! Ese título ya existe en la base de datos.</div>
+        </div>
+      </div>
+
+      <!-- Fila 2: Desarrolladora y Fecha -->
+      <div class="form-group">
+        <label for="developer-videogame">Desarrolladora:</label>
+        <input type="text" id="developer-videogame" formControlName="developer" placeholder="Ej: Naughty Dog" maxlength="255">
+        <div *ngIf="developer?.invalid && (developer?.dirty || developer?.touched)" class="error-message">
+          <div *ngIf="developer?.hasError('required')">La desarrolladora es requerida.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="release-date">Fecha de lanzamiento:</label>
+        <!-- Esta es la versión correcta con el (click) -->
+        <input type="date" id="release-date" formControlName="releaseDate" (click)="openDatePicker($event)">
+        <div *ngIf="releaseDate?.invalid && (releaseDate?.dirty || releaseDate?.touched)" class="error-message">
+          <div *ngIf="releaseDate?.hasError('required')">La fecha es requerida.</div>
+        </div>
+      </div>
+
+      <!-- Fila 3: Sinopsis (ocupa 2 columnas) -->
+      <div class="form-group span-2">
+        <label for="synopsis-videogame">Sinopsis:</label>
+        <textarea id="synopsis-videogame" formControlName="synopsis" rows="6" maxlength="2000" placeholder="Describe el juego..."></textarea>
+        <div *ngIf="synopsis?.invalid && (synopsis?.dirty || synopsis?.touched)" class="error-message">
+          <div *ngIf="synopsis?.hasError('required')">La sinopsis es requerida.</div>
+        </div>
+      </div>
+
+      <!-- Fila 4: Categorías (Radio Buttons con Iconos) -->
+      <div class="form-group span-2 custom-radio-group">
+        <label>Selecciona solo una de las siguientes categorías:</label>
+        <div class="options-container">
+          <!-- Opción 1: Un Jugador -->
+          <div class="radio-option">
+            <input type="radio" id="category-oneplayer" name="category" value="Un Jugador" formControlName="category">
+            <label for="category-oneplayer" class="radio-label">
+              <img src="/flame-rating-images/un-jugador-icon.png" alt="Un Jugador">
+              <span>Un Jugador</span>
+            </label>
+          </div>
+          <!-- Opción 2: Multijugador -->
+          <div class="radio-option">
+            <input type="radio" id="category-multiplayer" name="category" value="Multijugador" formControlName="category">
+            <label for="category-multiplayer" class="radio-label">
+              <img src="/flame-rating-images/dos-jugadores-icon.png" alt="Multijugador">
+              <span>Multijugador</span>
+            </label>
+          </div>
+          <!-- Opción 3: En Línea -->
+          <div class="radio-option">
+            <input type="radio" id="category-online" name="category" value="En linea" formControlName="category">
+            <label for="category-online" class="radio-label">
+              <img src="/flame-rating-images/juego-en-linea-icon.png" alt="En linea">
+              <span>En linea</span>
+            </label>
+          </div>
+        </div>
+        <div *ngIf="category?.invalid && (category?.dirty || category?.touched)" class="error-message">
+          <div *ngIf="category?.hasError('required')">Debes seleccionar una categoría.</div>
+        </div>
+      </div>
+
+      <!-- Fila 5: Géneros (Checkboxes como Etiquetas) -->
+      <div class="form-group span-2 custom-checkbox-group" formGroupName="genres">
+        <label>Selecciona los géneros (puedes elegir varios):</label>
+        <div class="tags-container">
+          <div *ngFor="let gen of generosLista">
+            <input type="checkbox" [id]="'gen-' + gen" [formControlName]="gen">
+            <label [for]="'gen-' + gen" class="tag-label">{{ gen }}</label>
+          </div>
+        </div>
+        <div *ngIf="genres?.invalid && (genres?.dirty || genres?.touched)" class="error-message">
+          <div *ngIf="genres?.hasError('minSelected')">Debes seleccionar al menos un género.</div>
+        </div>
+      </div>
+      
+      <!-- Fila 6: Plataformas (Checkboxes con Iconos) -->
+      <div class="form-group span-2 custom-radio-group" formGroupName="consoles">
+        <label>Selecciona las plataformas (puedes elegir varias):</label>
+        <div class="options-container">
+          <div class="radio-option">
+            <input type="checkbox" id="con-xbox" formControlName="Xbox">
+            <label for="con-xbox" class="radio-label">
+              <img src="/flame-rating-images/xbox-icon.png" alt="Xbox Series">
+              <span>Xbox Series</span>
+            </label>
+          </div>
+          <div class="radio-option">
+            <input type="checkbox" id="con-ps5" formControlName="PlayStation 5">
+            <label for="con-ps5" class="radio-label">
+              <img src="/flame-rating-images/ps5-icon.png" alt="PlayStation 5">
+              <span>PlayStation 5</span>
+            </label>
+          </div>
+          <div class="radio-option">
+            <input type="checkbox" id="con-switch1" formControlName="Nintendo Switch 1">
+            <label for="con-switch1" class="radio-label">
+              <img src="/flame-rating-images/nintendo-switch-icon.png" alt="Nintendo Switch 1">
+              <span>Nintendo Switch 1</span>
+            </label>
+          </div>
+          <div class="radio-option">
+            <input type="checkbox" id="con-switch2" formControlName="Nintendo Switch 2">
+            <label for="con-switch2" class="radio-label">
+              <img src="/flame-rating-images/switch2-icon.png" alt="Nintendo Switch 2">
+              <span>Nintendo Switch 2</span>
+            </label>
+          </div>
+          <div class="radio-option">
+            <input type="checkbox" id="con-pc" formControlName="PC">
+            <label for="con-pc" class="radio-label">
+              <img src="/flame-rating-images/pc-icon.png" alt="PC">
+              <span>PC</span>
+            </label>
+          </div>
+        </div>
+        <div *ngIf="consoles?.invalid && (consoles?.dirty || consoles?.touched)" class="error-message">
+          <div *ngIf="consoles?.hasError('minSelected')">Debes seleccionar al menos una plataforma.</div>
+        </div>
+      </div>
+
+      <!-- 
+        Fila 7: Carga de Archivos (¡CON EL NUEVO FEATURE!)
+      -->
+      <div class="form-group file-upload-group">
+        <label>Imagen Principal (JPG):</label>
+        <label class="file-upload-label">
+          <!-- ¡CAMBIO! Ahora muestra la variable 'mainImageName' -->
+          <span [class.is-file-selected]="mainImageName !== 'Seleccionar archivo...'">
+            {{ mainImageName }}
+          </span>
+          <input type="file" id="selector-imagen" accept="image/jpeg" (change)="onFileChange($event, 'image')">
+        </label>
+        <div *ngIf="image?.invalid && (image?.dirty || image?.touched)" class="error-message">
+          <div *ngIf="image?.hasError('required')">Debes seleccionar una imagen principal.</div>
+        </div>
+      </div>
+      
+      <div class="form-group file-upload-group">
+        <label>Imágenes Complementarias (JPG, múltiple):</label>
+        <label class="file-upload-label">
+          <!-- ¡CAMBIO! Ahora muestra la variable 'extraImagesName' -->
+          <span [class.is-file-selected]="extraImagesName !== 'Seleccionar archivos...'">
+            {{ extraImagesName }}
+          </span>
+          <input type="file" id="selector-images" accept="image/jpeg" multiple (change)="onFileChange($event, 'images')">
+        </label>
+      </div>
+      
+      <!-- Fila 8: Link de YouTube -->
+      <div class="form-group span-2">
+        <label for="youtube-link">Trailer (Enlace de YouTube):</label>
+        <input type="url" id="youtube-link" formControlName="youtubeLink" placeholder="https://www.youtube.com/watch?v=...">
+        <div *ngIf="youtubeLink?.invalid && (youtubeLink?.dirty || youtubeLink?.touched)" class="error-message">
+          <div *ngIf="youtubeLink?.hasError('required')">El enlace es requerido.</div>
+          <div *ngIf="youtubeLink?.hasError('pattern')">El enlace no parece ser un link válido de YouTube.</div>
+        </div>
+      </div>
+
+      <!-- Fila 9: Botones -->
+      <div class="form-buttons span-2">
+        <button type="button" id="cancel" routerLink="/main-menu">Cancelar</button>
+        <button type="submit" id="save" [disabled]="videoGameForm.invalid">Guardar</button>
+      </div>
+
+    </div> <!-- Fin de .form-container -->
+
+  </form> </section>

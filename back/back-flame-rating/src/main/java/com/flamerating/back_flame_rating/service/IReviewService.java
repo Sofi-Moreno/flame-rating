@@ -7,6 +7,7 @@ public interface IReviewService {
     Review saveReview(Review review);
     List<Review> findAll();
     Review findById(Integer id);
-    void deleteReview(Integer id);
+    void deleteByVideoGameId(Integer videoGameId);
     Review updateReview(Review review);
+    List<Review> findByVideoGameId(Integer videoGameId);
 }

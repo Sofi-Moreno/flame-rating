@@ -1,41 +1,43 @@
 package com.flamerating.back_flame_rating.controller;
 
 import com.flamerating.back_flame_rating.model.News;
-import com.flamerating.back_flame_rating.service.INewsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.flamerating.back_flame_rating.service.NewsService;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.List;
 
+/*Permite  que todos los servicios o End Points que se creen dentro, puedan
+comunicarse con los clientes mediante Json.*/
+
 @RestController
-@RequestMapping("/api/news")
 @CrossOrigin(origins = "http://localhost:4200")
 public class NewsController {
+    private final NewsService newsService;
 
-    @Autowired
-    private INewsService newsService;
-
-    /**
-     * GET /api/news : Obtiene todas las noticias
-     */
-    @GetMapping
-    public ResponseEntity<List<News>> obtenerTodasLasNoticias() {
-        List<News> newsList = newsService.getAllNews();
-        return ResponseEntity.ok(newsList);
+    public NewsController(NewsService newsService) {
+        this.newsService = newsService;
     }
 
-    /**
-     * POST /api/news : Crea una nueva noticia
-     *
-     */
-    @PostMapping
-    public ResponseEntity<News> crearNoticia(@RequestBody News news) { // <-- Cambio: Acepta la entidad
-        // Pasa la entidad directamente al servicio,
-        // que se encargará de limpiarla y guardarla.
-        News nuevaNoticia = newsService.createNews(news);
-        return new ResponseEntity<>(nuevaNoticia, HttpStatus.CREATED);
+    /**Para poder guardar una entidad en una BD necesitamos manejar una petición de tipo
+     post, por lo que se utiliza la anotación @PostMapping */
+
+/*La anotación RequestBody lo que hace es transformar la petición que viene desde el
+cliente en un objeto de tipo News(Java) si tener que usar alguna librería hola.*/
+
+    /*http://localhost:8080/create-news*/
+    @PostMapping("/create-news")
+    public News save(@RequestBody News news) {
+        return newsService.saveNews(news); //Guarda un objeto del tipo service
     }
 
+    @GetMapping ("/news")
+    public List<News> findAll() {
+        return newsService.findAll();
+    }
 }

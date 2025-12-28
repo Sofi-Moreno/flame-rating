@@ -11,19 +11,30 @@ public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    
     @Column(unique = true, nullable = false)
     private String title;
+    
     @Column(nullable = false)
     private LocalDate publicationDate;
+    
     @Column(nullable = false, length = 2000)
     private String textNews;
-    @Column(nullable = false)
+    
+    // --- CAMBIO AQUÍ ---
+    // He quitado "nullable = false"
+    // Ahora este campo PUEDE estar vacío (null)
+    @Column 
     private String urlVideo;
-    @Column(nullable = false)
+    
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String urlImages;
 
     public News() {
     }
+
+    // ... (El resto de tu archivo: constructores, getters y setters no cambian) ...
+    // ... (Puedes dejarlos tal como estaban) ...
 
     public News(Integer id, String title, LocalDate publicationDate, String textNews, String urlVideo, String urlImages) {
         this.id = id;
