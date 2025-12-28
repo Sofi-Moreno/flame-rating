@@ -61,13 +61,24 @@
                 <h4>{{review.userName}}</h4>
                 
                 <div *ngIf="currentUserName === review.userName" class="edit-buttons-review">
-                  <button>Editar</button>
+                  <button (click)="openUpdateReviewModal(review.id)">Editar</button>
                   <button (click)="openDeleteReviewModal(review.id)">Eliminar</button>
                 </div>
 
                 <div *ngIf="isAdmin" class="edit-buttons-review">
                   <button (click)="openDeleteReviewModal(review.id)">Eliminar</button>
                 </div>
+
+                <app-update-review 
+                  *ngIf="reviewUpdate"
+                  [reviewId]="selectedReviewId!"
+                  [currentComment]="selectedReviewComment"
+                  [selectedRating]="selectedReviewRating"
+                  [userName]="currentUser"
+                  (closeDialog)="closeUpdateReviewModal()"
+                  (reviewUpdated)="onConfirmReviewUpdate()"> 
+                </app-update-review>
+
                 <app-delete-review 
                   *ngIf="reviewDelete"
                   [reviewId]="selectedReviewId"
