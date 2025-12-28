@@ -80,6 +80,48 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+    // --- NUEVOS MÉTODOS PARA EL SPRINT 2 ---
+
+  /**
+   * 4. Lógica para Modificar Usuario
+   * @param idUser ID del usuario a modificar
+   * @param userDetails Objeto con los nuevos datos
+   */
+  updateUser(idUser: number, userDetails: User): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/update/${idUser}`, userDetails).pipe(
+      tap(updatedUser => {
+        // MUY IMPORTANTE: Si el usuario modificado es el mismo que está logueado,
+        // actualizamos la sesión local para que la UI se refresque.
+        if (this.currentUserValue?.idUser === updatedUser.idUser) {
+          this.setSession(updatedUser);
+        }
+      }),
+      catchError(error => {
+        console.error('Error al actualizar usuario:', error);
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * 5. Lógica para Eliminar Usuario
+   * @param idUser ID del usuario a borrar
+   */
+  deleteUser(idUser: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/delete/${idUser}`).pipe(
+      tap(() => {
+        // Si el usuario borrado es el que tiene la sesión iniciada, cerramos sesión.
+        if (this.currentUserValue?.idUser === idUser) {
+          this.logout();
+        }
+      }),
+      catchError(error => {
+        console.error('Error al eliminar usuario:', error);
+        throw error;
+      })
+    );
+  }
+
   // ----------------------------------------------------
   // MÉTODOS DE SOPORTE
   // ----------------------------------------------------
