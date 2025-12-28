@@ -1,1 +1,25 @@
-<p>delete-review works!</p>
+<div class="modal-backdrop" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h2>Confirmar eliminación</h2>
+    </div>
+
+    <div class="modal-body">
+      <p>
+        ¿Estás seguro de que deseas eliminar la reseña?
+      </p>
+      <p class="warning-text">Esta acción no se puede deshacer.</p>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="close()">
+        Cancelar
+      </button>
+      <button type="button" class="btn-delete" (click)="onDelete()">
+        Eliminar Reseña
+      </button>
+    </div>
+
+  </div>
+</div>

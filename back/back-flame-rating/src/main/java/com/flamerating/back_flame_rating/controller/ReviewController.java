@@ -75,7 +75,7 @@ cliente en un objeto de tipo Review(Java) si tener que usar alguna librería.*/
 @DeleteMapping("/delete-review/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable Integer id) {
         try{
-            reviewService.deleteByVideoGameId(id);
+            reviewService.deleteById(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("review deleted successfully.");
         }
         catch (Exception e) {
