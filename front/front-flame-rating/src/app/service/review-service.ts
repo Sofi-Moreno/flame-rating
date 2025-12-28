@@ -46,7 +46,7 @@ export class ReviewService {
       return this.http.delete<void>(this.apiDelete.replace("{id}", id.toString()));
     }
   
-    updateVideoGame(review:Review):Observable<Review>{
+    updateReview(review:Review):Observable<Review>{
       return this.http.put<Review>(this.apiUpdate, review);
     }
 }

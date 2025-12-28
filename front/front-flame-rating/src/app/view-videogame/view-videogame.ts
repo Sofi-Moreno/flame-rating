@@ -16,6 +16,7 @@ import { AuthService } from '../service/auth';
 import { User } from '../model/user'; 
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { UpdateReview } from '../update-review/update-review';
 
 export interface GameImage {
   thumbnailSrc: string; // La imagen pequeña
@@ -30,7 +31,8 @@ export interface GameImage {
     ReactiveFormsModule,
     CreateReview,
     DeleteVideoGame,
-    DeleteReview
+    DeleteReview,
+    UpdateReview
   ],
   templateUrl: './view-videogame.html',
   styleUrl: './view-videogame.css',
@@ -54,6 +56,7 @@ export class ViewVideogame implements OnInit{
   public updateMode: boolean = false;
   public deleteMode: boolean = false;
   public reviewDelete: boolean = false;
+  public reviewUpdate: boolean = false;
 
   // --- ¡NUEVA PROPIEDAD! Para encontrar el contenedor de partículas ---
   // Busca el #particleContainer en el HTML
@@ -67,6 +70,9 @@ export class ViewVideogame implements OnInit{
   currentUser$: Observable<User | null> = this.authService.currentUser;
   public currentUserName: string = 'Invitado';
   public selectedReviewId: number | null = null;
+  public selectedReviewComment?: string = '';
+  public selectedReviewRating?: number;
+  public currentUser?: string;
   
   // Variables que el HTML utiliza (se actualizan en ngOnInit)
   isLoggedIn: boolean = false;
@@ -387,17 +393,15 @@ export class ViewVideogame implements OnInit{
     });
   }
 
-// 2. Modifica la función para recibir el ID
-openDeleteReviewModal(id: number): void {
-  this.selectedReviewId = id; // Guardamos el ID de la reseña clickeada
-  this.reviewDelete = true;
-}
+  openDeleteReviewModal(id: number): void {
+    this.selectedReviewId = id; // Guardamos el ID de la reseña clickeada
+    this.reviewDelete = true;
+  }
 
-// 3. Asegúrate de limpiar el ID al cerrar
-closeDeleteReviewModal(): void {
-  this.reviewDelete = false;
-  this.selectedReviewId = null;
-}
+  closeDeleteReviewModal(): void {
+    this.reviewDelete = false;
+    this.selectedReviewId = null;
+  }
 
   onConfirmReviewDelete(id: number): void {
     console.log('Eliminando reseña con ID:', id);
@@ -429,12 +433,46 @@ closeDeleteReviewModal(): void {
     });
   }
 
-  // Método auxiliar para refrescar datos del juego (promedio, etc)
   private refreshGameData(): void {
     if (this.videoGame) {
       this.gameService.findById(this.videoGame.id).subscribe(game => {
         if (game) this.videoGame!.averageRating = game.averageRating;
       });
     }
+  }
+
+  openUpdateReviewModal(id: number): void {
+    this.selectedReviewId = id;
+    this.reviewService.findById(id).subscribe((review: Review) => {
+        this.selectedReviewComment = review.comment;
+        this.selectedReviewRating = review.rating;
+        this.currentUser = review.userName;
+        this.reviewUpdate = true;
+    });
+  }
+
+  closeUpdateReviewModal(): void {
+    this.reviewUpdate = false;
+    this.selectedReviewComment = "";
+    this.selectedReviewId = null;
+  }
+
+  onConfirmReviewUpdate(): void {
+    this.closeUpdateReviewModal();
+    if (this.videoGame) {
+      // Recargamos las reseñas para ver los cambios
+      this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
+        this.videoGame!.reviews = reviews;
+        this.refreshGameData(); 
+      });
+    }
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Reseña actualizada',
+      text: 'Tu comentario ha sido modificado con éxito.',
+      timer: 2000,
+      showConfirmButton: false
+    });
   }
 }
