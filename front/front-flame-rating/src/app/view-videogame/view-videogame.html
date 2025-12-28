@@ -59,6 +59,15 @@
           <div class="reviews-container" *ngIf="videoGame.reviews?.length > 0">
               <div class="review-card" *ngFor="let review of videoGame.reviews">
                 <h4>{{review.userName}}</h4>
+                
+                <div *ngIf="currentUserName === review.userName" class="edit-buttons-review">
+                  <button>Editar</button>
+                  <button>Eliminar</button>
+                </div>
+
+                <div *ngIf="isAdmin" class="edit-buttons-review">
+                  <button>Eliminar</button>
+                </div>
                 <!-- Calificaciones de llamas -->
                 <div class="review-rating">
                   <span>Su calificación:</span>
@@ -132,6 +141,7 @@
 
             <div class="average-rating-container">
               <div class="rating">
+                <!-- El promedio se actualiza desde el objeto videoGame -->
                 <span>{{ videoGame.averageRating }}</span>
               </div>
               <strong>Calificación promedia</strong>
@@ -149,22 +159,25 @@
               >
             </div>
             
-            <div *ngIf="videoGame && !showReviewModal && !isAdmin" class="review-button-container">
-              <button (click)="openReviewModal()">Dejar Comentario</button>
-          </div>
+            <div *ngIf="videoGame && !showReviewModal && !isAdmin && selectedRating > 0" class="review-button-container">
+                <button (click)="openReviewModal()">
+                 Dejar Comentario
+                </button>
+            </div>
 
             <app-create-review 
                 *ngIf="showReviewModal && videoGame"
                 [videoGameId]="videoGame.id"
+                [selectedRating]="selectedRating"
+                [userName]="currentUserName"
                 (closeDialog)="closeReviewModal()"
-                (reviewSaved)="handleReviewSaved()"
+                (reviewSaved)="closeReviewModal(); reviewSaved()"
             ></app-create-review>
-          </div>
       
       </div> <!-- Fin de presentationVideogame -->
     
     </div> <!-- Fin de main-content-flex -->
-
+    </div>  
   </section> 
 
 </div>

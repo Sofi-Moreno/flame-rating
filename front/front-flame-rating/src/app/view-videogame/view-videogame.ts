@@ -62,6 +62,7 @@ export class ViewVideogame implements OnInit{
   
   // Observable que rastrea el estado del usuario.
   currentUser$: Observable<User | null> = this.authService.currentUser;
+  public currentUserName: string = 'Invitado';
   
   // Variables que el HTML utiliza (se actualizan en ngOnInit)
   isLoggedIn: boolean = false;
@@ -81,6 +82,13 @@ export class ViewVideogame implements OnInit{
       this.isLoggedIn = !!user; 
       // Si 'user' tiene un valor, usa user.isAdmin; de lo contrario, es false.
       this.isAdmin = user ? user.isAdmin : false; 
+    });
+
+    this.currentUser$.subscribe(user => {
+      this.isLoggedIn = !!user; 
+      this.isAdmin = user ? user.isAdmin : false; 
+      // Guardamos el nombre para pasárselo a la review
+      this.currentUserName = user ? user.username : 'Usuario Anónimo';
     });
     
     this.route.paramMap.subscribe(params => {
@@ -309,17 +317,24 @@ export class ViewVideogame implements OnInit{
     this.showReviewModal = false;
   }
 
-  handleReviewSaved(): void {
-    // Si un comentario se guardó con éxito, recarga las reviews del juego
+  reviewSaved(): void {
     console.log('Comentario guardado. Recargando reviews...');
     if (this.videoGame) {
-      // Necesitas recargar las reviews o todo el juego
       this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
-         // Asume que tienes un campo 'reviews' en videoGame
-         this.videoGame!.reviews = reviews; 
+        this.videoGame!.reviews = reviews;
+        // CERRAR EL MODAL después de recargar (Flujo solicitado)
+        this.closeReviewModal();
+        
+        // Feedback visual con SweetAlert (ya que lo usas en delete)
+        Swal.fire({
+          icon: 'success',
+          title: 'Reseña publicada',
+          text: 'Tu comentario ha sido agregado con éxito.',
+          timer: 2000,
+          showConfirmButton: false
+        });
       });
     }
-    // Opcional: Mostrar una notificación al usuario (p. ej., "Comentario publicado")
   }
 
   updateGame(): void {
