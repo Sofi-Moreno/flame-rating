@@ -53,4 +53,53 @@ public class UserService {
             throw new Exception("Credenciales inválidas.");
         }
     }
+
+    // --- 4. NUEVO: LÓGICA DE ACTUALIZACIÓN ---
+    public User updateUser(Integer idUser, User userDetails) throws Exception {
+        // A. Buscar el usuario existente por ID
+        User existingUser = userRepository.findByIdUser(idUser)
+                .orElseThrow(() -> new Exception("Usuario no encontrado con ID: " + idUser));
+
+        // B. Validar unicidad si el username está cambiando
+        if (!existingUser.getUsername().equals(userDetails.getUsername()) &&
+                userRepository.existsByUsername(userDetails.getUsername())) {
+            throw new Exception("El nuevo nombre de usuario ya está en uso.");
+        }
+
+        // C. Validar unicidad si el email está cambiando
+        if (!existingUser.getEmail().equals(userDetails.getEmail()) &&
+                userRepository.existsByEmail(userDetails.getEmail())) {
+            throw new Exception("El nuevo email ya está registrado.");
+        }
+
+        // D. Actualizar los campos permitidos
+        existingUser.setUsername(userDetails.getUsername());
+        existingUser.setEmail(userDetails.getEmail());
+
+        // Solo actualizamos la contraseña si el objeto recibido trae una
+        if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+            existingUser.setPassword(userDetails.getPassword());
+        }
+
+        // Nota: Por seguridad, no permitimos cambiar isAdmin desde aquí
+        // a menos que implementes una lógica de roles específica.
+        // existingUser.setIsAdmin(userDetails.getIsAdmin());
+
+        // E. Guardar los cambios
+        return userRepository.save(existingUser);
+    }
+
+    public void deleteUser(Integer idUser) throws Exception {
+        // Usamos existsByIdUser para evitar errores del IDE con JpaRepository
+        if (!userRepository.existsByIdUser(idUser)) {
+            throw new Exception("No se puede eliminar: El usuario con ID " + idUser + " no existe.");
+        }
+
+        // Buscamos el objeto primero para asegurar la eliminación a través de la
+        // entidad
+        User userToDelete = userRepository.findByIdUser(idUser)
+                .orElseThrow(() -> new Exception("Error al recuperar el usuario para eliminar."));
+
+        userRepository.delete(userToDelete);
+    }
 }

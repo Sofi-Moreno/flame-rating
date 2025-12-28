@@ -19,6 +19,9 @@ export class CreateReview implements OnInit{
   @Input() selectedRating!: number;
 
   reviewForm!: FormGroup;
+  // Definimos el límite máximo aquí para tener una única fuente de verdad
+  readonly max_chars = 500;
+  readonly min_chars = 20;
 
   constructor(
     private fb: FormBuilder,
@@ -27,30 +30,50 @@ export class CreateReview implements OnInit{
 
   ngOnInit(): void {
     this.reviewForm = this.fb.group({
+      // Agregamos el control 'comment' con validación de longitud
+      comment: ['', [
+        Validators.required, 
+        Validators.minLength(this.min_chars), 
+        Validators.maxLength(this.max_chars)
+      ]]
     });
   }
+
+  // Getter para obtener la longitud actual del texto
+  get currentLength(): number {
+    return this.reviewForm.get('comment')?.value?.length || 0;
+  }
+
+  // Función que Calcula los caracteres restantes
+  get remainingChars(): number {
+    const commentValue = this.reviewForm.get('comment')?.value || '';
+    return this.max_chars - commentValue.length;
+  }
+
+  // Determina si mostrar el mensaje de error en rojo
+  get showMinLengthError(): boolean {
+    const length = this.currentLength;
+    return length > 0 && length < this.min_chars;
+  }
+
+  // Determina si el botón debe estar deshabilitado
+  get isSubmitDisabled(): boolean {
+    // Deshabilitado si el formulario no es válido (menos de 20 chars) o no hay puntuación
+    return this.reviewForm.invalid || this.selectedRating <= 0;
+  }
+
 
   close(): void {
     this.closeDialog.emit();
   }
 
   onSubmit(): void {
-    // 1. VALIDACIÓN: Si selectedRating es 0, no guarda (esto también inhabilita el botón)
-    if (this.selectedRating <= 0) {
-        // Esto no debería pasar si el botón está bien deshabilitado, pero es una protección
-        alert('Por favor, selecciona una puntuación antes de guardar.');
-        return;
-    }
-    
-    // 2. Si el formulario es estructuralmente válido (longitud del comentario ok)
-    if (this.reviewForm.valid) { 
-      const formValue = this.reviewForm.value;
-      
+    if (this.reviewForm.valid && this.selectedRating > 0) { 
       const newReview = {
         videoGameId: this.videoGameId, 
         rating: this.selectedRating, 
-        comment: formValue.comment ? formValue.comment.trim() : '', 
-        userName: "sgmoreno.23", // Asume un userId fijo
+        comment: this.reviewForm.value.comment.trim(), 
+        userName: "Usuario_Demo", // Reemplazar por usuario real si aplica
       };
 
       // 3. Llamar al servicio para guardar

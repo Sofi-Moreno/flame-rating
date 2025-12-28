@@ -5,19 +5,34 @@
         
         <label for="comment">Deja tu comentario:</label>
         
+        <!-- Contenedor relativo para posicionar el contador -->
+      <div class="textarea-wrapper">
         <textarea id="comment" 
                   formControlName="comment" 
                   rows="5" 
-                  maxlength="500"
+                  [maxlength]="max_chars"
                   placeholder="Escribe tu opinión aquí...">
         </textarea>
+        
+  <!-- Fila de información añadida justo debajo del textarea -->
+  <div class="footer-info">
+    <div class="error-message">
+      @if (reviewForm.get('comment')?.errors?.['minlength']) {
+        <small>Mínimo 20 caracteres requeridos</small>
+      }
+    </div>
+    
+    <div class="char-counter" [class.limit-reached]="remainingChars === 0">
+      {{ remainingChars }} / {{ max_chars }}
+    </div>
+  </div>
+</div>
   
         <div class="modal-actions">
           <button type="button" class="btn-cancel" (click)="close()">Cancelar</button>
           
-          <button type="submit" class="btn-submit" [disabled]="selectedRating <= 0">Publicar</button> 
+          <button type="submit" class="btn-submit" [disabled]="selectedRating <= 0 || reviewForm.invalid">Publicar</button> 
         </div>
       </form>
-      
     </div>
 </div>

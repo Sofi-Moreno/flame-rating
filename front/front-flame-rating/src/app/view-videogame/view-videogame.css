@@ -67,7 +67,6 @@
   /*transform: translateY(-2px);*/
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* 3. Layout Principal (Estilo Steam)                                         */
 /* -------------------------------------------------------------------------- */
@@ -295,42 +294,44 @@
 
 
 /* -------------------------------------------------------------------------- */
-/* 8. ¡NUEVO! Estilos para el BOTÓN "Dejar Comentario"                        */
+/* 8. Estilos para el BOTÓN "Dejar Comentario"                        */
 /* -------------------------------------------------------------------------- */
-.review-button-placeholder {
-  /* ¡CAMBIOS PARA CENTRAR! */
-  display: block;
-  margin: 0 auto;
-  width: fit-content; /* Se ajusta al texto */
+.review-button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.5rem;
   
-  /* Estilos copiados del main-menu button */
-  font-size: 1rem;
-  font-weight: 600;
-  color: #FFFFFF;
-  background-color: #F2762E; 
-  border: 2px solid #FF9100;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
+}
+
+.review-button-container button {
+background-color: #F2762E;
+color: #FFFFFF;
+font-weight: 600;
+font-size: 1rem; 
+padding: 0.5rem 1.5rem;
+  
+  /* Borde naranja del color que usamos (#F2762E) */
+  border: 2px solid #F2762E;
+  border-radius: 6px;
+  
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.review-button-container button:hover {
+/* Fondo naranja muy tenue (casi transparente) */
+  background-color: rgba(211, 94, 26, 0.944);
   
-  /* Quitamos estilos de placeholder viejos */
-  font-style: normal;
-  
-  /* Transición para el hover/active */
-  transition: background-color 0.2s ease, filter 0.2s ease;
+  /* Resplandor naranja alrededor del botón */
+  box-shadow: 0 0 10px rgba(246, 125, 55, 0.523);
 }
 
-.review-button-placeholder:hover {
-  /* ¡EFECTO HOVER! Se pone más claro */
-  background-color: #FF9100;
+/* Efecto Active: Cuando se presiona */
+.review-button-container button:active {
+transform: scale(0.98);
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
-
-.review-button-placeholder:active {
-  /* ¡EFECTO ACTIVE! Se pone más oscuro */
-  filter: brightness(90%);
-  background-color: #F2762E;
-}
-
 
 /* -------------------------------------------------------------------------- */
 /* 9. TU CÓDIGO DE GALERÍA (MODIFICADO LEVEMENTE)                             */
