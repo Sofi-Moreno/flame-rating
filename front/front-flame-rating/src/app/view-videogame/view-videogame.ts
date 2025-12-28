@@ -10,6 +10,7 @@ import { Review } from '../model/review';
 import { ReviewService } from '../service/review-service';
 import { CreateReview } from '../create-review/create-review';
 import { DeleteVideoGame } from '../delete-video-game/delete-video-game';
+import { DeleteReview } from '../delete-review/delete-review';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../service/auth'; 
 import { User } from '../model/user'; 
@@ -28,7 +29,8 @@ export interface GameImage {
     CommonModule,
     ReactiveFormsModule,
     CreateReview,
-    DeleteVideoGame
+    DeleteVideoGame,
+    DeleteReview
   ],
   templateUrl: './view-videogame.html',
   styleUrl: './view-videogame.css',
@@ -51,6 +53,7 @@ export class ViewVideogame implements OnInit{
   public showReviewModal: boolean = false;
   public updateMode: boolean = false;
   public deleteMode: boolean = false;
+  public reviewDelete: boolean = false;
 
   // --- ¡NUEVA PROPIEDAD! Para encontrar el contenedor de partículas ---
   // Busca el #particleContainer en el HTML
@@ -63,6 +66,7 @@ export class ViewVideogame implements OnInit{
   // Observable que rastrea el estado del usuario.
   currentUser$: Observable<User | null> = this.authService.currentUser;
   public currentUserName: string = 'Invitado';
+  public selectedReviewId: number | null = null;
   
   // Variables que el HTML utiliza (se actualizan en ngOnInit)
   isLoggedIn: boolean = false;
@@ -381,5 +385,56 @@ export class ViewVideogame implements OnInit{
         });
       }
     });
+  }
+
+// 2. Modifica la función para recibir el ID
+openDeleteReviewModal(id: number): void {
+  this.selectedReviewId = id; // Guardamos el ID de la reseña clickeada
+  this.reviewDelete = true;
+}
+
+// 3. Asegúrate de limpiar el ID al cerrar
+closeDeleteReviewModal(): void {
+  this.reviewDelete = false;
+  this.selectedReviewId = null;
+}
+
+  onConfirmReviewDelete(id: number): void {
+    console.log('Eliminando reseña con ID:', id);
+    this.reviewService.deleteReview(id).subscribe({
+      next: () => {
+        this.closeDeleteReviewModal();
+        if (this.videoGame) {
+          this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
+            this.videoGame!.reviews = reviews;
+            this.refreshGameData(); // Para actualizar el promedio de estrellas también
+          });
+        }
+        // Feedback visual con SweetAlert (ya que lo usas en delete)
+          Swal.fire({
+            icon: 'success',
+            title: 'Reseña eliminada',
+            text: 'Tu comentario ha sido eliminado con éxito.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+      },
+      error: (err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar la reseña',
+        });
+      }
+    });
+  }
+
+  // Método auxiliar para refrescar datos del juego (promedio, etc)
+  private refreshGameData(): void {
+    if (this.videoGame) {
+      this.gameService.findById(this.videoGame.id).subscribe(game => {
+        if (game) this.videoGame!.averageRating = game.averageRating;
+      });
+    }
   }
 }

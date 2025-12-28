@@ -42,6 +42,11 @@ public class ReviewService implements IReviewService {
     }  
 
     @Override
+    public void deleteById(Integer id) {
+        iReviewRepository.deleteById(id);
+    }
+
+    @Override
     public Review updateReview(Review review) {
         return iReviewRepository.save(review);
     }

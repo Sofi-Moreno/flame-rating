@@ -1,0 +1,101 @@
+/* 1. Fondo del Modal (Backdrop) */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo negro semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Asegura que esté por encima de todo */
+}
+
+/* 2. Contenido del Modal */
+.modal-content {
+  width: 100%;
+  max-width: 500px; /* Ancho del modal */
+  background-color: #2C2C34; /* Mismo color que el form de crear */
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  
+  /* Animación de entrada (sutil) */
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 3. Encabezado del Modal */
+.modal-header h2 {
+  color: #FFFFFF;
+  margin-top: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* 4. Cuerpo del Modal (Texto) */
+.modal-body {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Color blanco para el texto */
+.modal-body p {
+  color: #FFFFFF;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+/* 6. Contenedor de Botones */
+.modal-actions {
+  display: flex;
+  justify-content: space-between; /* Botones a cada lado */
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* 7. Estilo de Botones (General) */
+.modal-actions button {
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-grow: 1; /* Ocupan el espacio */
+}
+
+/* Botón Cancelar (Rojo) */
+.modal-actions .btn-cancel {
+  background-color: #fb4636;
+  border: 2px solid #fb4636;
+  border-radius: 6px;
+}
+.modal-actions .btn-cancel:hover {
+  background-color: #DA3426;
+  box-shadow: 0 0 10px rgba(240, 121, 112, 0.523);
+}
+
+/* Botón Publicar (Naranja) */
+.modal-actions .btn-delete {
+  background-color: #F2762E;
+  border: 2px solid #F2762E;
+  border-radius: 6px;
+  
+  cursor: pointer;
+  transition: all 0.3s ease; /* Transición suave para el hover */
+}
+.modal-actions .btn-delete:hover {
+  background-color: rgba(211, 94, 26, 0.944);
+  box-shadow: 0 0 10px rgba(246, 125, 55, 0.523);
+}

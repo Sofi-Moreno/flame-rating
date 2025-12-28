@@ -62,12 +62,19 @@
                 
                 <div *ngIf="currentUserName === review.userName" class="edit-buttons-review">
                   <button>Editar</button>
-                  <button>Eliminar</button>
+                  <button (click)="openDeleteReviewModal(review.id)">Eliminar</button>
                 </div>
 
                 <div *ngIf="isAdmin" class="edit-buttons-review">
-                  <button>Eliminar</button>
+                  <button (click)="openDeleteReviewModal(review.id)">Eliminar</button>
                 </div>
+                <app-delete-review 
+                  *ngIf="reviewDelete"
+                  [reviewId]="selectedReviewId"
+                  (closeDialog)="closeDeleteReviewModal()"
+                  (confirmedDelete)="onConfirmReviewDelete($event)">
+                </app-delete-review>
+
                 <!-- Calificaciones de llamas -->
                 <div class="review-rating">
                   <span>Su calificación:</span>

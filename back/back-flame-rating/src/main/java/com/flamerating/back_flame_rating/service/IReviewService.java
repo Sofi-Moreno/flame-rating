@@ -8,6 +8,7 @@ public interface IReviewService {
     List<Review> findAll();
     Review findById(Integer id);
     void deleteByVideoGameId(Integer videoGameId);
+    void deleteById(Integer id);
     Review updateReview(Review review);
     List<Review> findByVideoGameId(Integer videoGameId);
 }
