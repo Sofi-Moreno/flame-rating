@@ -8,17 +8,17 @@ import { News } from '../model/news';
 })
 export class NewsService {
   
-  // URLs alineadas con el Backend corregido:
+  // Rutas base
   private apiList: string = "http://localhost:8080/news"; 
   private apiCreate: string = "http://localhost:8080/create-news";
-  
-  // Esta URL ahora SÍ existe en el backend gracias al cambio anterior
   private apiDelete: string = "http://localhost:8080/delete-news/{id}"; 
-
-  // Estas las dejamos pendientes como las tenías
-  private apiFindById: string = "http://localhost:8080/news-by-id/{id}"; 
+  
+  // --- VERIFICA ESTAS DOS RUTAS ---
+  // Esta debe ser la ruta donde tu backend devuelve UNA sola noticia
+  private apiFindById: string = "http://localhost:8080/news/{id}"; 
+  
+  // Esta debe ser la ruta PUT de tu backend
   private apiUpdate: string = "http://localhost:8080/update-news"; 
-
 
   constructor(private http: HttpClient) { }
 
@@ -31,15 +31,15 @@ export class NewsService {
   }
 
   deleteNews(id: number): Observable<void>{
-    // Reemplaza {id} por el número real y llama a /delete-news/X
     return this.http.delete<void>(this.apiDelete.replace("{id}", id.toString()));
   }
 
-  // Pendientes de implementar en el backend
+  // Buscar por ID (Es vital para precargar el formulario)
   findById(id: number): Observable<News>{
     return this.http.get<News>(this.apiFindById.replace("{id}", id.toString()));
   }
 
+  // Actualizar
   updateNews(news: News): Observable<News>{
     return this.http.put<News>(this.apiUpdate, news);
   }

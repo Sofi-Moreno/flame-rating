@@ -43,15 +43,20 @@ public class NewsService implements INewsService {
     public void deleteNews(Integer id) {
         newsRepository.deleteById(id);
     }
+// Dentro de NewsService.java
 
-    @Override
+@Override
     public News updateNews(News news) {
-        // Para actualizar, primero verificamos que exista
-        // Nota: esto no actualizará la 'publicationDate',
-        // lo cual suele ser lo deseado en una edición.
-        if (newsRepository.existsById(news.getId())) {
-            return newsRepository.save(news);
+        // Verificamos si existe la noticia que queremos editar
+        if (news.getId() != null && newsRepository.existsById(news.getId())) {
+            // Buscamos la original para no perder la fecha de publicación original
+            News existingNews = newsRepository.findById(news.getId()).orElse(null);
+            if (existingNews != null) {
+                news.setPublicationDate(existingNews.getPublicationDate()); // Mantenemos fecha vieja
+                return newsRepository.save(news);
+            }
         }
-        return null; // O manejar el error como prefieras
+        return null;
     }
+
 }

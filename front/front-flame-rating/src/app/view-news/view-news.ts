@@ -1,15 +1,15 @@
-import { Component, OnInit, inject } from '@angular/core'; // Agregamos inject
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Observable } from 'rxjs'; // Importamos Observable
+import { Observable } from 'rxjs';
+import { RouterLink } from '@angular/router'; // IMPORTANTE: Agregado para el botón de editar
 
-// Importamos tus modelos y servicios de autenticación
 import { News } from '../model/news';
 import { NewsService } from '../service/news-service';
 import { DeleteNewsComponent } from '../delete-news/delete-news'; 
-import { AuthService } from '../service/auth'; // Asegúrate que la ruta sea correcta
-import { User } from '../model/user';          // Asegúrate que la ruta sea correcta
+import { AuthService } from '../service/auth'; 
+import { User } from '../model/user';         
 
 @Component({
   selector: 'app-view-news',
@@ -17,55 +17,38 @@ import { User } from '../model/user';          // Asegúrate que la ruta sea cor
   imports: [
     CommonModule,
     HttpClientModule,
-    DeleteNewsComponent
+    DeleteNewsComponent,
+    RouterLink // IMPORTANTE: Agregado aquí
   ],
   templateUrl: './view-news.html',
   styleUrls: ['./view-news.css'],
 })
 export class ViewNews implements OnInit {
   
-  // --- INYECCIÓN DE DEPENDENCIAS (Estilo Moderno) ---
   private authService = inject(AuthService);
-  private newsService = inject(NewsService); // Convertí este también a inject para consistencia
-  private sanitizer = inject(DomSanitizer);  // Convertí este también a inject para consistencia
+  private newsService = inject(NewsService);
+  private sanitizer = inject(DomSanitizer);
 
-  // --- VARIABLES DE DATOS ---
   public newsList: News[] = [];
   public isLoading: boolean = true; 
 
-  // --- VARIABLES DEL MODAL ---
   public showDeleteModal: boolean = false;
   public selectedNewsId: number | null = null;
   public selectedNewsTitle: string = '';
 
-  // --- ESTADO DEL USUARIO (Reactivo) ---
-  // Observable que rastrea el estado (Igual que en tu Header)
   currentUser$: Observable<User | null> = this.authService.currentUser;
-  
-  // Variable que controla el HTML (se actualiza en ngOnInit)
   public isAdmin: boolean = false; 
 
-  constructor() { 
-    // El constructor queda vacío porque usamos inject() arriba.
-    // Es más limpio y sigue el estilo de tu Header.
-  }
+  constructor() { }
 
   ngOnInit(): void {
-    // 1. Cargar las noticias
     this.loadNews();
     
-    // 2. SUSCRIPCIÓN REACTIVA (Igual que en tu Header)
-    // Cada vez que el usuario cambia (login/logout), esto se ejecuta
     this.currentUser$.subscribe(user => {
-      // Si existe usuario, usamos su propiedad isAdmin. Si no, es false.
       this.isAdmin = user ? user.isAdmin : false; 
-      
-      // Opcional: Console log para depurar si lo necesitas
-      // console.log("Usuario actual:", user, "Es admin:", this.isAdmin);
     });
   }
 
-  // --- CARGAR NOTICIAS ---
   loadNews(): void {
     this.isLoading = true; 
     
@@ -86,7 +69,6 @@ export class ViewNews implements OnInit {
     );
   }
 
-  // --- ELIMINAR NOTICIA ---
   openDeleteModal(news: News): void {
     if (news.id) {
       this.selectedNewsId = news.id;
@@ -114,7 +96,6 @@ export class ViewNews implements OnInit {
     );
   }
   
-  // --- UTILIDADES DE IMAGEN/VIDEO ---
   getImages(news: News): string[] {
     if (news.urlImages) return news.urlImages.split(',').map(u => u.trim()).filter(u => u.length > 0);
     return [];

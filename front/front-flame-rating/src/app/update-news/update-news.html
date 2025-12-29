@@ -1,1 +1,56 @@
-<p>update-news works!</p>
+<div class="container">
+  
+  <div *ngIf="!isPreview && !showSuccessModal" class="form-container">
+    <h2>Editar Noticia</h2>
+    
+    <form (ngSubmit)="onReview()">
+      <div class="form-group">
+        <label>Título:</label>
+        <input type="text" [(ngModel)]="news.title" name="title" required class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label>Texto:</label>
+        <textarea [(ngModel)]="news.textNews" name="textNews" required class="form-control" rows="6"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>URLs Imágenes (separadas por coma):</label>
+        <input type="text" [(ngModel)]="news.urlImages" name="urlImages" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label>URLs Videos (separadas por coma):</label>
+        <input type="text" [(ngModel)]="news.urlVideo" name="urlVideo" class="form-control">
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-cancel" routerLink="/view-news">Cancelar</button>
+        
+        <button type="submit" class="btn-next">Revisar Cambios</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="isPreview && !showSuccessModal" class="preview-container">
+    <h2>Vista Previa de Cambios</h2>
+    <div class="preview-box">
+      <h3>{{ news.title }}</h3>
+      <p style="white-space: pre-wrap;">{{ news.textNews }}</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn-cancel" (click)="onEdit()">Seguir Editando</button>
+      <button class="btn-publish" (click)="onUpdate()">Guardar Cambios</button>
+    </div>
+  </div>
+
+  <div *ngIf="showSuccessModal" class="modal-backdrop">
+    <div class="modal-content">
+      <h2>¡Actualizado!</h2>
+      <p>La noticia se ha modificado correctamente.</p>
+      <button class="btn-publish" (click)="finish()">Volver a Noticias</button>
+    </div>
+  </div>
+
+</div>

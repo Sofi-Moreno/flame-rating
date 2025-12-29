@@ -75,7 +75,7 @@ h1 {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* --- NUEVO: Cabecera con Título y Botón --- */
+/* --- Cabecera con Título y Botones --- */
 .news-header-row {
   display: flex;
   justify-content: space-between;
@@ -83,7 +83,6 @@ h1 {
   margin-bottom: 8px;
 }
 
-/* El título ahora está dentro de .news-header-row */
 .news-header-row h2 {
   margin: 0;
   flex: 1;
@@ -96,6 +95,30 @@ h1 {
   color: #ea5200e8;
 }
 
+/* --- Contenedor de Botones Admin (Nuevo) --- */
+.admin-actions {
+  display: flex;
+  gap: 5px; /* Espacio entre el lápiz y la basura */
+  align-items: center;
+}
+
+/* Botón de Editar (Lápiz) - Nuevo */
+.btn-edit {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: all 0.2s;
+  filter: grayscale(100%);
+}
+.btn-edit:hover {
+  filter: grayscale(0%);
+  background-color: rgba(255, 193, 7, 0.2); /* Fondo amarillo suave */
+  transform: scale(1.1);
+}
+
 /* Botón de Borrar (Papelera) */
 .btn-trash {
   background: transparent;
@@ -103,14 +126,13 @@ h1 {
   font-size: 1.5rem;
   cursor: pointer;
   padding: 5px 10px;
-  margin-left: 10px;
   border-radius: 5px;
   transition: all 0.2s;
-  filter: grayscale(100%); /* Gris apagado por defecto */
+  filter: grayscale(100%); 
 }
 .btn-trash:hover {
-  filter: grayscale(0%); /* Color original al hover */
-  background-color: rgba(255, 0, 0, 0.15); /* Fondo rojo suave */
+  filter: grayscale(0%); 
+  background-color: rgba(255, 0, 0, 0.15); 
   transform: scale(1.1);
 }
 
@@ -160,16 +182,12 @@ h1 {
 .carousel-btn {
   position: absolute;
   z-index: 10;
-  
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  /* Colores y efecto de vidrio */
   background-color: rgba(44, 44, 52, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); 
-  
   color: #f0f0f0; 
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
@@ -178,19 +196,13 @@ h1 {
   font-size: 2.2em;
   font-weight: bold;
   cursor: pointer;
-  
   opacity: 0; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); 
-  
   transition: all 0.25s ease-out;
 }
-
-/* Muestra los botones al pasar el mouse sobre el wrapper */
 .carousel-wrapper:hover .carousel-btn {
   opacity: 1;
 }
-
-/* Animación de HOVER */
 .carousel-btn:hover {
   background-color: #fb7500;
   color: #1a1a1a; 
@@ -198,19 +210,14 @@ h1 {
   transform: scale(1.1);
   box-shadow: 0 6px 15px rgba(255, 193, 7, 0.4);
 }
-
-/* Animación de CLIC */
 .carousel-btn:active {
   transform: scale(0.95);
   transition-duration: 0.1s; 
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
-
-/* Posición y ajuste fino de las flechas */
 .carousel-btn.prev {
   left: 10px;
 }
-
 .carousel-btn.next {
   right: 10px;
 }
