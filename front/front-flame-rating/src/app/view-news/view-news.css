@@ -74,17 +74,46 @@ h1 {
 .news-item:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
-.news-item h2 {
-  margin-top: 0;
+
+/* --- NUEVO: Cabecera con Título y Botón --- */
+.news-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 8px;
+}
+
+/* El título ahora está dentro de .news-header-row */
+.news-header-row h2 {
+  margin: 0;
+  flex: 1;
   color: #f0f0f0;
   font-size: 1.8em;
   font-weight: 600;
   transition: color 0.3s ease;
 }
-.news-item h2:hover {
+.news-header-row h2:hover {
   color: #ea5200e8;
 }
+
+/* Botón de Borrar (Papelera) */
+.btn-trash {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border-radius: 5px;
+  transition: all 0.2s;
+  filter: grayscale(100%); /* Gris apagado por defecto */
+}
+.btn-trash:hover {
+  filter: grayscale(0%); /* Color original al hover */
+  background-color: rgba(255, 0, 0, 0.15); /* Fondo rojo suave */
+  transform: scale(1.1);
+}
+
 .publication-date {
   font-size: 0.9em;
   color: #aaaaaa;
