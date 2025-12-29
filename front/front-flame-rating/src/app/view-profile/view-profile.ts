@@ -21,13 +21,17 @@ export class ViewProfile implements OnInit, OnDestroy {
   currentUser: User | null = null;
   isLoading: boolean = true;
 
-  // --- NUEVAS VARIABLES PARA SPRINT 2 ---
+  // --- VARIABLES DE CONTROL ---
   isEditing: boolean = false;      // Controla si se muestra el formulario o los datos
   showDeleteModal: boolean = false; // Controla la visibilidad de la ventana de confirmación
   
   // Objeto temporal para no modificar el usuario original hasta que se guarde
   editData: User = { username: '', email: '', password: '', isAdmin: false };
   
+  // Variables para el cambio de contraseña
+  newPassword: string = '';
+  confirmPassword: string = '';
+
   message: string = '';
   messageType: 'success' | 'error' | '' = '';
 
@@ -54,12 +58,20 @@ export class ViewProfile implements OnInit, OnDestroy {
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
     this.message = '';
+    this.clearPasswordFields();
     if (this.isEditing) {
       this.resetEditData();
     }
   }
 
-  
+  /**
+   * Limpia los campos de contraseña
+   */
+  private clearPasswordFields(): void {
+    this.newPassword = '';
+    this.confirmPassword = '';
+  }
+
   /**
    * Copia los datos actuales al objeto temporal de edición.
    */
@@ -67,7 +79,7 @@ export class ViewProfile implements OnInit, OnDestroy {
     if (this.currentUser) {
       this.editData = { 
         ...this.currentUser, 
-        password: '' // No mostramos la contraseña actual por seguridad
+        password: '' // Inicialmente vacío
       };
     }
   }
@@ -78,11 +90,37 @@ export class ViewProfile implements OnInit, OnDestroy {
   onUpdate(): void {
     if (!this.currentUser?.idUser) return;
 
+    // Validación de contraseñas si el usuario intenta cambiarlas
+    if ( this.newPassword || this.confirmPassword) {
+      
+      // 1. Verificar que se hayan llenado los campos necesarios
+      if ( !this.newPassword || !this.confirmPassword) {
+        this.message = 'Para cambiar la contraseña, debe completar los tres campos de seguridad.';
+        this.messageType = 'error';
+        return;
+      }
+
+      // 2. Verificar que la nueva contraseña coincida con la confirmación
+      if (this.newPassword !== this.confirmPassword) {
+        this.message = 'La nueva contraseña y su confirmación no coinciden.';
+        this.messageType = 'error';
+        return;
+      }
+
+      // 3. Asignar la nueva contraseña al objeto que se enviará
+      this.editData.password = this.newPassword;
+    } else {
+      // Si no hay intención de cambiar contraseña, aseguramos que viaje vacía 
+      // para que el backend sepa que no debe actualizarla.
+      this.editData.password = '';
+    }
+
     this.authService.updateUser(this.currentUser.idUser, this.editData).subscribe({
       next: (updatedUser) => {
         this.isEditing = false;
         this.message = 'Perfil actualizado correctamente.';
         this.messageType = 'success';
+        this.clearPasswordFields();
       },
       error: (err) => {
         this.message = err.error || 'Error al actualizar el perfil.';
@@ -100,7 +138,6 @@ export class ViewProfile implements OnInit, OnDestroy {
     this.authService.deleteUser(this.currentUser.idUser).subscribe({
       next: () => {
         this.showDeleteModal = false;
-        // El AuthService ya redirige al login al hacer logout interno
       },
       error: (err) => {
         this.showDeleteModal = false;

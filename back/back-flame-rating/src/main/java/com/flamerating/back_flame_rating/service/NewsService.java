@@ -38,9 +38,9 @@ public class NewsService implements INewsService {
         return optionalNews.orElse(null); // Retorna la noticia o null si no se encuentra
     }
 
-    @Override
+
+ @Override
     public void deleteNews(Integer id) {
-        // Implementación correcta de deleteNews
         newsRepository.deleteById(id);
     }
 

@@ -1,0 +1,97 @@
+/* 1. Fondo del Modal (Backdrop) */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 2. Contenido del Modal */
+.modal-content {
+  width: 100%;
+  max-width: 500px;
+  background-color: #2C2C34;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 3. Encabezado */
+.modal-header h2 {
+  color: #FFFFFF;
+  margin-top: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* 4. Cuerpo */
+.modal-body {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.modal-body p {
+  color: #FFFFFF;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.warning-text {
+    color: #fb4636 !important; /* Texto rojo para advertencia */
+    font-size: 0.9rem !important;
+}
+
+/* 6. Botones */
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-actions button {
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-grow: 1;
+}
+
+/* Cancelar */
+.modal-actions .btn-cancel {
+  background-color: #fb4636; /* Rojo */
+  border: 2px solid #fb4636;
+}
+.modal-actions .btn-cancel:hover {
+  background-color: #DA3426;
+  box-shadow: 0 0 10px rgba(240, 121, 112, 0.5);
+}
+
+/* Eliminar */
+.modal-actions .btn-delete {
+  background-color: #F2762E; /* Naranja */
+  border: 2px solid #F2762E;
+}
+.modal-actions .btn-delete:hover {
+  background-color: rgba(211, 94, 26, 0.94);
+  box-shadow: 0 0 10px rgba(246, 125, 55, 0.5);
+}
