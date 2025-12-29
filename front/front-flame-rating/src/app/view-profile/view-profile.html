@@ -47,6 +47,33 @@
                     >
                 </div>
 
+                <!-- SECCIÓN DE CAMBIO DE CONTRASEÑA (Solo visible en modo edición) -->
+                <ng-container *ngIf="isEditing">
+
+                    <!-- Nueva Contraseña -->
+                    <div class="input-group">
+                        <label for="new-password">Nueva contraseña</label>
+                        <input 
+                            id="new-password" 
+                            type="password" 
+                            [(ngModel)]="newPassword"
+                            placeholder="Mínimo 8 caracteres"
+                            class="profile-input editable-input"
+                        >
+                    </div>
+
+                    <!-- Confirmar Nueva Contraseña -->
+                    <div class="input-group">
+                        <label for="confirm-password">Confirmar nueva contraseña</label>
+                        <input 
+                            id="confirm-password" 
+                            type="password" 
+                            [(ngModel)]="confirmPassword"
+                            placeholder="Repita la nueva contraseña"
+                            class="profile-input editable-input"
+                        >
+                    </div>
+                </ng-container>
 
                 <!-- Campo de Rol (solo lectura siempre) -->
                 <div class="input-group" *ngIf="!isEditing">
