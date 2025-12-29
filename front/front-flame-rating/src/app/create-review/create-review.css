@@ -10,6 +10,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(2px);
 }
 
 /* 2. Contenido del Modal */
@@ -21,6 +22,7 @@
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   animation: fadeIn 0.3s ease-out;
+  position: relative; /* Importante para contextos de posición */
 }
 
 @keyframes fadeIn {
@@ -28,6 +30,25 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- ESTILOS DE TÍTULOS (NUEVO) --- */
+.modal-header-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: center; /* El título principal se ve mejor centrado */
+}
+
+.rating-subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #FFFFFF; /* Color naranja temático */
+  margin-bottom: 0.8rem;
+  text-align: left; /* Alineado a la izquierda junto con las flamas */
+}
+
+/* --- FORMULARIO Y TEXTOS --- */
 form {
   display: flex;
   flex-direction: column;
@@ -35,14 +56,101 @@ form {
 }
 
 form label {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 600;
   color: #FFFFFF;
-  margin-bottom: 1.5rem;
-  text-align: center;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  text-align: left; /* Alineado a la izquierda para consistencia */
 }
 
-/* 5. Cuadro de Texto (Textarea) */
+/* --- LÓGICA DE FLAMITAS (REEMPLAZO TOTAL) --- */
+
+.rating-group {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+/* Wrapper para controlar el posicionamiento de las partículas */
+.flame-interaction-wrapper {
+  position: relative; 
+  width: 100%;
+  min-height: 50px; /* Asegura espacio para las flamas */
+}
+
+/* Contenedor de las imágenes (Flamas) */
+.flame-rating-input {
+  display: flex;
+  justify-content: flex-start; /* Alineado a la IZQUIERDA como pediste */
+  align-items: center;
+  gap: 15px; /* Espacio entre flamas */
+  position: relative;
+  z-index: 10; /* Por encima de las partículas */
+}
+
+/* Estilo de la imagen de la flama individual */
+.flame-rating-input img {
+  width: 35px; /* TAMAÑO AJUSTADO: Más pequeño y estético */
+  height: auto;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote suave */
+  
+  /* Estado inactivo (Gris) */
+  filter: grayscale(100%) brightness(0.8);
+  opacity: 0.5;
+}
+
+/* Hover sobre la flama individual */
+.flame-rating-input img:hover {
+  transform: scale(1.2) translateY(-3px); /* Crece y sube un poco */
+  filter: grayscale(0%); /* Recupera color al pasar el mouse */
+  opacity: 0.8;
+}
+
+/* Estado ACTIVO (Seleccionado o Hovered por lógica TS) */
+.flame-rating-input img.active {
+  filter: none; /* Color original completo */
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* --- PARTÍCULAS (EFECTO LLUVIA) --- */
+.particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Click atraviesa */
+  z-index: 5; /* Detrás de las flamas interactivas */
+  overflow: visible;
+}
+
+/* Clase generada dinámicamente por el TS */
+.flame-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: #F2762E;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #ff9d66;
+  opacity: 1;
+  /* Animación de caída */
+  animation: particleDrop 1s ease-out forwards;
+}
+
+@keyframes particleDrop {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(60px) scale(0); /* Caen 60px y desaparecen */
+    opacity: 0;
+  }
+}
+
+/* --- TEXTAREA Y FOOTER (INTOCABLE PERO ESTILIZADO) --- */
 .textarea-wrapper {
   width: 100%;
 }
@@ -57,10 +165,10 @@ textarea {
   color: #FFFFFF;
   box-sizing: border-box; 
   resize: none; 
-  min-height: 150px;
-  font-family: 'Inter', sans-serif;
+  min-height: 120px;
+  font-family: sans-serif;
   transition: all 0.2s ease;
-  display: block; /* Evita espacios extra debajo */
+  display: block; 
 }
 
 textarea:focus {
@@ -69,32 +177,30 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(242, 118, 46, 0.3);
 }
 
-/* Fila de información ajustada */
 .footer-info {
   display: flex;
-  justify-content: space-between; /* El error a la izquierda, contador a la derecha */
-  align-items: flex-start; /* Alineación arriba para que no floten en el medio si el error crece */
+  justify-content: space-between; 
+  align-items: flex-start; 
   margin-top: 8px;
   width: 100%;
-  min-height: 1.2rem; /* Reserva el espacio para que no "salte" el modal al aparecer el error */
+  min-height: 1.2rem; 
 }
 
 .error-message {
   color: #fb4636;
-  font-size: 1rem; /* Un poco más pequeño para que sea elegante */
+  font-size: 0.9rem; 
   font-weight: 500;
-  flex: 1; /* Permite que el error ocupe el espacio disponible */
+  flex: 1; 
   margin-right: 10px;
 }
 
-/* Contador siempre a la derecha */
 .char-counter {
   font-size: 0.75rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.5);
   transition: color 0.3s ease;
-  margin-left: auto; /* EMPUJA el contador a la derecha incluso si no hay mensaje de error */
-  white-space: nowrap; /* Evita que el "0 / 250" se rompa en dos líneas */
+  margin-left: auto; 
+  white-space: nowrap; 
 }
 
 .char-counter.limit-reached {
@@ -107,7 +213,7 @@ textarea::placeholder {
   opacity: 0.6;
 }
 
-/* 6. Contenedor de Botones */
+/* --- ACCIONES DEL MODAL --- */
 .modal-actions {
   display: flex;
   justify-content: space-between;
@@ -146,12 +252,10 @@ textarea::placeholder {
 }
 
 .modal-actions button:disabled {
-  background-color: #555;
-  color: #999;
-  border: 2px solid #555;
-  box-shadow: 0 0 10px #1E1E22;
-  border-radius: 6px;
+  background-color: #444;
+  color: #888;
+  border-color: #444;
   cursor: not-allowed;
   opacity: 0.7;
-  pointer-events: auto;
+  box-shadow: none;
 }

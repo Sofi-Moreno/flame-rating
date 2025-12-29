@@ -1,7 +1,34 @@
 <div class="modal-backdrop" (click)="close()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     
+    <!-- 1. Título de la ventana -->
+    <h2 class="modal-header-title">Comparte tu opinión</h2>
+
     <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()">
+      
+      <!-- 2. Sección de calificación (Las Flamitas) -->
+      <div class="rating-group">
+        <h3 class="rating-subtitle">Deja tu calificación</h3>
+        
+        <div class="flame-interaction-wrapper">
+          <!-- Escenario para las partículas de la lluvia de fuego -->
+          <div class="particle-container" #particleContainer></div>
+
+          <div class="flame-rating-input">
+            <img 
+              *ngFor="let i of [1, 2, 3, 4, 5]" 
+              src="/flame-rating-images/flame-calification.png" 
+              alt="flame rating"
+              [class.active]="i <= (hoveredRating || selectedRating)"
+              (click)="rate(i)"
+              (mouseover)="handleMouseOver(i)"
+              (mouseleave)="handleMouseLeave()"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Contenedor de texto (Intocable) -->
       <label for="comment">Deja tu comentario:</label>
       <div class="textarea-wrapper">
         <textarea id="comment" 
@@ -13,7 +40,7 @@
         
         <div class="footer-info">
           <div class="error-message">
-            <small *ngIf="reviewForm.get('comment')?.touched && reviewForm.get('comment')?.errors?.['minlength']">
+            <small *ngIf="reviewForm.get('comment')?.dirty && reviewForm.get('comment')?.errors?.['minlength']">
               Mínimo {{ min_chars }} caracteres requeridos
             </small>
           </div>
@@ -24,9 +51,9 @@
         </div>
       </div>
 
+      <!-- 4. Acciones (Intocable) -->
       <div class="modal-actions">
         <button type="button" class="btn-cancel" (click)="close()">Cancelar</button>
-        <!-- CORRECCIÓN: Quitamos el (click) del botón submit para evitar doble trigger -->
         <button type="submit" 
                 class="btn-submit" 
                 [disabled]="selectedRating <= 0 || reviewForm.invalid">
