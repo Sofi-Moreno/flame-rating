@@ -67,13 +67,17 @@ export class ViewProfile implements OnInit, OnDestroy {
   }
   
 
-    getProfileImageUrl(): string {
+  getProfileImageUrl(): string {
+    // Si hay una previsualización (archivo recién seleccionado), mostrarla
     if (this.imagePreview) return this.imagePreview;
     
+    // Si el usuario tiene una imagen en la DB (ej: /flame-rating-images/foto.jpg)
     if (this.currentUser?.profileImage) {
-      return this.currentUser.profileImage;
+      // Apuntamos al puerto 8080 donde Spring sirve la imagen en tiempo real
+      return `http://localhost:8080${this.currentUser.profileImage}`;
     }
     
+    // Imagen por defecto
     return 'flame-rating-images/perfil.png'; 
   }
 
