@@ -9,6 +9,7 @@ import { ViewVideogame } from './view-videogame/view-videogame';
 import { CreateVideogame } from './create-videogame/create-videogame';
 import { CreateNewsComponent } from './create-news/create-news'; 
 import { UpdateVideogame } from './update-videogame/update-videogame';
+import { UpdateNewsComponent } from './update-news/update-news';
 
 
 export const routes: Routes = [
@@ -19,5 +20,7 @@ export const routes: Routes = [
     { path: 'videogame/:id', component: ViewVideogame},
     {path: 'create-videogame', component: CreateVideogame},
     { path: 'create-news', component: CreateNewsComponent },
-    { path: 'update-videogame/:id', component: UpdateVideogame }
+    { path: 'update-videogame/:id', component: UpdateVideogame },
+    { path: 'update-news/:id', component: UpdateNewsComponent }
+
 ];

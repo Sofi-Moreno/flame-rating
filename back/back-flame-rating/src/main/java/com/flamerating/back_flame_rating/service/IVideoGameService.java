@@ -11,4 +11,5 @@ public interface IVideoGameService {
     VideoGame findById(Integer id);
     void deleteVideoGame(Integer id);
     VideoGame updateVideoGame(VideoGame videoGame);
+    void updateAverageRating(Integer id, Double rating);
 }

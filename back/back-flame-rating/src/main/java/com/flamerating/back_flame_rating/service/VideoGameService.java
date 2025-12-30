@@ -52,4 +52,16 @@ public class VideoGameService implements IVideoGameService {
         return videoGameRepository.save(videoGame);
     }
 
+    @Override
+    public void updateAverageRating(Integer id, Double rating) {
+        // Buscamos el videojuego por ID
+        VideoGame game = videoGameRepository.findById(id)
+            .orElseThrow();
+
+        // Solo modificamos el campo del promedio
+        game.setAverageRating(rating);
+
+        // Guardamos los cambios en la BD
+        videoGameRepository.save(game);
+    }
 }

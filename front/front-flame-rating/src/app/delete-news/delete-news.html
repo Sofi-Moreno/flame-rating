@@ -1,4 +1,4 @@
-<div class="delete-backdrop" (click)="close()">
+<div class="modal-backdrop" (click)="close()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     
     <div class="modal-header">
@@ -7,7 +7,8 @@
 
     <div class="modal-body">
       <p>
-        ¿Estás seguro de que deseas eliminar la reseña?
+        ¿Estás seguro de que deseas eliminar la noticia 
+        <strong>"{{ newsTitle }}"</strong>?
       </p>
       <p class="warning-text">Esta acción no se puede deshacer.</p>
     </div>
@@ -17,7 +18,7 @@
         Cancelar
       </button>
       <button type="button" class="btn-delete" (click)="onDelete()">
-        Eliminar Reseña
+        Eliminar Noticia
       </button>
     </div>
 

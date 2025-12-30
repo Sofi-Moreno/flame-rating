@@ -10,7 +10,6 @@
 
       <div class="left-column">
 
-        <!-- Inicio gallery-container -->
         <div class="gallery-container">
             <div class="main-media-display"> 
                 <iframe 
@@ -48,10 +47,7 @@
                     <img [src]="img.thumbnailSrc" [alt]="img.alt">
                 </div>
             </div>
-        </div> <!-- Fin de gallery-container -->
-
-        <!-- Las reseñas van en la columna izquierda, debajo de la galería. -->
-        <section class="game-review-section">
+        </div> <section class="game-review-section">
           <h3>Reseñas de Usuarios</h3>
           <div *ngIf="!videoGame.reviews || videoGame.reviews.length === 0" class="no-reviews">
             <p>Este juego aún no tiene reseñas. ¡Sé el primero en dejar una!</p>
@@ -61,19 +57,25 @@
                 <h4>{{review.userName}}</h4>
                 
                 <div *ngIf="currentUserName === review.userName" class="edit-buttons-review">
-                  <button (click)="openUpdateReviewModal(review.id)">Editar</button>
-                  <button (click)="openDeleteReviewModal(review.id)">Eliminar</button>
+                  <button class="icon-btn edit-btn" (click)="openUpdateReviewModal(review.id)" title="Editar">
+                      <img src="/flame-rating-images/editar.png" alt="Editar">
+                  </button>
+                  <button class="icon-btn delete-btn" (click)="openDeleteReviewModal(review.id)" title="Eliminar">
+                      <img src="/flame-rating-images/papelera-de-reciclaje.png" alt="Eliminar">
+                  </button>
                 </div>
 
                 <div *ngIf="isAdmin" class="edit-buttons-review">
-                  <button (click)="openDeleteReviewModal(review.id)">Eliminar</button>
+                  <button class="icon-btn delete-btn" (click)="openDeleteReviewModal(review.id)" title="Eliminar">
+                      <img src="/flame-rating-images/papelera-de-reciclaje.png" alt="Eliminar">
+                  </button>
                 </div>
 
                 <app-update-review 
                   *ngIf="reviewUpdate"
                   [reviewId]="selectedReviewId!"
                   [currentComment]="selectedReviewComment"
-                  [selectedRating]="selectedReviewRating"
+                  [selectedRating]="selectedReviewRating ?? 0" 
                   [userName]="currentUser"
                   (closeDialog)="closeUpdateReviewModal()"
                   (reviewUpdated)="onConfirmReviewUpdate()"> 
@@ -86,14 +88,9 @@
                   (confirmedDelete)="onConfirmReviewDelete($event)">
                 </app-delete-review>
 
-                <!-- Calificaciones de llamas -->
                 <div class="review-rating">
                   <span>Su calificación:</span>
                   <div class="flame-display">
-                    <!-- 
-                      Usamos la nueva función 'createArrayFromNumber' 
-                      para repetir la imagen 'review.rating' veces 
-                    -->
                     <img 
                       *ngFor="let i of createArrayFromNumber(review.rating)"
                       src="/flame-rating-images/flame-calification.png"
@@ -107,13 +104,10 @@
                 </p>
               </div>
           </div>
-        </section> <!-- Fin de game-review-section -->
-      </div>
+        </section> </div>
 
 
-      <!-- cuadro de info de videogame -->
       <div class="presentationVideogame">
-          <!-- Inicio de info-scroll-area para scrollear por la info del videogame-->
           <div class="info-scroll-area">
             <img class="info-box-image" [src]="imageList[0].largeSrc" [alt]="videoGame.title">
             
@@ -122,7 +116,6 @@
             
             <h3>Detalles del Juego</h3>
             <ul class="game-metadata details-grid">
-              <!-- Fila 1 -->
               <li class="grid-item">
                 <strong>Fecha de Estreno:</strong> 
                 <span>{{videoGame.releaseDate}}</span>
@@ -132,7 +125,6 @@
                 <span>{{ videoGame.developer }}</span>
               </li>
         
-              <!-- Fila 2 -->
               <li class="grid-item">
                 <strong>Categoría:</strong> 
                 <span class="value-orange">{{ videoGame.category }}</span>
@@ -142,7 +134,6 @@
                 <span class="value-orange">{{ videoGame.genre.join(', ') }}</span>
               </li>
         
-              <!-- Fila 3 (Full Width) -->
               <li class="grid-item full-width">
                 <strong>Plataformas:</strong>
                 <ul class="platform-tags-list">
@@ -150,37 +141,17 @@
                 </ul>
               </li>
             </ul>
-          </div> <!-- Fin de info-scroll-area -->
-
-          <div class="review-action-area">
-            
-            <!-- "Escenario" para las partículas al dar a alguna flama de reseña -->
-            <div class="particle-container" #particleContainer></div>
+          </div> <div class="review-action-area">
 
             <div class="average-rating-container">
               <div class="rating">
-                <!-- El promedio se actualiza desde el objeto videoGame -->
                 <span>{{ videoGame.averageRating }}</span>
               </div>
               <strong>Calificación promedia</strong>
             </div>
             
-            <div *ngIf="!isAdmin" class="flame-rating-input">
-              <img 
-                *ngFor="let i of [1, 2, 3, 4, 5]" 
-                src="/flame-rating-images/flame-calification.png" 
-                alt="flame rating"
-                [class.active]="i <= (hoveredRating || selectedRating)"
-                (click)="rate(i)"
-                (mouseover)="handleMouseOver(i)"
-                (mouseleave)="handleMouseLeave()"
-              >
-            </div>
-            
-            <div *ngIf="videoGame && !showReviewModal && !isAdmin && selectedRating > 0" class="review-button-container">
-                <button (click)="openReviewModal()">
-                 Dejar Comentario
-                </button>
+            <div *ngIf="videoGame && !showReviewModal && !isAdmin" class="review-button-container">
+                <button (click)="openReviewModal()"> Dejar Reseña </button>
             </div>
 
             <app-create-review 
@@ -192,12 +163,8 @@
                 (reviewSaved)="closeReviewModal(); reviewSaved()"
             ></app-create-review>
       
-      </div> <!-- Fin de presentationVideogame -->
-    
-    </div> <!-- Fin de main-content-flex -->
-    </div>  
+      </div> </div> </div>  
   </section> 
-
 </div>
 
 <app-delete-video-game 

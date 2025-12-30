@@ -12,7 +12,22 @@
     <div *ngIf="newsList.length > 0">
       <article class="news-item" *ngFor="let news of newsList">
         
-        <h2>{{ news.title }}</h2>
+        <div class="news-header-row">
+          <h2>{{ news.title }}</h2>
+          
+          <div class="admin-actions">
+            
+            <button class="btn-edit" *ngIf="isAdmin" [routerLink]="['/update-news', news.id]" title="Editar noticia">
+              ✏️
+            </button>
+
+            <button class="btn-trash" *ngIf="isAdmin" (click)="openDeleteModal(news)" title="Eliminar noticia">
+              🗑️
+            </button>
+            
+          </div>
+        </div>
+
         <p class="publication-date">
           Publicado: {{ news.publicationDate | date:'d MMMM, yyyy' }}
         </p>
@@ -64,4 +79,12 @@
 
   </div>
   
+  <app-delete-news
+    *ngIf="showDeleteModal"
+    [newsId]="selectedNewsId!"
+    [newsTitle]="selectedNewsTitle"
+    (closeDialog)="closeDeleteModal()"
+    (confirmedDelete)="handleDeleteConfirmed($event)">
+  </app-delete-news>
+
 </div>

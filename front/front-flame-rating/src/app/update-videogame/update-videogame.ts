@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError, debounceTime, switchMap, first, delay } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-update-videogame',
@@ -32,9 +33,10 @@ export class UpdateVideogame implements OnInit{
   videoGameForm!: FormGroup;
   gameId!: number;
   mainImageName: string = 'Cambiar imagen principal...';
-  extraImagesName: string = 'Cambiar imágenes extra...';
+  extraImagesName: string = 'Agregar imagenes extra...';
   public currentMainImage: string = '';
   public currentExtraImages: string[] = [];
+  public newExtraImagesPreviews: string[] = [];
   youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
   videoGame: VideoGame | null = null;
   generosLista = [
@@ -44,6 +46,7 @@ export class UpdateVideogame implements OnInit{
   consolasLista = [
     'Xbox', 'Nintendo Switch 1', 'Nintendo Switch 2', 'PlayStation 5', 'PC'
   ];
+
 
   get title() { return this.videoGameForm.get('title'); }
   get developer() { return this.videoGameForm.get('developer'); }
@@ -77,48 +80,6 @@ export class UpdateVideogame implements OnInit{
     });
   }
 
-  private loadGameData() {
-    this.videogameService.findById(this.gameId).subscribe(game => {
-      // 1. Separar las URLs que vienen en el string (ej: "url1,url2,url3")
-      const imagesArray = game.urlImages ? game.urlImages.split(',') : [];
-      
-      // 2. La primera suele ser la principal, las demás las extras
-      this.currentMainImage = imagesArray[0] || '';
-      this.currentExtraImages = imagesArray.slice(1);
-
-      // 3. Quitar el validador 'required' de la imagen
-      // Como ya tiene imagen, no es obligatorio subir una nueva
-      this.videoGameForm.get('image')?.clearValidators();
-      this.videoGameForm.get('image')?.updateValueAndValidity();
-      
-      // MAPEAMOS GÉNEROS: El string "Accion,Terror" se vuelve objeto {Accion: true, Terror: true}
-      const genresMap: any = {};
-      this.generosLista.forEach(g => {
-        genresMap[g] = game.genre.split(',').includes(g);
-      });
-
-      // MAPEAMOS CONSOLAS
-      const consolesMap: any = {};
-      this.consolasLista.forEach(c => {
-        consolesMap[c] = game.platform.split(',').includes(c);
-      });
-
-      // Precargamos el formulario
-      this.videoGameForm.patchValue({
-        title: game.title,
-        developer: game.developer,
-        synopsis: game.synopsis,
-        releaseDate: game.releaseDate,
-        category: game.category,
-        youtubeLink: game.urlTrailer,
-        genres: genresMap,
-        consoles: consolesMap
-      });
-      
-      this.cdr.detectChanges();
-    });
-  }
-
   onSubmit(): void {
     this.videoGameForm.markAllAsTouched();
     if (this.videoGameForm.invalid) {
@@ -126,12 +87,19 @@ export class UpdateVideogame implements OnInit{
       return;
     }
     const formData = this.createFormData();
-    this.videogameService.saveVideogame(formData).pipe(
+    this.videogameService.updateVideoGame(formData).pipe(
         delay(1000) 
     ).subscribe({
         next: (videojuegoEditado) => {
           console.log('¡Videojuego editado con éxito!', videojuegoEditado);
           this.router.navigate(['/videogame', videojuegoEditado.id]); 
+          Swal.fire({
+            icon: 'success',
+            title: 'Videojuego Editado',
+            text: 'El videojuego ha sido editado con éxito.',
+            timer: 2000,
+            showConfirmButton: false
+          });
         },
         error: (err) => {
           console.error('Error al editar el videojuego', err);
@@ -165,42 +133,6 @@ export class UpdateVideogame implements OnInit{
     };
   }
 
-  // --- ¡¡¡FUNCIÓN onFileChange MODIFICADA!!! ---
-  onFileChange(event: Event, controlName: string) {
-    const input = event.target as HTMLInputElement;
-    let fileToStore = null;
-
-    if (input.files && input.files.length > 0) {
-      if (controlName === 'images') {
-        // --- LÓGICA PARA MÚLTIPLES ARCHIVOS ---
-        fileToStore = input.files;
-        // ¡NUEVO! Actualiza el texto del label
-        this.extraImagesName = `${input.files.length} archivos seleccionados`;
-      
-      } else {
-        // --- LÓGICA PARA UN SOLO ARCHIVO ---
-        fileToStore = input.files[0];
-        // ¡NUEVO! Actualiza el texto del label
-        this.mainImageName = input.files[0].name; 
-      }
-    } else {
-      fileToStore = null;
-      if (controlName === 'images') {
-        this.extraImagesName = 'Seleccionar archivos...';
-      } else {
-        this.mainImageName = 'Seleccionar archivo...';
-      }
-    }
-
-    // "Parcheamos" el valor (el archivo o null) en el FormGroup
-    this.videoGameForm.patchValue({
-      [controlName]: fileToStore
-    });
-    // Marcamos como "tocado" para que muestre errores si es necesario
-    this.videoGameForm.get(controlName)?.markAsTouched();
-    
-    console.log(`Archivo guardado en el formControl '${controlName}':`, fileToStore);
-  }
  
   // --- ¡NUEVA FUNCIÓN! ---
   public openDatePicker(event: Event): void {
@@ -237,58 +169,122 @@ export class UpdateVideogame implements OnInit{
     };
   }
 
+  removeExtraImage(index: number) {
+    this.currentExtraImages.splice(index, 1);
+    this.videoGameForm.markAsDirty(); // <--- Habilita el botón al borrar
+    this.cdr.detectChanges();
+  }
+
+  // 2. Ajuste en loadGameData para cargar las URLs correctamente
+  private loadGameData() {
+    this.videogameService.findById(this.gameId).subscribe(game => {
+      this.videoGame = game;
+      const imagesArray = game.urlImages ? game.urlImages.split(',') : [];
+      
+      this.currentMainImage = imagesArray[0] || '';
+      this.currentExtraImages = imagesArray.slice(1);
+
+      // Precargamos el formulario...
+      this.videoGameForm.patchValue({
+        title: game.title,
+        developer: game.developer,
+        synopsis: game.synopsis,
+        releaseDate: game.releaseDate,
+        category: game.category,
+        youtubeLink: game.urlTrailer,
+        genres: this.mapToCheckboxGroup(this.generosLista, game.genre),
+        consoles: this.mapToCheckboxGroup(this.consolasLista, game.platform)
+      });
+      
+      this.videoGameForm.get('image')?.clearValidators();
+      this.videoGameForm.get('image')?.updateValueAndValidity();
+      this.cdr.detectChanges();
+    });
+  }
+
+  // Auxiliar para mapear strings a checkboxes
+  private mapToCheckboxGroup(lista: string[], value: string) {
+    const map: any = {};
+    lista.forEach(item => {
+      map[item] = value.split(',').includes(item);
+    });
+    return map;
+  }
+
   private createFormData(): FormData {
     const formData = new FormData();
     const formValue = this.videoGameForm.value;
 
-    const selectedGenres = Object.keys(formValue.genres)
-      .filter(key => formValue.genres[key] === true) 
-      .join(','); 
-
-    const selectedPlatforms = Object.keys(formValue.consoles) 
-      .filter(key => formValue.consoles[key] === true)
-      .join(',');
+    // IMPORTANTE: Unimos las URLs de las imágenes que se quedaron (las que no borraste)
+    const remainingImages = [];
+    
+    // Si NO hay foto principal nueva, la vieja sigue siendo la primera
+    if (!this.videoGameForm.get('image')?.value && this.currentMainImage) {
+      remainingImages.push(this.currentMainImage);
+    }
+    
+    // Añadimos las extras que no fueron eliminadas
+    remainingImages.push(...this.currentExtraImages);
 
     const videoGameData = {
+      id: this.gameId, // <--- REVISA QUE ESTO NO SEA NULL
       title: formValue.title,
       releaseDate: formValue.releaseDate,
       synopsis: formValue.synopsis,
       urlTrailer: formValue.youtubeLink, 
       developer: formValue.developer,
       category: formValue.category,
-      genre: selectedGenres,     
-      platform: selectedPlatforms, 
-      averageRating: 0          
+      genre: Object.keys(formValue.genres).filter(k => formValue.genres[k]).join(','),
+      platform: Object.keys(formValue.consoles).filter(k => formValue.consoles[k]).join(','),
+      urlImages: remainingImages.join(','), // Enviamos la lista de URLs "viejas"
+      averageRating: this.videoGame?.averageRating || 0
     };
 
     formData.append('videoGame', JSON.stringify(videoGameData));
 
-    const mainImageFile = this.videoGameForm.get('image')?.value;
-    if (mainImageFile) {
-      formData.append(
-        'mainImage', 
-        mainImageFile, 
-        mainImageFile.name
-      );
+    // Manejo de archivos nuevos
+    const mainFile = this.videoGameForm.get('image')?.value;
+    if (mainFile instanceof File) {
+      formData.append('mainImage', mainFile, mainFile.name);
     }
 
-    const extraImagesFiles = this.videoGameForm.get('images')?.value;
-    if (extraImagesFiles) {
-      for (let i = 0; i < extraImagesFiles.length; i++) {
-        formData.append(
-          'images', 
-          extraImagesFiles[i],
-          extraImagesFiles[i].name
-        );
+    const extraFiles = this.videoGameForm.get('images')?.value;
+    if (extraFiles) {
+      for (let i = 0; i < extraFiles.length; i++) {
+        formData.append('images', extraFiles[i], extraFiles[i].name);
       }
     }
-    
-    console.log('--- FormData a enviar ---');
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
-    console.log('-------------------------');
+    console.log("iD del videojuego en FormData:", videoGameData.id);
 
     return formData;
   }
+
+  // Agrega esta variable arriba
+public newMainPreview: string | null = null;
+
+onFileChange(event: Event, controlName: string) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    this.videoGameForm.get(controlName)?.setValue(input.files);
+    this.videoGameForm.markAsDirty();
+
+    if (controlName === 'image') {
+      this.mainImageName = input.files[0].name;
+      // Previsualización de la nueva imagen principal
+      const reader = new FileReader();
+      reader.onload = (e: any) => this.newMainPreview = e.target.result;
+      reader.readAsDataURL(input.files[0]);
+    } 
+    else if (controlName === 'images') {
+      this.extraImagesName = `${input.files.length} archivos seleccionados`;
+      this.newExtraImagesPreviews = [];
+      Array.from(input.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e: any) => this.newExtraImagesPreviews.push(e.target.result);
+        reader.readAsDataURL(file);
+      });
+    }
+  }
+}
+
 }
