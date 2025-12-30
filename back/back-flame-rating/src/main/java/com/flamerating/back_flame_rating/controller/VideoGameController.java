@@ -159,45 +159,60 @@ public class VideoGameController {
 
             if (existing == null) return ResponseEntity.status(404).body("Juego no encontrado");
 
-            // 1. Recuperar las URLs actuales que envió el Front (las que no se borraron)
-            List<String> currentUrls = new ArrayList<>();
-            if (gameData.getUrlImages() != null && !gameData.getUrlImages().isBlank()) {
-                currentUrls.addAll(Arrays.asList(gameData.getUrlImages().split(",")));
-            }
+            // 1. Lista final de URLs
+            List<String> finalUrls = new ArrayList<>();
 
-            // 2. Manejar IMAGEN PRINCIPAL NUEVA
+            // 2. ¿Hay imagen principal NUEVA?
             if (mainImageFile != null && !mainImageFile.isEmpty()) {
                 String newMainPath = saveFile(mainImageFile);
-                if (!currentUrls.isEmpty()) {
-                    currentUrls.set(0, newMainPath); // Reemplaza la primera
-                } else {
-                    currentUrls.add(0, newMainPath); // Si estaba vacío, la agrega
+                finalUrls.add(newMainPath); // La nueva va de PRIMERA
+            } else {
+                // Si no hay nueva, recuperamos la vieja (que el front envía como primera en urlImages)
+                if (gameData.getUrlImages() != null && !gameData.getUrlImages().isBlank()) {
+                    String[] parts = gameData.getUrlImages().split(",");
+                    finalUrls.add(parts[0]); // Mantenemos la que ya estaba como principal
                 }
             }
 
-            // 3. Manejar IMÁGENES EXTRA NUEVAS
+            // 3. Añadimos las EXTRAS que ya existían (a partir de la posición 1 del string enviado)
+            if (gameData.getUrlImages() != null && !gameData.getUrlImages().isBlank()) {
+                String[] parts = gameData.getUrlImages().split(",");
+                // Empezamos en 1 si ya procesamos la principal arriba, 
+                // pero para evitar duplicar la principal si no hubo cambio:
+                for (int i = 1; i < parts.length; i++) {
+                    finalUrls.add(parts[i]);
+                }
+            }
+
+            // 4. Añadimos las EXTRAS NUEVAS (al final)
             if (extraImageFiles != null) {
                 for (MultipartFile file : extraImageFiles) {
                     if (!file.isEmpty()) {
-                        currentUrls.add(saveFile(file)); // Añade al final
+                        finalUrls.add(saveFile(file));
                     }
                 }
             }
 
-            // Actualizar campos
+            // 5. Guardar
             existing.setTitle(gameData.getTitle());
             existing.setSynopsis(gameData.getSynopsis());
-            existing.setUrlImages(String.join(",", currentUrls)); // Guardar como string separado por comas
+            existing.setDeveloper(gameData.getDeveloper());
+            existing.setReleaseDate(gameData.getReleaseDate());
+            existing.setCategory(gameData.getCategory());
+            existing.setGenre(gameData.getGenre());
+            existing.setPlatform(gameData.getPlatform());
+            existing.setUrlTrailer(gameData.getUrlTrailer());
+            
+            // Unimos la lista con comas
+            existing.setUrlImages(String.join(",", finalUrls));
 
             return ResponseEntity.ok(videoGameService.updateVideoGame(existing));
 
         } catch (Exception e) {
-            e.printStackTrace(); // Revisa la consola de tu IDE, aquí verás el error real
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
-
-    // ARREGLA LA RUTA AQUÍ
+        // ARREGLA LA RUTA AQUÍ
     private String saveFile(MultipartFile file) throws IOException {
         String name = UUID.randomUUID().toString() + "-" + StringUtils.cleanPath(file.getOriginalFilename());
         // Usa una ruta absoluta real o relativa al proyecto

@@ -243,9 +243,11 @@ export class UpdateVideogame implements OnInit{
     formData.append('videoGame', JSON.stringify(videoGameData));
 
     // Manejo de archivos nuevos
+    // Dentro de createFormData()...
     const mainFile = this.videoGameForm.get('image')?.value;
     if (mainFile instanceof File) {
-      formData.append('mainImage', mainFile, mainFile.name);
+        // Si hay un archivo nuevo, el backend lo recibirá como 'mainImage'
+        formData.append('mainImage', mainFile, mainFile.name);
     }
 
     const extraFiles = this.videoGameForm.get('images')?.value;
@@ -260,31 +262,44 @@ export class UpdateVideogame implements OnInit{
   }
 
   // Agrega esta variable arriba
-public newMainPreview: string | null = null;
+  public newMainPreview: string | null = null;
 
-onFileChange(event: Event, controlName: string) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    this.videoGameForm.get(controlName)?.setValue(input.files);
-    this.videoGameForm.markAsDirty();
+  onFileChange(event: Event, controlName: string) {
+    const input = event.target as HTMLInputElement;
+    
+    if (input.files && input.files.length > 0) {
+      // 1. Marcamos el formulario como modificado (Activa el botón Actualizar)
+      this.videoGameForm.get(controlName)?.setValue(input.files);
+      this.videoGameForm.markAsDirty();
+      this.videoGameForm.get(controlName)?.updateValueAndValidity();
 
-    if (controlName === 'image') {
-      this.mainImageName = input.files[0].name;
-      // Previsualización de la nueva imagen principal
-      const reader = new FileReader();
-      reader.onload = (e: any) => this.newMainPreview = e.target.result;
-      reader.readAsDataURL(input.files[0]);
-    } 
-    else if (controlName === 'images') {
-      this.extraImagesName = `${input.files.length} archivos seleccionados`;
-      this.newExtraImagesPreviews = [];
-      Array.from(input.files).forEach(file => {
+      if (controlName === 'image') {
+        const file = input.files[0];
+        this.mainImageName = file.name;
+
+        // Previsualización de la IMAGEN PRINCIPAL
         const reader = new FileReader();
-        reader.onload = (e: any) => this.newExtraImagesPreviews.push(e.target.result);
+        reader.onload = (e: any) => {
+          this.newMainPreview = e.target.result;
+          this.cdr.detectChanges(); // Forzamos a Angular a ver el cambio
+        };
         reader.readAsDataURL(file);
-      });
+
+      } else if (controlName === 'images') {
+        this.extraImagesName = `${input.files.length} archivos seleccionados`;
+        this.newExtraImagesPreviews = []; // Limpiamos previas anteriores
+
+        // Previsualización de IMÁGENES EXTRA
+        Array.from(input.files).forEach(file => {
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            this.newExtraImagesPreviews.push(e.target.result);
+            this.cdr.detectChanges(); // Importante para que aparezcan en el HTML
+          };
+          reader.readAsDataURL(file);
+        });
+      }
     }
   }
-}
 
 }

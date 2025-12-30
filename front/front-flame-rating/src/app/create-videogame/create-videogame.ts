@@ -42,7 +42,8 @@ export class CreateVideogame implements OnInit{
   consolasLista = [
     'Xbox', 'Nintendo Switch 1', 'Nintendo Switch 2', 'PlayStation 5', 'PC'
   ];
-  
+  public mainImagePreview: string | null = null;
+  public extraImagesPreviews: string[] = [];
   // --- ¡NUEVAS PROPIEDADES! ---
   // Para mostrar los nombres de los archivos en el HTML
   public mainImageName: string = 'Seleccionar archivo...';
@@ -153,41 +154,55 @@ export class CreateVideogame implements OnInit{
 
   // --- ¡¡¡FUNCIÓN onFileChange MODIFICADA!!! ---
   onFileChange(event: Event, controlName: string) {
-    const input = event.target as HTMLInputElement;
-    let fileToStore = null;
+  const input = event.target as HTMLInputElement;
+  let fileToStore = null;
 
-    if (input.files && input.files.length > 0) {
-      if (controlName === 'images') {
-        // --- LÓGICA PARA MÚLTIPLES ARCHIVOS ---
-        fileToStore = input.files;
-        // ¡NUEVO! Actualiza el texto del label
-        this.extraImagesName = `${input.files.length} archivos seleccionados`;
+  if (input.files && input.files.length > 0) {
+    if (controlName === 'images') {
+      // --- LÓGICA MÚLTIPLES ARCHIVOS ---
+      fileToStore = input.files;
+      this.extraImagesName = `${input.files.length} archivos seleccionados`;
       
-      } else {
-        // --- LÓGICA PARA UN SOLO ARCHIVO ---
-        fileToStore = input.files[0];
-        // ¡NUEVO! Actualiza el texto del label
-        this.mainImageName = input.files[0].name; 
-      }
-    } else {
-      // --- LÓGICA SI EL USUARIO CANCELA ---
-      fileToStore = null;
-      if (controlName === 'images') {
-        this.extraImagesName = 'Seleccionar archivos...';
-      } else {
-        this.mainImageName = 'Seleccionar archivo...';
-      }
-    }
+      // Limpiar previas anteriores y generar las nuevas
+      this.extraImagesPreviews = [];
+      Array.from(input.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.extraImagesPreviews.push(e.target.result);
+          this.cdr.detectChanges(); // Forzar refresco visual
+        };
+        reader.readAsDataURL(file);
+      });
 
-    // "Parcheamos" el valor (el archivo o null) en el FormGroup
-    this.videoGameForm.patchValue({
-      [controlName]: fileToStore
-    });
-    // Marcamos como "tocado" para que muestre errores si es necesario
-    this.videoGameForm.get(controlName)?.markAsTouched();
-    
-    console.log(`Archivo guardado en el formControl '${controlName}':`, fileToStore);
+    } else {
+      // --- LÓGICA UN SOLO ARCHIVO (Principal) ---
+      const file = input.files[0];
+      fileToStore = file;
+      this.mainImageName = file.name;
+
+      // Generar previa de la imagen principal
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.mainImagePreview = e.target.result;
+        this.cdr.detectChanges(); // Forzar refresco visual
+      };
+      reader.readAsDataURL(file);
+    }
+  } else {
+    // Si cancela, limpiamos
+    if (controlName === 'images') {
+      this.extraImagesName = 'Seleccionar archivos...';
+      this.extraImagesPreviews = [];
+    } else {
+      this.mainImageName = 'Seleccionar archivo...';
+      this.mainImagePreview = null;
+    }
+    fileToStore = null;
   }
+
+  this.videoGameForm.patchValue({ [controlName]: fileToStore });
+  this.videoGameForm.get(controlName)?.markAsTouched();
+}
  
   // --- ¡NUEVA FUNCIÓN! ---
   public openDatePicker(event: Event): void {

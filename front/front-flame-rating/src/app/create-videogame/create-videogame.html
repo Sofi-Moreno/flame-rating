@@ -150,6 +150,10 @@
           </span>
           <input type="file" id="selector-imagen" accept="image/jpeg" (change)="onFileChange($event, 'image')">
         </label>
+        <div class="main-preview-box" *ngIf="mainImagePreview">
+          <p class="preview-title">Vista previa principal:</p>
+          <img [src]="mainImagePreview" alt="Previa Principal" class="preview-main-img">
+        </div>
         <div *ngIf="image?.invalid && (image?.dirty || image?.touched)" class="error-message">
           <div *ngIf="image?.hasError('required')">Debes seleccionar una imagen principal.</div>
         </div>
@@ -164,6 +168,14 @@
           </span>
           <input type="file" id="selector-images" accept="image/jpeg" multiple (change)="onFileChange($event, 'images')">
         </label>
+        <div class="extras-preview-box" *ngIf="extraImagesPreviews.length > 0">
+          <p class="preview-title">Imágenes complementarias ({{ extraImagesPreviews.length }}):</p>
+          <div class="extras-grid-preview">
+            <div class="extra-item" *ngFor="let preview of extraImagesPreviews">
+              <img [src]="preview" class="preview-extra-img">
+            </div>
+          </div>
+        </div>
       </div>
       
       
@@ -179,7 +191,7 @@
 
       <!-- Fila 9: Botones -->
       <div class="form-buttons span-2">
-        <button type="button" id="cancel" routerLink="/main-menu">Cancelar</button>
+        <button type="button" id="cancel" routerLink="">Cancelar</button>
         <button type="submit" id="save" [disabled]="videoGameForm.invalid">Guardar</button>
       </div>
 
