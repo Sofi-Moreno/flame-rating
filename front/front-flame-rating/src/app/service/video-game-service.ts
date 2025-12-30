@@ -43,4 +43,11 @@ export class VideoGameService {
   updateVideoGame(videoGame:VideoGame):Observable<VideoGame>{
     return this.http.put<VideoGame>(this.apiUpdate, videoGame);
   }
+
+  updateAverageRating(id: number, newAverageRating: number): Observable<VideoGame> {
+    const url = `http://localhost:8080/update-average-rating/${id}/${newAverageRating}`;
+    console.log('Updating average rating:, id=', id, ' newAverageRating=', newAverageRating);
+    return this.http.put<VideoGame>(url, {});
+  }
 }
+

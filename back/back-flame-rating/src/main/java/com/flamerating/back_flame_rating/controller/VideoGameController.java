@@ -176,6 +176,16 @@ public class VideoGameController {
                     .body("Error updating VideoGame: " + e.getMessage());
         }
     }
+
+    @PutMapping("/update-average-rating/{id}/{rating}")
+    public ResponseEntity<?> updateAverageRating(@PathVariable Integer id, @PathVariable Double rating) {
+        try {
+            videoGameService.updateAverageRating(id, rating);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
     
 }
 
