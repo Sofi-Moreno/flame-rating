@@ -7,6 +7,7 @@ import { VideoGameService } from '../service/video-game-service';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError, debounceTime, switchMap, first, delay } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-videogame',
@@ -76,6 +77,13 @@ export class CreateVideogame implements OnInit{
         next: (videojuegoGuardado) => {
           console.log('¡Videojuego guardado con éxito!', videojuegoGuardado);
           this.router.navigate(['/videogame', videojuegoGuardado.id]); 
+          Swal.fire({
+            icon: 'success',
+            title: 'Videojuego Creado',
+            text: 'El videojuego ha sido creado con éxito.',
+            timer: 2000,
+            showConfirmButton: false
+          });
         },
         error: (err) => {
           console.error('Error al guardar el videojuego', err);

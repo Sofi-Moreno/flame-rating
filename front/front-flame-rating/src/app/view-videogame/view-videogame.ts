@@ -49,7 +49,6 @@ export class ViewVideogame implements OnInit{
   imageList: GameImage[] = [];
   private readonly SERVER_URL = 'http://localhost:8080';
 
-  // --- Propiedades para los fueguitos ---
   public selectedRating: number = 0; 
   public hoveredRating: number = 0;  
   public showReviewModal: boolean = false;
@@ -58,8 +57,6 @@ export class ViewVideogame implements OnInit{
   public reviewDelete: boolean = false;
   public reviewUpdate: boolean = false;
 
-  // --- ¡NUEVA PROPIEDAD! Para encontrar el contenedor de partículas ---
-  // Busca el #particleContainer en el HTML
   @ViewChild('particleContainer') particleContainer!: ElementRef;
    public isAdmin: boolean = false;
 
@@ -245,13 +242,7 @@ export class ViewVideogame implements OnInit{
     }
   }
 
-  // --- ------------------------------------------------- ---
-  // --- ¡NUEVA FUNCIÓN HELPER! Para las llamas de reseña  ---
-  // --- ------------------------------------------------- ---
-
   /**
-   * Crea un array vacío del tamaño 'n' para que *ngFor pueda iterar.
-   * Maneja 'null' o 'undefined' de forma segura.
    * @param n El número del rating (ej: 3)
    * @returns Un array (ej: [undefined, undefined, undefined])
    */
@@ -332,6 +323,7 @@ export class ViewVideogame implements OnInit{
     if (this.videoGame) {
       this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
         this.videoGame!.reviews = reviews;
+        this.actualizarPromedioRating(); // Actualiza el promedio de estrellas
         // CERRAR EL MODAL después de recargar (Flujo solicitado)
         this.closeReviewModal();
         
@@ -366,18 +358,12 @@ export class ViewVideogame implements OnInit{
   onConfirmDelete(id: number): void {
     this.gameService.deleteVideoGame(id).subscribe({
       next: () => {
-        // 2. Usar el "Toast" de SweetAlert2
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 5000,
-          timerProgressBar: true,
-        });
-
-        Toast.fire({
-          icon: 'success',
-          title: '¡Videojuego eliminado con éxito!'
+        Swal.fire({
+            icon: 'success',
+            title: 'Videojuego eliminado',
+            text: 'El videojuego ha sido eliminado con éxito.',
+            timer: 2000,
+            showConfirmButton: false
         });
 
         this.deleteMode = false;
@@ -411,14 +397,14 @@ export class ViewVideogame implements OnInit{
         if (this.videoGame) {
           this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
             this.videoGame!.reviews = reviews;
-            this.refreshGameData(); // Para actualizar el promedio de estrellas también
+            this.actualizarPromedioRating();
           });
         }
         // Feedback visual con SweetAlert (ya que lo usas en delete)
           Swal.fire({
             icon: 'success',
             title: 'Reseña eliminada',
-            text: 'Tu comentario ha sido eliminado con éxito.',
+            text: 'El comentario ha sido eliminado con éxito.',
             timer: 2000,
             showConfirmButton: false
           });
@@ -463,7 +449,7 @@ export class ViewVideogame implements OnInit{
       // Recargamos las reseñas para ver los cambios
       this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
         this.videoGame!.reviews = reviews;
-        this.refreshGameData(); 
+        this.actualizarPromedioRating();
       });
     }
     
@@ -475,4 +461,41 @@ export class ViewVideogame implements OnInit{
       showConfirmButton: false
     });
   }
+
+  // Dentro de la clase ViewVideogame
+
+private actualizarPromedioRating(): void {
+  if (!this.videoGame || !this.videoGame.reviews || this.videoGame.reviews.length === 0) {
+    if (this.videoGame) {
+      this.videoGame.averageRating = 0;
+      // Opcional: Llamar al servicio para poner el rating en 0 en la BD
+      this.enviarPromedioABaseDeDatos(0);
+    }
+    return;
+  }
+
+  // 1. Sumar todos los ratings
+  const totalSuma = this.videoGame.reviews.reduce((acc: any, review: { rating: any; }) => acc + (review.rating || 0), 0);
+
+  // 2. Calcular el promedio (con un decimal)
+  const promedio = parseFloat((totalSuma / this.videoGame.reviews.length).toFixed(1));
+
+  // 3. Modificar en el objeto local (esto actualiza el HTML automáticamente)
+  this.videoGame.averageRating = promedio;
+
+
+  // 4. Modificar en la Base de Datos
+  this.enviarPromedioABaseDeDatos(promedio);
+}
+
+private enviarPromedioABaseDeDatos(nuevoPromedio: number): void {
+  if (this.videoGame) {
+    // Asumiendo que tu VideoGameService tiene un método para actualizar
+    // Si no existe, deberás crearlo en tu service.
+    this.gameService.updateAverageRating(this.videoGame.id, nuevoPromedio).subscribe({
+      next: () => console.log('Promedio actualizado en BD:', nuevoPromedio),
+      error: (err: any) => console.error('Error al actualizar promedio en BD', err)
+    });
+  }
+}
 }

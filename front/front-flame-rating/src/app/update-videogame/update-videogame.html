@@ -138,6 +138,27 @@
         </div>
       </div>
 
+      <div class="preview-container">
+        <div class="image-preview" *ngIf="currentMainImage && !videoGameForm.get('image')?.value">
+          <p>Imagen Actual:</p>
+          <img [src]="'http://localhost:8080' + currentMainImage" alt="Principal">
+        </div>
+
+        <div class="extras-grid" *ngIf="currentExtraImages.length > 0">
+          <p>Extras actuales:</p>
+          <div class="preview-item" *ngFor="let img of currentExtraImages; let i = index">
+            <img [src]="img" class="img-thumb">
+            <button type="button" class="btn-delete" (click)="removeExtraImage(i)">×</button>
+          </div>
+        </div>
+
+        <div class="extras-grid" *ngIf="newExtraImagesPreviews.length > 0">
+          <p>Nuevas a subir:</p>
+          <div class="preview-item new-file" *ngFor="let preview of newExtraImagesPreviews">
+            <img [src]="preview" class="img-thumb">
+          </div>
+        </div>
+      </div>
       <!-- 
         Fila 7: Carga de Archivos (¡CON EL NUEVO FEATURE!)
       -->
