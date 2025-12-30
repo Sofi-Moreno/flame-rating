@@ -98,6 +98,11 @@
     color: #aaaaaa;
 }
 
+.required {
+    color: #ff7f50;
+    font-weight: bold;
+}
+
 .profile-input {
     width: 100%;
     padding: 12px;
@@ -124,6 +129,108 @@
     outline: none;
     border-color: #ff7f50;
     box-shadow: 0 0 8px rgba(255, 127, 80, 0.3);
+}
+
+.highlight {
+    border-color: rgba(255, 127, 80, 0.4);
+}
+
+.help-text {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 4px;
+    display: block;
+}
+
+.mini-separator {
+    border: 0;
+    border-top: 1px solid #333;
+    margin: 10px 0;
+}
+
+/* ------------------------------------------- */
+/* Gestión del Avatar (Imagen de Perfil) */
+/* ------------------------------------------- */
+
+.profile-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 0;
+}
+
+.avatar-display {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #333333;
+    background-color: #2a2a2a;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.profile-img-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Estilos para el modo edición de foto */
+.editing-avatar {
+    border-color: #ff7f50;
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.avatar-display:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.file-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+}
+
+.file-label .icon {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.file-label span:not(.icon) {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.file-input-hidden {
+    display: none;
+}
+
+.file-info {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #ff7f50;
+    max-width: 200px;
+    word-break: break-all;
 }
 
 /* ------------------------------------------- */
@@ -173,25 +280,6 @@ button {
 
 .btn-cancel:hover {
     background-color: #555555;
-}
-
-/* ------------------------------------------- */
-/* Avatar */
-/* ------------------------------------------- */
-
-.profile-avatar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.profile-avatar-container img {
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    border-radius: 50%;
-    border: 3px solid #333333;
 }
 
 /* ------------------------------------------- */
@@ -258,7 +346,7 @@ button {
         grid-template-columns: 1fr;
     }
     
-    .profile-avatar-container {
+    .profile-avatar-section {
         order: -1; /* Mover avatar arriba en móvil */
     }
 

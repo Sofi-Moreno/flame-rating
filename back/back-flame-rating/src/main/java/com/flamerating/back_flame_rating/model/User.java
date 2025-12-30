@@ -22,14 +22,18 @@ public class User {
     @Column(nullable = false)
     private boolean isAdmin = false;
 
+    @Column(nullable = false, length = 255)
+    private String profileImage;
+
     public User() {
     }
 
-    public User(String username, String email, String password, boolean isAdmin) {
+    public User(String username, String email, String password, boolean isAdmin, String profileImage) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
+        this.profileImage = profileImage;
     }
 
     public Integer getIdUser() {
@@ -52,6 +56,10 @@ public class User {
         return isAdmin;
     }
 
+    public String getProfileImage() {
+        return profileImage;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -68,4 +76,7 @@ public class User {
         this.isAdmin = isAdmin;
     }
 
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 }

@@ -4,18 +4,21 @@ export class User {
   email: string;
   password?: string; 
   isAdmin: boolean;
+  profileImage?: string;
 
   constructor(
     idUser: undefined, 
     username: string, 
     email: string, 
     isAdmin: boolean,
-    password?: string 
+    password?: string,
+    profileImage?: string
   ) {
     this.idUser = idUser;
     this.username = username;
     this.email = email;
     this.isAdmin = isAdmin;
     this.password = password; 
+    this.profileImage = profileImage;
   }
 }

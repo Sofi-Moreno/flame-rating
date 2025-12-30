@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -72,17 +74,27 @@ public class UserController {
         }
     }
 
-    // 4. ENDPOINT PARA MODIFICAR USUARIO
-    // RUTA: PUT /api/users/update/{idUser}
-    @PutMapping("/update/{idUser}")
-    public ResponseEntity<?> updateUser(@PathVariable Integer idUser, @RequestBody User userDetails) {
+    // 4. MODIFICADO: ENDPOINT PARA MODIFICAR USUARIO CON IMAGEN
+    // Usamos @RequestPart para recibir los datos del usuario (JSON) y el archivo
+    // (Imagen)
+    @PutMapping(value = "/update/{idUser}", consumes = { "multipart/form-data" })
+    public ResponseEntity<?> updateUser(
+            @PathVariable Integer idUser,
+            @RequestPart("userData") String userDataJson, // Recibimos el JSON como String para parsearlo
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "currentPassword", required = false) String currentPassword) {
         try {
-            // Llama al servicio para realizar la actualización
-            User updatedUser = userService.updateUser(idUser, userDetails);
+            // Convertimos el JSON string al objeto User
+            ObjectMapper objectMapper = new ObjectMapper();
+            User userDetails = objectMapper.readValue(userDataJson, User.class);
+
+            // Llamamos al servicio pasando los datos, el archivo y la contraseña actual
+            // para validar
+            User updatedUser = userService.updateUser(idUser, userDetails, image);
+
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } catch (Exception e) {
-            // Maneja casos donde el usuario no existe o hay conflictos de datos
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

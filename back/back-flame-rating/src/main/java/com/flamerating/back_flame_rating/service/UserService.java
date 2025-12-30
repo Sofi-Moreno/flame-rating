@@ -3,14 +3,28 @@ package com.flamerating.back_flame_rating.service;
 import com.flamerating.back_flame_rating.model.User;
 import com.flamerating.back_flame_rating.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
 
     @Autowired
     private IUserRepository userRepository;
+
+    // Esta variable leerá la ruta hacia la carpeta public del front desde
+    // application.properties
+    @Value("${app.upload.dir}")
+    private String uploadDirRelative;
 
     public User registerNewUser(User newUser) throws Exception {
 
@@ -55,7 +69,7 @@ public class UserService {
     }
 
     // --- 4. NUEVO: LÓGICA DE ACTUALIZACIÓN ---
-    public User updateUser(Integer idUser, User userDetails) throws Exception {
+    public User updateUser(Integer idUser, User userDetails, MultipartFile image) throws Exception {
         // A. Buscar el usuario existente por ID
         User existingUser = userRepository.findByIdUser(idUser)
                 .orElseThrow(() -> new Exception("Usuario no encontrado con ID: " + idUser));
@@ -70,6 +84,40 @@ public class UserService {
         if (!existingUser.getEmail().equals(userDetails.getEmail()) &&
                 userRepository.existsByEmail(userDetails.getEmail())) {
             throw new Exception("El nuevo email ya está registrado.");
+        }
+
+        // 4. Procesar la imagen si se ha enviado una nueva
+        if (image != null && !image.isEmpty()) {
+            try {
+                // 1. Obtener la ruta absoluta desde la propiedad definida en
+                // application.properties
+                Path uploadPath = Paths.get(uploadDirRelative).toAbsolutePath().normalize();
+
+                // 2. Crear directorios si no existen
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                // 3. Generar un nombre único para evitar duplicados
+                String originalFilename = image.getOriginalFilename();
+                String fileExtension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+
+                String fileName = UUID.randomUUID().toString() + fileExtension;
+
+                // 4. Guardar el archivo físicamente en la carpeta del frontend
+                Path targetLocation = uploadPath.resolve(fileName);
+                Files.copy(image.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+                // 5. Guardar la URL relativa en la base de datos (Prefijo que Angular entiende)
+                // Se guarda como /flame-rating-images/nombre-archivo.jpg
+                existingUser.setProfileImage("/flame-rating-images/" + fileName);
+
+            } catch (IOException e) {
+                throw new Exception("Error al guardar la imagen de perfil: " + e.getMessage());
+            }
         }
 
         // D. Actualizar los campos permitidos

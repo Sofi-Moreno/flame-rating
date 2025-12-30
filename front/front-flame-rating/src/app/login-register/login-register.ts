@@ -25,7 +25,8 @@ export class LoginRegister implements OnInit {
     username: '',          // Usando username
     email: '',
     password: '',
-    isAdmin: false         // Usando isAdmin
+    isAdmin: false,       // Usando isAdmin
+    profileImage: ''
   } as User; // Casteamos como User (aunque sea una clase o interfaz)
 
   // Inyección de dependencias usando 'inject'
@@ -56,7 +57,8 @@ export class LoginRegister implements OnInit {
         username: '',
         email: '',
         password: '',
-        isAdmin: false
+        isAdmin: false,
+        profileImage: ''
     } as User;
   }
   

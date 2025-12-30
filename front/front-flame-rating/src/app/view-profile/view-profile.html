@@ -57,7 +57,7 @@
                             id="new-password" 
                             type="password" 
                             [(ngModel)]="newPassword"
-                            placeholder="Mínimo 8 caracteres"
+                            placeholder="Ingrese nueva contraseña"
                             class="profile-input editable-input"
                         >
                     </div>
@@ -101,8 +101,34 @@
                 
             </div>
 
-            <div class="profile-avatar-container">
-                <img src="flame-rating-images/perfil.png" alt="Avatar de usuario">
+            <!-- Columna Derecha: Gestión de Imagen de Perfil -->
+            <div class="profile-avatar-section">
+                <div class="avatar-display" [ngClass]="{'editing-avatar': isEditing}">
+                    <!-- Imagen dinámica (Preview o DB) -->
+                    <img 
+                        [src]="getProfileImageUrl()" 
+                        alt="Avatar de usuario" 
+                        class="profile-img-preview"
+                    >
+                    
+                    <!-- Overlay de carga de archivo (Solo en edición) -->
+                    <div class="avatar-overlay" *ngIf="isEditing">
+                        <label for="file-upload" class="file-label">
+                            <span class="icon">📷</span>
+                            <span>Cambiar Foto</span>
+                        </label>
+                        <input 
+                            id="file-upload" 
+                            type="file" 
+                            (change)="onFileSelected($event)" 
+                            accept="image/*"
+                            class="file-input-hidden"
+                        >
+                    </div>
+                </div>
+                <div class="file-info" *ngIf="isEditing && selectedFile">
+                    <p class="file-name">Archivo: {{ selectedFile.name }}</p>
+                </div>
             </div>
         </div>
     </div>

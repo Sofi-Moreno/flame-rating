@@ -87,17 +87,26 @@ export class AuthService {
    * @param idUser ID del usuario a modificar
    * @param userDetails Objeto con los nuevos datos
    */
-  updateUser(idUser: number, userDetails: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/update/${idUser}`, userDetails).pipe(
+  updateUser(idUser: number, userDetails: User, image?: File ): Observable<User> {
+    // Se prepara el FormData para el envío de datos multimedia (Multipart)
+    const formData = new FormData();
+    
+    // Se añade la información del usuario como una cadena JSON
+    formData.append('userData', JSON.stringify(userDetails));
+    
+    // Si existe una imagen nueva, se añade al formulario
+    if (image) {
+      formData.append('image', image);
+    }
+    return this.http.put<User>(`${this.apiUrl}/update/${idUser}`, formData).pipe(
       tap(updatedUser => {
-        // MUY IMPORTANTE: Si el usuario modificado es el mismo que está logueado,
-        // actualizamos la sesión local para que la UI se refresque.
+        // Actualizar la sesión local si el usuario actualizado es el actual
         if (this.currentUserValue?.idUser === updatedUser.idUser) {
           this.setSession(updatedUser);
         }
       }),
       catchError(error => {
-        console.error('Error al actualizar usuario:', error);
+        console.error('Error ocurrido durante la actualización:', error);
         throw error;
       })
     );

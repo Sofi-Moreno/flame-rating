@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms'; // Necesario para el formulario de
 import { AuthService } from '../service/auth';
 import { User } from '../model/user';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-profile',
@@ -15,6 +16,7 @@ import { Subscription } from 'rxjs';
 export class ViewProfile implements OnInit, OnDestroy { 
 
   private authService = inject(AuthService);
+  private router = inject(Router);
   private userSubscription: Subscription | undefined;
 
   // Estado del usuario
@@ -29,6 +31,8 @@ export class ViewProfile implements OnInit, OnDestroy {
   editData: User = { username: '', email: '', password: '', isAdmin: false };
   
   // Variables para el cambio de contraseña
+  selectedFile: File | undefined;
+  imagePreview: string | null = null; 
   newPassword: string = '';
   confirmPassword: string = '';
 
@@ -52,12 +56,34 @@ export class ViewProfile implements OnInit, OnDestroy {
     }
   }
 
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = () => this.imagePreview = reader.result as string;
+      reader.readAsDataURL(file);
+    }
+  }
+  
+
+    getProfileImageUrl(): string {
+    if (this.imagePreview) return this.imagePreview;
+    
+    if (this.currentUser?.profileImage) {
+      return this.currentUser.profileImage;
+    }
+    
+    return 'flame-rating-images/perfil.png'; 
+  }
+
   /**
    * Cambia entre modo lectura y modo edición.
    */
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
     this.message = '';
+    this.imagePreview = null;
     this.clearPasswordFields();
     if (this.isEditing) {
       this.resetEditData();
@@ -70,6 +96,7 @@ export class ViewProfile implements OnInit, OnDestroy {
   private clearPasswordFields(): void {
     this.newPassword = '';
     this.confirmPassword = '';
+    this.selectedFile = undefined;
   }
 
   /**
@@ -115,11 +142,12 @@ export class ViewProfile implements OnInit, OnDestroy {
       this.editData.password = '';
     }
 
-    this.authService.updateUser(this.currentUser.idUser, this.editData).subscribe({
+    this.authService.updateUser(this.currentUser.idUser, this.editData, this.selectedFile).subscribe({
       next: (updatedUser) => {
         this.isEditing = false;
         this.message = 'Perfil actualizado correctamente.';
         this.messageType = 'success';
+        this.imagePreview = null;
         this.clearPasswordFields();
       },
       error: (err) => {
@@ -138,6 +166,7 @@ export class ViewProfile implements OnInit, OnDestroy {
     this.authService.deleteUser(this.currentUser.idUser).subscribe({
       next: () => {
         this.showDeleteModal = false;
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.showDeleteModal = false;

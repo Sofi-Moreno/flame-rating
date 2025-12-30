@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../service/auth'; 
 import { User } from '../model/user'; 
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -16,7 +17,7 @@ import { Observable } from 'rxjs';
 export class Header implements OnInit { // Usamos la convención HeaderComponent
   
   private authService = inject(AuthService);
-  
+  private router = inject(Router);
   // Observable que rastrea el estado del usuario.
   currentUser$: Observable<User | null> = this.authService.currentUser;
   
@@ -40,5 +41,6 @@ export class Header implements OnInit { // Usamos la convención HeaderComponent
    */
   onLogout() {
     this.authService.logout();
+    this.router.navigate(['/']);
   }
 }
