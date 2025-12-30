@@ -40,8 +40,8 @@ export class VideoGameService {
     return this.http.delete<void>(this.apiDelete.replace("{id}", id.toString()));
   }
 
-  updateVideoGame(videoGame:VideoGame):Observable<VideoGame>{
-    return this.http.put<VideoGame>(this.apiUpdate, videoGame);
+  updateVideoGame(formData: FormData):Observable<VideoGame>{
+    return this.http.put<VideoGame>(this.apiUpdate, formData);
   }
 
   updateAverageRating(id: number, newAverageRating: number): Observable<VideoGame> {

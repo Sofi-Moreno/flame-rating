@@ -358,18 +358,12 @@ export class ViewVideogame implements OnInit{
   onConfirmDelete(id: number): void {
     this.gameService.deleteVideoGame(id).subscribe({
       next: () => {
-        // 2. Usar el "Toast" de SweetAlert2
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 5000,
-          timerProgressBar: true,
-        });
-
-        Toast.fire({
-          icon: 'success',
-          title: '¡Videojuego eliminado con éxito!'
+        Swal.fire({
+            icon: 'success',
+            title: 'Videojuego eliminado',
+            text: 'El videojuego ha sido eliminado con éxito.',
+            timer: 2000,
+            showConfirmButton: false
         });
 
         this.deleteMode = false;
@@ -410,7 +404,7 @@ export class ViewVideogame implements OnInit{
           Swal.fire({
             icon: 'success',
             title: 'Reseña eliminada',
-            text: 'Tu comentario ha sido eliminado con éxito.',
+            text: 'El comentario ha sido eliminado con éxito.',
             timer: 2000,
             showConfirmButton: false
           });

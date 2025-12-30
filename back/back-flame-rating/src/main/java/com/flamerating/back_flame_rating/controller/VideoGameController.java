@@ -1,9 +1,11 @@
 package com.flamerating.back_flame_rating.controller;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -145,36 +147,66 @@ public class VideoGameController {
     }
 
     @PutMapping("/update-videogame")
-    public ResponseEntity<?> updateVideoGame(@RequestBody VideoGame videoGame) {
+    public ResponseEntity<?> updateVideoGame(
+        @RequestParam("videoGame") String videoGameJson,
+        @RequestParam(value = "mainImage", required = false) MultipartFile mainImageFile,
+        @RequestParam(value = "images", required = false) MultipartFile[] extraImageFiles
+    ) {
         try {
-            VideoGame existing = videoGameService.findById(videoGame.getId());
+            ObjectMapper objectMapper = new ObjectMapper();
+            VideoGame gameData = objectMapper.readValue(videoGameJson, VideoGame.class);
+            VideoGame existing = videoGameService.findById(gameData.getId());
 
-            if (existing != null) {
-                VideoGame toUpdate = existing;
+            if (existing == null) return ResponseEntity.status(404).body("Juego no encontrado");
 
-                // Actualiza los campos necesarios
-                toUpdate.setTitle(videoGame.getTitle());
-                toUpdate.setGenre(videoGame.getGenre());
-                toUpdate.setDeveloper(videoGame.getDeveloper());
-                toUpdate.setPlatform(videoGame.getPlatform());
-                toUpdate.setReleaseDate(videoGame.getReleaseDate());
-                toUpdate.setSynopsis(videoGame.getSynopsis());
-                toUpdate.setUrlImages(videoGame.getUrlImages());
-                toUpdate.setUrlTrailer(videoGame.getUrlTrailer());
-                toUpdate.setCategory(videoGame.getCategory());
-                toUpdate.setAverageRating(videoGame.getAverageRating());
-
-                VideoGame updated = videoGameService.updateVideoGame(toUpdate);
-                return ResponseEntity.ok(updated);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("VideoGame with ID " + videoGame.getId() + " not found.");
+            // 1. Recuperar las URLs actuales que envió el Front (las que no se borraron)
+            List<String> currentUrls = new ArrayList<>();
+            if (gameData.getUrlImages() != null && !gameData.getUrlImages().isBlank()) {
+                currentUrls.addAll(Arrays.asList(gameData.getUrlImages().split(",")));
             }
+
+            // 2. Manejar IMAGEN PRINCIPAL NUEVA
+            if (mainImageFile != null && !mainImageFile.isEmpty()) {
+                String newMainPath = saveFile(mainImageFile);
+                if (!currentUrls.isEmpty()) {
+                    currentUrls.set(0, newMainPath); // Reemplaza la primera
+                } else {
+                    currentUrls.add(0, newMainPath); // Si estaba vacío, la agrega
+                }
+            }
+
+            // 3. Manejar IMÁGENES EXTRA NUEVAS
+            if (extraImageFiles != null) {
+                for (MultipartFile file : extraImageFiles) {
+                    if (!file.isEmpty()) {
+                        currentUrls.add(saveFile(file)); // Añade al final
+                    }
+                }
+            }
+
+            // Actualizar campos
+            existing.setTitle(gameData.getTitle());
+            existing.setSynopsis(gameData.getSynopsis());
+            existing.setUrlImages(String.join(",", currentUrls)); // Guardar como string separado por comas
+
+            return ResponseEntity.ok(videoGameService.updateVideoGame(existing));
+
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating VideoGame: " + e.getMessage());
+            e.printStackTrace(); // Revisa la consola de tu IDE, aquí verás el error real
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
+    }
+
+    // ARREGLA LA RUTA AQUÍ
+    private String saveFile(MultipartFile file) throws IOException {
+        String name = UUID.randomUUID().toString() + "-" + StringUtils.cleanPath(file.getOriginalFilename());
+        // Usa una ruta absoluta real o relativa al proyecto
+        Path path = Paths.get(uploadDirRelative).toAbsolutePath().resolve(name);
+        
+        Files.createDirectories(path.getParent()); // Crea la carpeta si no existe
+        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        
+        return "/flame-rating-images/" + name;
     }
 
     @PutMapping("/update-average-rating/{id}/{rating}")
