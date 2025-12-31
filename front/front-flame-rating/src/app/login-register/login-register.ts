@@ -116,6 +116,16 @@ export class LoginRegister implements OnInit {
         this.isLoading = false;
         return;
     }
+
+          // 2. Validación de complejidad (Regex)
+      // Al menos: 1 Mayúscula, 1 Minúscula, 1 Número, 1 Símbolo especial y min 8 caracteres.
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      
+    if (!passwordRegex.test(this.user.password!)) {
+      this.error = 'La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial (@$!%*?&).';
+      this.isLoading = false;
+      return;
+    }
     
     this.authService.register(this.user)
       .subscribe({

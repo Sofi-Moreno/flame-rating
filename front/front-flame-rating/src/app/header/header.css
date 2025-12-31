@@ -6,11 +6,12 @@ header{
 
 a{
     color: white;
+    text-decoration: none;
 }
 
 li a:hover{
-    background: rgb(0, 0, 0);
-    color: white;
+    background: linear-gradient(45deg, #F2C849, #F29B30);
+    color: rgb(0, 0, 0);
     cursor: pointer;
 }
 
@@ -32,6 +33,7 @@ a span{
     padding: 0.1rem 0.45rem;
     border-radius: 100rem;
     font-size: 0.9rem;
+    
 }
 
 .container{
@@ -58,13 +60,13 @@ button{
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.5);
   color: rgb(0, 0, 0);
-  background-color: #F2C849;
+  background: linear-gradient(45deg, #F2C849, #F29B30);
   margin-right: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
 button:hover{
-    background-color: #a3893c;
+    background: linear-gradient(45deg, #cca83d, #b17123);
     cursor:pointer
 }

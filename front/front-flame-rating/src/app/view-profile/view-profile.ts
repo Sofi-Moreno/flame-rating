@@ -138,6 +138,16 @@ export class ViewProfile implements OnInit, OnDestroy {
         return;
       }
 
+      // 2. Validación de complejidad (Regex)
+      // Al menos: 1 Mayúscula, 1 Minúscula, 1 Número, 1 Símbolo especial y min 8 caracteres.
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      
+      if (!passwordRegex.test(this.newPassword)) {
+        this.message = 'La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial (@$!%*?&).';
+        this.messageType = 'error';
+        return;
+      }
+
       // 3. Asignar la nueva contraseña al objeto que se enviará
       this.editData.password = this.newPassword;
     } else {
