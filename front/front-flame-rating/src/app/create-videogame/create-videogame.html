@@ -2,13 +2,10 @@
   
   <form [formGroup]="videoGameForm" (ngSubmit)="onSubmit()" class="game-form">
     
-    <!-- Título Principal del Formulario -->
     <h1>Crear Videojuego</h1>
 
-    <!-- Contenedor Principal del Formulario (fondo #2C2C34) -->
     <div class="form-container">
 
-      <!-- Fila 1: Título (ocupa 2 columnas) -->
       <div class="form-group span-2">
         <label for="title-videogame">Título del Videojuego:</label>
         <input type="text" id="title-videogame" formControlName="title" placeholder="Ej: The Last of Us" maxlength="255">
@@ -18,7 +15,6 @@
         </div>
       </div>
 
-      <!-- Fila 2: Desarrolladora y Fecha -->
       <div class="form-group">
         <label for="developer-videogame">Desarrolladora:</label>
         <input type="text" id="developer-videogame" formControlName="developer" placeholder="Ej: Naughty Dog" maxlength="255">
@@ -29,14 +25,12 @@
 
       <div class="form-group">
         <label for="release-date">Fecha de lanzamiento:</label>
-        <!-- Esta es la versión correcta con el (click) -->
         <input type="date" id="release-date" formControlName="releaseDate" (click)="openDatePicker($event)">
         <div *ngIf="releaseDate?.invalid && (releaseDate?.dirty || releaseDate?.touched)" class="error-message">
           <div *ngIf="releaseDate?.hasError('required')">La fecha es requerida.</div>
         </div>
       </div>
 
-      <!-- Fila 3: Sinopsis (ocupa 2 columnas) -->
       <div class="form-group span-2">
         <label for="synopsis-videogame">Sinopsis:</label>
         <textarea id="synopsis-videogame" formControlName="synopsis" rows="6" maxlength="2000" placeholder="Describe el juego..."></textarea>
@@ -45,11 +39,9 @@
         </div>
       </div>
 
-      <!-- Fila 4: Categorías (Radio Buttons con Iconos) -->
       <div class="form-group span-2 custom-radio-group">
         <label>Selecciona solo una de las siguientes categorías:</label>
         <div class="options-container">
-          <!-- Opción 1: Un Jugador -->
           <div class="radio-option">
             <input type="radio" id="category-oneplayer" name="category" value="Un Jugador" formControlName="category">
             <label for="category-oneplayer" class="radio-label">
@@ -57,7 +49,6 @@
               <span>Un Jugador</span>
             </label>
           </div>
-          <!-- Opción 2: Multijugador -->
           <div class="radio-option">
             <input type="radio" id="category-multiplayer" name="category" value="Multijugador" formControlName="category">
             <label for="category-multiplayer" class="radio-label">
@@ -65,7 +56,6 @@
               <span>Multijugador</span>
             </label>
           </div>
-          <!-- Opción 3: En Línea -->
           <div class="radio-option">
             <input type="radio" id="category-online" name="category" value="En linea" formControlName="category">
             <label for="category-online" class="radio-label">
@@ -79,7 +69,6 @@
         </div>
       </div>
 
-      <!-- Fila 5: Géneros (Checkboxes como Etiquetas) -->
       <div class="form-group span-2 custom-checkbox-group" formGroupName="genres">
         <label>Selecciona los géneros (puedes elegir varios):</label>
         <div class="tags-container">
@@ -93,7 +82,6 @@
         </div>
       </div>
       
-      <!-- Fila 6: Plataformas (Checkboxes con Iconos) -->
       <div class="form-group span-2 custom-radio-group" formGroupName="consoles">
         <label>Selecciona las plataformas (puedes elegir varias):</label>
         <div class="options-container">
@@ -138,13 +126,9 @@
         </div>
       </div>
 
-      <!-- 
-        Fila 7: Carga de Archivos (¡CON EL NUEVO FEATURE!)
-      -->
       <div class="form-group file-upload-group">
         <label>Imagen Principal (JPG):</label>
         <label class="file-upload-label">
-          <!-- ¡CAMBIO! Ahora muestra la variable 'mainImageName' -->
           <span [class.is-file-selected]="mainImageName !== 'Seleccionar archivo...'">
             {{ mainImageName }}
           </span>
@@ -162,25 +146,22 @@
       <div class="form-group file-upload-group">
         <label>Imágenes Complementarias (JPG, múltiple):</label>
         <label class="file-upload-label">
-          <!-- ¡CAMBIO! Ahora muestra la variable 'extraImagesName' -->
           <span [class.is-file-selected]="extraImagesName !== 'Seleccionar archivos...'">
             {{ extraImagesName }}
           </span>
           <input type="file" id="selector-images" accept="image/jpeg" multiple (change)="onFileChange($event, 'images')">
         </label>
+        
         <div class="extras-preview-box" *ngIf="extraImagesPreviews.length > 0">
           <p class="preview-title">Imágenes complementarias ({{ extraImagesPreviews.length }}):</p>
           <div class="extras-grid-preview">
-            <div class="extra-item" *ngFor="let preview of extraImagesPreviews">
+            <div class="extra-item" *ngFor="let preview of extraImagesPreviews; let i = index">
               <img [src]="preview" class="preview-extra-img">
+              <button type="button" class="btn-delete" (click)="removeExtraImage(i)">×</button>
             </div>
           </div>
         </div>
-      </div>
-      
-      
-      <!-- Fila 8: Link de YouTube -->
-      <div class="form-group span-2">
+      </div> <div class="form-group span-2">
         <label for="youtube-link">Trailer (Enlace de YouTube):</label>
         <input type="url" id="youtube-link" formControlName="youtubeLink" placeholder="https://www.youtube.com/watch?v=...">
         <div *ngIf="youtubeLink?.invalid && (youtubeLink?.dirty || youtubeLink?.touched)" class="error-message">
@@ -189,12 +170,10 @@
         </div>
       </div>
 
-      <!-- Fila 9: Botones -->
       <div class="form-buttons span-2">
         <button type="button" id="cancel" routerLink="">Cancelar</button>
         <button type="submit" id="save" [disabled]="videoGameForm.invalid">Guardar</button>
       </div>
 
-    </div> <!-- Fin de .form-container -->
-
-  </form> </section>
+    </div> </form> 
+</section>

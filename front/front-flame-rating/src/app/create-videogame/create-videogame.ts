@@ -48,6 +48,7 @@ export class CreateVideogame implements OnInit{
   // Para mostrar los nombres de los archivos en el HTML
   public mainImageName: string = 'Seleccionar archivo...';
   public extraImagesName: string = 'Seleccionar archivos...';
+  public selectedExtraFiles: File[] = [];
 
 
   // ... (todos tus 'getters' (title, developer, etc.) están perfectos) ...
@@ -152,64 +153,95 @@ export class CreateVideogame implements OnInit{
     };
   }
 
-  // --- ¡¡¡FUNCIÓN onFileChange MODIFICADA!!! ---
   onFileChange(event: Event, controlName: string) {
-  const input = event.target as HTMLInputElement;
-  let fileToStore = null;
+    const input = event.target as HTMLInputElement;
+    let fileToStore = null;
 
-  if (input.files && input.files.length > 0) {
-    if (controlName === 'images') {
-      // --- LÓGICA MÚLTIPLES ARCHIVOS ---
-      fileToStore = input.files;
-      this.extraImagesName = `${input.files.length} archivos seleccionados`;
-      
-      // Limpiar previas anteriores y generar las nuevas
-      this.extraImagesPreviews = [];
-      Array.from(input.files).forEach(file => {
+    if (input.files && input.files.length > 0) {
+      if (controlName === 'images') {
+        // 1. Guardamos los archivos reales en nuestro array auxiliar
+        // Usamos Array.from porque input.files es un FileList, no un Array
+        this.selectedExtraFiles = Array.from(input.files);
+        
+        // 2. Actualizamos el texto
+        this.updateExtraImagesLabel();
+        
+        // 3. Generamos vistas previas
+        this.extraImagesPreviews = [];
+        this.selectedExtraFiles.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            this.extraImagesPreviews.push(e.target.result);
+            this.cdr.detectChanges(); 
+          };
+          reader.readAsDataURL(file);
+        });
+
+        // Asignamos algo al control para que sepa que "hay algo", 
+        // aunque usaremos selectedExtraFiles al guardar
+        fileToStore = input.files;
+
+      } else {
+        // Lógica Imagen Principal (se mantiene igual)
+        const file = input.files[0];
+        fileToStore = file;
+        this.mainImageName = file.name;
+
         const reader = new FileReader();
         reader.onload = (e: any) => {
-          this.extraImagesPreviews.push(e.target.result);
-          this.cdr.detectChanges(); // Forzar refresco visual
+          this.mainImagePreview = e.target.result;
+          this.cdr.detectChanges(); 
         };
         reader.readAsDataURL(file);
-      });
-
+      }
     } else {
-      // --- LÓGICA UN SOLO ARCHIVO (Principal) ---
-      const file = input.files[0];
-      fileToStore = file;
-      this.mainImageName = file.name;
+      // Si el usuario cancela la selección
+      if (controlName === 'images') {
+        this.extraImagesName = 'Seleccionar archivos...';
+        this.extraImagesPreviews = [];
+        this.selectedExtraFiles = []; // Limpiamos array
+      } else {
+        this.mainImageName = 'Seleccionar archivo...';
+        this.mainImagePreview = null;
+      }
+      fileToStore = null;
+    }
 
-      // Generar previa de la imagen principal
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.mainImagePreview = e.target.result;
-        this.cdr.detectChanges(); // Forzar refresco visual
-      };
-      reader.readAsDataURL(file);
-    }
-  } else {
-    // Si cancela, limpiamos
-    if (controlName === 'images') {
-      this.extraImagesName = 'Seleccionar archivos...';
-      this.extraImagesPreviews = [];
-    } else {
-      this.mainImageName = 'Seleccionar archivo...';
-      this.mainImagePreview = null;
-    }
-    fileToStore = null;
+    this.videoGameForm.patchValue({ [controlName]: fileToStore });
+    this.videoGameForm.get(controlName)?.markAsTouched();
   }
 
-  this.videoGameForm.patchValue({ [controlName]: fileToStore });
-  this.videoGameForm.get(controlName)?.markAsTouched();
-}
+  // --- ¡NUEVA FUNCIÓN!: Eliminar imagen extra ---
+  removeExtraImage(index: number) {
+    // 1. Eliminamos del array de archivos reales
+    this.selectedExtraFiles.splice(index, 1);
+
+    // 2. Eliminamos de la vista previa
+    this.extraImagesPreviews.splice(index, 1);
+
+    // 3. Actualizamos el texto del label
+    this.updateExtraImagesLabel();
+
+    // 4. (Opcional) Si te quedas sin imágenes, podrías limpiar el input,
+    // pero como usaremos selectedExtraFiles en el submit, no es estrictamente necesario.
+  }
+
+  // Helper para actualizar el texto del label
+  updateExtraImagesLabel() {
+    if (this.selectedExtraFiles.length === 0) {
+      this.extraImagesName = 'Seleccionar archivos...';
+    } else if (this.selectedExtraFiles.length === 1) {
+      this.extraImagesName = '1 archivo seleccionado';
+    } else {
+      this.extraImagesName = `${this.selectedExtraFiles.length} archivos seleccionados`;
+    }
+  }
  
-  // --- ¡NUEVA FUNCIÓN! ---
   public openDatePicker(event: Event): void {
     try {
       (event.target as HTMLInputElement).showPicker();
     } catch (error) {
-      console.error('showPicker() no es soportado por este navegador.', error);
+      console.error('showPicker error', error);
     }
   }
  
@@ -276,23 +308,18 @@ export class CreateVideogame implements OnInit{
       );
     }
 
-    const extraImagesFiles = this.videoGameForm.get('images')?.value;
-    if (extraImagesFiles) {
-      for (let i = 0; i < extraImagesFiles.length; i++) {
+    // --- ¡CAMBIO CRUCIAL AQUÍ! ---
+    // En lugar de leer del form (que tiene el FileList original inmutable),
+    // leemos de nuestro array 'selectedExtraFiles' que ya modificamos con la X
+    if (this.selectedExtraFiles && this.selectedExtraFiles.length > 0) {
+      for (let i = 0; i < this.selectedExtraFiles.length; i++) {
         formData.append(
           'images', 
-          extraImagesFiles[i],
-          extraImagesFiles[i].name
+          this.selectedExtraFiles[i],
+          this.selectedExtraFiles[i].name
         );
       }
     }
-    
-    console.log('--- FormData a enviar ---');
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
-    console.log('-------------------------');
-
     return formData;
-  }
+  } 
 }

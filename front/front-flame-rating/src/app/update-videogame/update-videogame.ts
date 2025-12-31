@@ -34,6 +34,10 @@ export class UpdateVideogame implements OnInit{
   gameId!: number;
   mainImageName: string = 'Cambiar imagen principal...';
   extraImagesName: string = 'Agregar imagenes extra...';
+  
+  // --- CAMBIO 1: Variable para almacenar los archivos nuevos de forma editable ---
+  public selectedExtraFiles: File[] = []; 
+  
   public currentMainImage: string = '';
   public currentExtraImages: string[] = [];
   public newExtraImagesPreviews: string[] = [];
@@ -175,6 +179,30 @@ export class UpdateVideogame implements OnInit{
     this.cdr.detectChanges();
   }
 
+  // --- CAMBIO 2: Función para eliminar imágenes NUEVAS (por subir) ---
+  removeNewExtraImage(index: number) {
+    // 1. Borrar de la vista previa
+    this.newExtraImagesPreviews.splice(index, 1);
+    
+    // 2. Borrar del array de archivos reales
+    this.selectedExtraFiles.splice(index, 1);
+    
+    // 3. Actualizar el FormControl con el nuevo array (para que el onSubmit envíe lo correcto)
+    this.videoGameForm.get('images')?.setValue(this.selectedExtraFiles);
+
+    // 4. Actualizar el texto del label
+    if (this.selectedExtraFiles.length === 0) {
+      this.extraImagesName = 'Agregar imagenes extra...';
+      // Limpiamos el input file del HTML para permitir volver a subir lo mismo si se desea
+      const fileInput = document.getElementById('selector-images') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    } else {
+      this.extraImagesName = `${this.selectedExtraFiles.length} archivos seleccionados`;
+    }
+    
+    this.cdr.detectChanges();
+  }
+
   // 2. Ajuste en loadGameData para cargar las URLs correctamente
   private loadGameData() {
     this.videogameService.findById(this.gameId).subscribe(game => {
@@ -268,38 +296,48 @@ export class UpdateVideogame implements OnInit{
     const input = event.target as HTMLInputElement;
     
     if (input.files && input.files.length > 0) {
-      // 1. Marcamos el formulario como modificado (Activa el botón Actualizar)
-      this.videoGameForm.get(controlName)?.setValue(input.files);
-      this.videoGameForm.markAsDirty();
-      this.videoGameForm.get(controlName)?.updateValueAndValidity();
-
+      
       if (controlName === 'image') {
-        const file = input.files[0];
-        this.mainImageName = file.name;
+         // Lógica de Imagen Principal (se mantiene igual)
+         const file = input.files[0];
+         this.videoGameForm.get(controlName)?.setValue(file);
+         this.videoGameForm.markAsDirty();
+         this.videoGameForm.get(controlName)?.updateValueAndValidity();
+         
+         this.mainImageName = file.name;
 
-        // Previsualización de la IMAGEN PRINCIPAL
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.newMainPreview = e.target.result;
-          this.cdr.detectChanges(); // Forzamos a Angular a ver el cambio
-        };
-        reader.readAsDataURL(file);
+         // Previsualización de la IMAGEN PRINCIPAL
+         const reader = new FileReader();
+         reader.onload = (e: any) => {
+           this.newMainPreview = e.target.result;
+           this.cdr.detectChanges(); 
+         };
+         reader.readAsDataURL(file);
 
       } else if (controlName === 'images') {
-        this.extraImagesName = `${input.files.length} archivos seleccionados`;
+        // --- CAMBIO 3: Lógica de Imágenes Extra actualizada para soportar borrado ---
+        
+        // Convertimos FileList a Array real para poder manipularlo (borrar items)
+        this.selectedExtraFiles = Array.from(input.files);
+        
+        // Guardamos el Array en el formulario
+        this.videoGameForm.get(controlName)?.setValue(this.selectedExtraFiles);
+        this.videoGameForm.markAsDirty();
+        this.videoGameForm.get(controlName)?.updateValueAndValidity();
+
+        this.extraImagesName = `${this.selectedExtraFiles.length} archivos seleccionados`;
         this.newExtraImagesPreviews = []; // Limpiamos previas anteriores
 
         // Previsualización de IMÁGENES EXTRA
-        Array.from(input.files).forEach(file => {
+        this.selectedExtraFiles.forEach(file => {
           const reader = new FileReader();
           reader.onload = (e: any) => {
             this.newExtraImagesPreviews.push(e.target.result);
-            this.cdr.detectChanges(); // Importante para que aparezcan en el HTML
+            this.cdr.detectChanges(); 
           };
           reader.readAsDataURL(file);
         });
       }
     }
   }
-
 }

@@ -188,10 +188,11 @@
           <div class="extras-grid" *ngIf="newExtraImagesPreviews.length > 0">
             <p class="preview-label new-label">Nuevas imágenes extra (por subir):</p>
             <div class="extras-container">
-              <div class="preview-item new-file" *ngFor="let preview of newExtraImagesPreviews">
+              <div class="preview-item new-file" *ngFor="let preview of newExtraImagesPreviews; let i = index">
                 <img [src]="preview" class="img-thumb new-thumb">
+                <button type="button" class="btn-delete" (click)="removeNewExtraImage(i)">×</button>
               </div>
-            </div>
+              </div>
           </div>
         </div>
       </div>

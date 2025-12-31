@@ -351,3 +351,103 @@ input[type="date"]:valid {
   background-color: #DA3426;
   box-shadow: 0 0 10px rgba(240, 121, 112, 0.523); 
 }
+
+/* -------------------------------------------------------------------------- */
+/* 9. ESTILOS DE PREVISUALIZACIÓN DE IMÁGENES (NUEVO)                         */
+/* -------------------------------------------------------------------------- */
+
+/* --- Títulos de las secciones de vista previa --- */
+.preview-label {
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 200;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+/* --- IMAGEN PRINCIPAL (Izquierda) --- */
+.image-preview {
+  margin-top: 1rem;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden; /* Asegura que la imagen respete los bordes redondeados */
+}
+
+.main-preview-img {
+  width: 100%;      /* Ocupa todo el ancho disponible de su columna */
+  height: 300px;    /* Altura fija para mantener consistencia */
+  object-fit: cover;/* CORTA la imagen para llenar el espacio sin estirarse */
+  display: block;   /* Elimina espacios extraños debajo de la imagen */
+}
+
+/* --- IMÁGENES COMPLEMENTARIAS (Derecha - Grid 3x3) --- */
+.extras-section {
+  margin-top: 1rem;
+}
+
+.extras-container {
+  display: grid;
+  /* Crea exactamente 3 columnas de igual tamaño */
+  grid-template-columns: repeat(3, 1fr); 
+  /* Espacio entre las imágenes (filas y columnas) */
+  gap: 10px; 
+}
+
+/* Contenedor individual de cada imagen pequeña */
+.preview-item {
+  position: relative; /*Para que el botón se posicione respecto a esto */
+  width: 100%;
+  height: 90px;      /* Altura pequeña para las miniaturas */
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #4A4A4A;
+  background-color: #1E1E22;
+  transition: transform 0.2s ease; /* Pequeña animación estética */
+}
+
+/* La imagen pequeña en sí */
+.img-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Clave: Mantiene la proporción sin deformar */
+  display: block;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. BOTÓN DE ELIMINAR IMAGEN (LA 'X')                                      */
+/* -------------------------------------------------------------------------- */
+
+.btn-delete {
+  /* Posicionamiento: Flotando en la esquina */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10; /* Asegura que esté por encima de la imagen */
+
+  /* Estética */
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente oscuro para contraste */
+  color: #FFFFFF;
+  border: none;
+  border-bottom-right-radius: 6px; /* Redondeamos solo la esquina interna */
+  
+  /* Tamaño y Texto */
+  width: 30px;
+  height: 30px;
+  font-size: 1.2rem;
+  line-height: 1; /* Centrado vertical del caracter */
+  cursor: pointer;
+  
+  /* Centrar la X */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  transition: all 0.2s ease;
+}
+
+/* Efecto Hover: Se hace un poco más grande y rojo */
+.btn-delete:hover {
+  background-color: #fb4636; /* Rojo al pasar el mouse */
+  transform: scale(1.1);     /* Crece un poquito */
+  font-weight: bold;
+}

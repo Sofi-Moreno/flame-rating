@@ -362,3 +362,96 @@ input[type="date"]:valid {
   margin-top: 0.5rem;
   padding-left: 0.25rem;
 }
+
+/* -------------------------------------------------------------------------- */
+/* 9. ESTILOS DE PREVISUALIZACIÓN DE IMÁGENES (ACTUALIZADO)                   */
+/* -------------------------------------------------------------------------- */
+
+/* ... (Tus estilos anteriores de título e imagen principal siguen igual) ... */
+.preview-title {
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 200;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.main-preview-box {
+  margin-top: 1rem;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden; 
+}
+
+.preview-main-img {
+  width: 100%;      
+  height: 300px;    
+  object-fit: cover;
+  display: block;   
+}
+
+.extras-preview-box {
+  margin-top: 1rem;
+}
+
+.extras-grid-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 10px; 
+}
+
+/* Contenedor individual de cada imagen pequeña */
+.extra-item {
+  position: relative; /* ¡IMPORTANTE! Para ubicar la X */
+  width: 100%;
+  height: 90px;      
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #4A4A4A;
+  background-color: #1E1E22;
+  transition: transform 0.2s ease;
+}
+
+.preview-extra-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. BOTÓN DE ELIMINAR IMAGEN (LA 'X')                                      */
+/* -------------------------------------------------------------------------- */
+.btn-delete {
+  /* Posicionamiento: Flotando en la esquina */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10; 
+
+  /* Estética */
+  background-color: rgba(0, 0, 0, 0.5); 
+  color: #FFFFFF;
+  border: none;
+  border-bottom-right-radius: 6px; 
+  
+  /* Tamaño y Texto */
+  width: 30px;
+  height: 30px;
+  font-size: 1.2rem;
+  line-height: 1; 
+  cursor: pointer;
+  
+  /* Centrar la X */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background-color: #fb4636; 
+  transform: scale(1.1);     
+  font-weight: bold;
+}

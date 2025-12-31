@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Para *ngIf
-import { FormsModule } from '@angular/forms'; // Para [(ngModel)]
-import { AuthService } from '../service/auth'; // Asegúrate que la ruta sea correcta
-import { User } from '../model/user'; // Asegúrate que la ruta sea correcta
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common'; 
+import { FormsModule } from '@angular/forms'; 
+import { AuthService } from '../service/auth'; 
+import { User } from '../model/user'; 
+import { Router, ActivatedRoute } from '@angular/router'; // <--- Importamos ActivatedRoute
 
 @Component({
   selector: 'app-login-register',
@@ -19,24 +19,35 @@ export class LoginRegister implements OnInit {
   isLoading = false;
   error: string | null = null;
   
-  // Modelo para el formulario (usando las nuevas propiedades: username, idUser, isAdmin)
+  // <--- CAMBIO 1: Variable para guardar la URL de retorno
+  returnUrl: string = '/'; 
+
+  // Modelo para el formulario
   user: User = { 
-    idUser: undefined,             // Usando idUser
-    username: '',          // Usando username
+    idUser: undefined,            
+    username: '',          
     email: '',
     password: '',
-    isAdmin: false,       // Usando isAdmin
+    isAdmin: false,       
     profileImage: ''
-  } as User; // Casteamos como User (aunque sea una clase o interfaz)
+  } as User; 
 
-  // Inyección de dependencias usando 'inject'
+  // Inyección de dependencias usando 'inject' (No necesitas constructor)
   private authService = inject(AuthService);
   private router = inject(Router);
+  
+  // <--- CAMBIO 2: Inyectamos la ruta activa para leer los parámetros
+  private route = inject(ActivatedRoute); 
 
   ngOnInit(): void {
-    // Si el usuario ya está logueado, redirigir al home
+    // <--- CAMBIO 3: Capturamos la URL de retorno al iniciar
+    // Si existe 'returnUrl' en la barra de direcciones, la guardamos.
+    // Si no, por defecto será '/' (el home).
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+    // Si el usuario ya está logueado, lo mandamos a donde corresponda
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/']);
+      this.router.navigateByUrl(this.returnUrl); // <--- Usamos navigateByUrl
     }
   }
 
@@ -46,12 +57,11 @@ export class LoginRegister implements OnInit {
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
-    this.error = null; // Limpiar errores al cambiar de modo
+    this.error = null; 
     this.resetForm();
   }
 
   resetForm() {
-    // Reinicia el modelo con las nuevas propiedades
     this.user = { 
         idUser: undefined,
         username: '',
@@ -67,7 +77,6 @@ export class LoginRegister implements OnInit {
   // -----------------------------------------------------------------------
 
   onSubmit() {
-    // Validación mínima para evitar enviar formularios vacíos si se saltan los 'required' del HTML
     if (!this.user.username || !this.user.password) {
         this.error = 'El nombre de usuario y la contraseña son requeridos.';
         return;
@@ -84,12 +93,15 @@ export class LoginRegister implements OnInit {
   }
 
   private handleLogin() {
-    // Llamar al método login del servicio con 'username'
     this.authService.login(this.user.username, this.user.password!)
       .subscribe({
         next: (user) => {
           this.isLoading = false;
-          // La redirección al home ocurre dentro del AuthService (tap operator)
+          
+          // <--- CAMBIO 4: Redirección post-login exitoso
+          // En lugar de dejar que el servicio decida, forzamos la navegación aquí
+          // para volver a la página del videojuego (o al home si no hay returnUrl).
+          this.router.navigateByUrl(this.returnUrl);
         },
         error: (errorRes) => {
           this.error = this.getErrorMessage(errorRes, 'Error de inicio de sesión. Credenciales incorrectas o usuario no encontrado.');
@@ -99,23 +111,20 @@ export class LoginRegister implements OnInit {
   }
 
   private handleRegister() {
-    // El email solo es requerido en el registro
     if (!this.user.email) {
         this.error = 'El email es requerido para el registro.';
         this.isLoading = false;
         return;
     }
     
-    // Llamar al método register del servicio
     this.authService.register(this.user)
       .subscribe({
         next: (user) => {
           this.isLoading = false;
-          // Muestra el nombre de usuario de la respuesta
-          // Usamos alert temporalmente, pero se recomienda un modal personalizado.
           alert(`Registro exitoso para ${user.username}! Redirigiendo...`); 
-          // Ya que el AuthService inicia sesión, redirigimos al home.
-          this.router.navigate(['/']); 
+          
+          // <--- CAMBIO 5 (Opcional): También al registrarse lo devolvemos a la página anterior
+          this.router.navigateByUrl(this.returnUrl); 
         },
         error: (errorRes) => {
           this.error = this.getErrorMessage(errorRes, 'Error en el registro. El nombre de usuario o email pueden ya existir.');
@@ -124,9 +133,7 @@ export class LoginRegister implements OnInit {
       });
   }
 
-  // Función para extraer un mensaje de error legible del objeto de respuesta HTTP
   private getErrorMessage(errorRes: any, defaultMsg: string): string {
-    // Intenta extraer un mensaje de error de Spring Boot si está disponible
     if (errorRes.error && errorRes.error.message) {
       return errorRes.error.message;
     }

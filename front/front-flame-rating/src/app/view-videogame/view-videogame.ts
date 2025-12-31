@@ -498,4 +498,14 @@ private enviarPromedioABaseDeDatos(nuevoPromedio: number): void {
     });
   }
 }
+
+  handleReviewClick(): void {
+    if (this.isLoggedIn) {
+      this.openReviewModal(); 
+    } else {
+      // AQUÍ ESTÁ LA MAGIA:
+      // queryParams envía un dato extra en la URL tipo: /login-register?returnUrl=/videogame/5
+      this.router.navigate(['/login-register'], { queryParams: { returnUrl: this.router.url } });
+    }
+  }
 }
