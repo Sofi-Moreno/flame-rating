@@ -1,3 +1,24 @@
+/* Asegúrate de que el body no tenga márgenes extraños */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* El contenedor que envuelve TODA la página */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ocupa SIEMPRE el 100% de la altura de la pantalla */
+}
+
+/* El contenedor del medio donde se cargan las vistas */
+.content-wrap {
+  flex: 1; /* LA CLAVE: Esto le dice "ocupa todo el espacio vacío disponible" */
+  display: flex;       /* Opcional: Ayuda a que tus vistas internas se comporten bien */
+  flex-direction: column;
+}
+
+/* Tu CSS de footer actual se mantiene igual */
 footer {
   width: 100%;
   height: 80px;
@@ -7,9 +28,9 @@ footer {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin:0%;
+  margin: 0%;
+  /* flex-shrink: 0; <--- Opcional: Agrega esto si alguna vez sientes que el footer se aplasta */
 }
-
 
 p {
   color: white;

@@ -24,7 +24,7 @@ button{
     color: #FFFFFF;
     font-weight: 600;
     font-size: 1rem;
-    border: 2px solid #FF9100;
+    border: 2px solid #F2762E;
     border-radius: 8px;
     padding: 0.75rem 1.5rem;
     cursor: pointer;
@@ -32,7 +32,8 @@ button{
 }
 
 button:hover {
-  background-color: #FF9100;
+  background-color: rgba(211, 94, 26, 0.944);
+  box-shadow: 0 0 10px rgba(246, 125, 55, 0.523);
 }
 
 .form-group{

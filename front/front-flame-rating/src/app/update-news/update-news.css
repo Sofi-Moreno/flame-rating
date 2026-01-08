@@ -30,8 +30,26 @@ button {
   cursor: pointer;
   font-weight: bold;
 }
-.btn-cancel { background-color: #fb4636; color: white; }
-.btn-next, .btn-publish { background-color: #ffc107; color: #1a1a1a; }
+.btn-cancel { 
+  background-color: #fb4636; 
+  border: 2px solid #fb4636; 
+  color: white; 
+}
+
+.btn-cancel:hover { 
+  background-color: #DA3426; 
+  box-shadow: 0 0 10px rgba(240, 121, 112, 0.523);
+}
+
+.btn-next, .btn-publish { 
+  background-color: #F2762E; 
+  border: 2px solid #F2762E; 
+  color: white; }
+
+.btn-publish:hover, .btn-next:hover {
+  background-color: rgba(211, 94, 26, 0.944);
+  box-shadow: 0 0 10px rgba(246, 125, 55, 0.523);
+}
 
 /* Modal Exito */
 .modal-backdrop {

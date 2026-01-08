@@ -35,10 +35,8 @@
                 <div class="rating">
                   <span>{{ videoGame.averageRating }}</span>
                 </div>
-                <button>
-                  <a [routerLink]="['/videogame', videoGame.id]" class="boton-ver-mas">
+                <button [routerLink]="['/videogame', videoGame.id]" class="boton-ver-mas">
                     Ver más
-                  </a>
                 </button>
               </div>
             </a>

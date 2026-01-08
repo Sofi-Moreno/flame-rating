@@ -1,10 +1,15 @@
-<app-header></app-header> 
+<div class="page-wrapper">
 
-<router-outlet />
+    <app-header></app-header> 
 
-<footer>
-    <div className='fondopag'>
-        <p> &copy; FlameRating.com <br> Antias Manuel Moreno Sofía Luis Morales Andrés De La Rosa</p>
+    <main class="content-wrap">
+        <router-outlet></router-outlet>
+    </main>
 
-    </div>
-</footer>
+    <footer>
+        <div class="fondopag">
+            <p> &copy; FlameRating.com <br> Antias Manuel Moreno Sofía Luis Morales Andrés De La Rosa</p>
+        </div>
+    </footer>
+
+</div>
