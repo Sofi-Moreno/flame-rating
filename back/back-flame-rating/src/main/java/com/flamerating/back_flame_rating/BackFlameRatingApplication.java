@@ -30,5 +30,4 @@ public class BackFlameRatingApplication implements WebMvcConfigurer{
         
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
-
 }

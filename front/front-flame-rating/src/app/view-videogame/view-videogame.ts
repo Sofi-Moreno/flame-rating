@@ -146,8 +146,9 @@ export class ViewVideogame implements OnInit{
                                 .split(',')
                                 .map(c => c.trim());
             }
-            this.reviewService.findByVideoGameId(game.id).subscribe(reviews => {
-              game.reviews = reviews;
+            this.reviewService.findByVideoGameId(game.id).subscribe((reviews: any) => {
+              //game.reviews = reviews;
+              game.reviews = this.ordenarResenas(reviews);
             });
           }
           this.videoGame = game;
@@ -321,8 +322,9 @@ export class ViewVideogame implements OnInit{
   reviewSaved(): void {
     console.log('Comentario guardado. Recargando reviews...');
     if (this.videoGame) {
-      this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
-        this.videoGame!.reviews = reviews;
+      this.reviewService.findByVideoGameId(this.videoGame.id).subscribe((reviews: any) => {
+        this.videoGame!.reviews = this.ordenarResenas(reviews);
+        //this.videoGame!.reviews = reviews;
         this.actualizarPromedioRating(); // Actualiza el promedio de estrellas
         // CERRAR EL MODAL después de recargar (Flujo solicitado)
         this.closeReviewModal();
@@ -395,8 +397,9 @@ export class ViewVideogame implements OnInit{
       next: () => {
         this.closeDeleteReviewModal();
         if (this.videoGame) {
-          this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
-            this.videoGame!.reviews = reviews;
+          this.reviewService.findByVideoGameId(this.videoGame.id).subscribe((reviews: any) => {
+            //this.videoGame!.reviews = reviews;
+            this.videoGame!.reviews = this.ordenarResenas(reviews);
             this.actualizarPromedioRating();
           });
         }
@@ -447,8 +450,9 @@ export class ViewVideogame implements OnInit{
     this.closeUpdateReviewModal();
     if (this.videoGame) {
       // Recargamos las reseñas para ver los cambios
-      this.reviewService.findByVideoGameId(this.videoGame.id).subscribe(reviews => {
-        this.videoGame!.reviews = reviews;
+      this.reviewService.findByVideoGameId(this.videoGame.id).subscribe((reviews: any) => {
+        this.videoGame!.reviews = this.ordenarResenas(reviews);
+        //this.videoGame!.reviews = reviews;
         this.actualizarPromedioRating();
       });
     }
@@ -527,5 +531,24 @@ handleReviewClick(): void {
   } else {
     this.router.navigate(['/login-register'], { queryParams: { returnUrl: this.router.url } });
   }
+}
+// Función para poner la reseña del usuario actual de primero
+private ordenarResenas(reviews: Review[]): Review[] {
+  if (!reviews || reviews.length === 0 || !this.currentUserName) {
+    return reviews;
+  }
+
+  // Buscamos el índice de la reseña que pertenece al usuario logueado
+  const index = reviews.findIndex(r => r.userName === this.currentUserName);
+
+  // Si existe la reseña (index es mayor a -1)
+  if (index > -1) {
+    // 1. Sacamos esa reseña del arreglo
+    const miResena = reviews.splice(index, 1)[0];
+    // 2. La ponemos al principio (posición 0)
+    reviews.unshift(miResena);
+  }
+
+  return reviews;
 }
 }

@@ -152,7 +152,7 @@
             
             <div *ngIf="videoGame && !showReviewModal && !isAdmin" class="review-button-container">
                 <button (click)="handleReviewClick()"
-                [disabled]="userHasReviewed"
+                  [disabled]="userHasReviewed"
                   [title]="userHasReviewed ? 'Solo se puede realizar una reseña por videojuego' : '¡Danos tu opinión!'"
                   [class.btn-disabled]="userHasReviewed"> 
                   {{ userHasReviewed ? 'Reseña Enviada' : 'Dejar Reseña' }} </button>
