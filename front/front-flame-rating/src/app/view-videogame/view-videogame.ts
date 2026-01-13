@@ -499,13 +499,33 @@ private enviarPromedioABaseDeDatos(nuevoPromedio: number): void {
   }
 }
 
-  handleReviewClick(): void {
-    if (this.isLoggedIn) {
-      this.openReviewModal(); 
-    } else {
-      // AQUÍ ESTÁ LA MAGIA:
-      // queryParams envía un dato extra en la URL tipo: /login-register?returnUrl=/videogame/5
-      this.router.navigate(['/login-register'], { queryParams: { returnUrl: this.router.url } });
-    }
+
+  get userHasReviewed(): boolean {
+  // 1. Si no hay juego, ni reviews, o el usuario no está logueado, retorna false
+  if (!this.videoGame?.reviews || !this.isLoggedIn || !this.currentUserName) {
+    return false;
   }
+  
+  // 2. Busca si alguna review pertenece al usuario actual
+  return this.videoGame.reviews.some((review: { userName: string; }) => review.userName === this.currentUserName);
+}
+
+// Modificamos también el handleReviewClick para seguridad extra
+handleReviewClick(): void {
+  // Si ya reseñó, no hacemos nada (por si acaso habilitan el botón desde inspector de elementos)
+  if (this.userHasReviewed) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Acción no permitida',
+      text: 'Ya has dejado una reseña para este videojuego.'
+    });
+    return;
+  }
+
+  if (this.isLoggedIn) {
+    this.openReviewModal(); 
+  } else {
+    this.router.navigate(['/login-register'], { queryParams: { returnUrl: this.router.url } });
+  }
+}
 }
