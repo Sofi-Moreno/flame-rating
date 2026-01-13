@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router'; 
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser'; // Importamos SafeUrl
+
 import { NewsService } from '../service/news-service';
 import { News } from '../model/news';
 
@@ -16,7 +18,8 @@ export class UpdateNewsComponent implements OnInit {
 
   private newsService = inject(NewsService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute); 
+  private route = inject(ActivatedRoute);
+  private sanitizer = inject(DomSanitizer);
 
   public news: News = new News(); 
   public id: number = 0;
@@ -40,47 +43,24 @@ export class UpdateNewsComponent implements OnInit {
     }
   }
 
-  // --- FUNCIÓN DE VALIDACIÓN MEJORADA ---
+  // --- VALIDACIÓN ---
   onReview() {
-    
-    // 1. VALIDACIÓN DE IMÁGENES
+    // 1. Limpiar espacios extras en imágenes
     if (this.news.urlImages && this.news.urlImages.trim().length > 0) {
-      // A. Quitamos espacios en blanco
-      this.news.urlImages = this.news.urlImages.replace(/\s/g, '');
-      
-      // B. Separamos por comas para revisar una por una
-      const images = this.news.urlImages.split(',');
-
-      for (const img of images) {
-        // Verificamos que sea una URL válida (empieza con http o https)
-        // Nota: No validamos extensión (.jpg) porque a veces usas picsum.photos u otros servicios
-        if (!img.toLowerCase().startsWith('http')) {
-          alert(`Error en imagen: "${img}" no parece una URL válida (debe empezar con http).`);
-          return; // DETENEMOS LA EJECUCIÓN AQUÍ
-        }
-      }
+      // Separamos por coma y limpiamos espacios de cada URL individualmente
+      // Esto es más seguro que un replace global
+      this.news.urlImages = this.news.urlImages
+        .split(',')
+        .map(url => url.trim()) // Quitamos espacios al inicio y final
+        .join(',');
     }
 
-    // 2. VALIDACIÓN DE VIDEOS (YOUTUBE)
+    // 2. Limpiar espacios en videos
     if (this.news.urlVideo && this.news.urlVideo.trim().length > 0) {
-      // A. Quitamos espacios
       this.news.urlVideo = this.news.urlVideo.replace(/\s/g, '');
-      
-      // B. Separamos por comas
-      const videos = this.news.urlVideo.split(',');
-
-      for (const vid of videos) {
-        // C. Verificamos que sea de YouTube
-        const isYoutube = vid.includes('youtube.com') || vid.includes('youtu.be');
-        
-        if (!isYoutube) {
-          alert(`Error en video: "${vid}" no es un enlace de YouTube válido.`);
-          return; // DETENEMOS LA EJECUCIÓN AQUÍ
-        }
-      }
     }
-
-    // 3. Si todo está correcto, pasamos a la vista previa
+    
+    // Pasamos a vista previa (Permitimos pasar aunque haya links raros para probarlos)
     this.isPreview = true;
   }
 
@@ -89,7 +69,7 @@ export class UpdateNewsComponent implements OnInit {
   }
 
   onUpdate() {
-    this.news.id = this.id; // Aseguramos el ID
+    this.news.id = this.id; 
 
     this.newsService.updateNews(this.news).subscribe(
       (data) => {
@@ -104,5 +84,49 @@ export class UpdateNewsComponent implements OnInit {
 
   finish() {
     this.router.navigate(['/view-news']);
+  }
+
+  // --- MANEJO DE IMÁGENES Y VIDEOS BLINDADO ---
+
+  getImages(): SafeUrl[] {
+    if (!this.news.urlImages) return [];
+    
+    const urls = this.news.urlImages.split(',').filter(url => url.length > 0);
+    
+    // Sanitizamos cada URL para que Angular no bloquee nada
+    return urls.map(url => this.sanitizer.bypassSecurityTrustUrl(url));
+  }
+
+  getVideos(): string[] {
+    if (!this.news.urlVideo) return [];
+    return this.news.urlVideo.split(',').filter(url => url.length > 0);
+  }
+
+  isYoutube(url: string): boolean {
+    return url.includes('youtube.com') || url.includes('youtu.be');
+  }
+
+  getYoutubeEmbedUrl(url: string): SafeResourceUrl {
+    let videoId = '';
+    try {
+      if (url.includes('youtube.com/watch')) {
+        videoId = url.split('v=')[1].split('&')[0];
+      } else if (url.includes('youtu.be')) {
+        videoId = url.split('youtu.be/')[1];
+      }
+    } catch (e) {
+      console.error("Error parseando URL de YouTube", e);
+    }
+    const embedUrl = 'https://www.youtube.com/embed/' + videoId;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+  }
+
+  // --- SOLUCIÓN MAESTRA PARA IMÁGENES ROTAS ---
+  handleImgError(event: any) {
+    console.warn("La imagen falló al cargar, poniendo fallback.");
+    // Reemplaza la imagen rota por una imagen genérica que SIEMPRE funciona
+    event.target.src = 'https://placehold.co/600x400?text=Imagen+No+Disponible';
+    // Nos aseguramos que sea visible
+    event.target.style.display = 'block';
   }
 }

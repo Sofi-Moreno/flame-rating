@@ -16,7 +16,6 @@
           <h2>{{ news.title }}</h2>
           
           <div class="admin-actions">
-            
             <button class="btn-edit" *ngIf="isAdmin" [routerLink]="['/update-news', news.id]" title="Editar noticia">
               ✏️
             </button>
@@ -24,7 +23,6 @@
             <button class="btn-trash" *ngIf="isAdmin" (click)="openDeleteModal(news)" title="Eliminar noticia">
               🗑️
             </button>
-            
           </div>
         </div>
 
@@ -40,7 +38,8 @@
               <img 
                 [src]="imgUrl" 
                 [alt]="news.title" 
-                (error)="handleMediaError($event)">
+                loading="lazy"
+                (error)="handleImgError($event)">
             </div>
             
             <div class="carousel-item" *ngFor="let vidUrl of getVideos(news)">

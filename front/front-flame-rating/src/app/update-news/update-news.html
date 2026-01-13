@@ -16,17 +16,16 @@
 
       <div class="form-group">
         <label>URLs Imágenes (separadas por coma):</label>
-        <input type="text" [(ngModel)]="news.urlImages" name="urlImages" class="form-control">
+        <input type="text" [(ngModel)]="news.urlImages" name="urlImages" class="form-control" placeholder="http://...">
       </div>
 
       <div class="form-group">
         <label>URLs Videos (separadas por coma):</label>
-        <input type="text" [(ngModel)]="news.urlVideo" name="urlVideo" class="form-control">
+        <input type="text" [(ngModel)]="news.urlVideo" name="urlVideo" class="form-control" placeholder="Link de YouTube">
       </div>
 
       <div class="actions">
         <button type="button" class="btn-cancel" routerLink="/view-news">Cancelar</button>
-        
         <button type="submit" class="btn-next">Revisar Cambios</button>
       </div>
     </form>
@@ -36,6 +35,28 @@
     <h2>Vista Previa de Cambios</h2>
     <div class="preview-box">
       <h3>{{ news.title }}</h3>
+
+      <div class="media-preview-container">
+        
+        <div *ngFor="let img of getImages()" class="media-item">
+          <img 
+            [src]="img" 
+            alt="Vista previa"
+            (error)="handleImgError($event)">
+        </div>
+
+        <div *ngFor="let vid of getVideos()" class="media-item video-item">
+          <iframe 
+            *ngIf="isYoutube(vid)"
+            [src]="getYoutubeEmbedUrl(vid)" 
+            frameborder="0" 
+            allowfullscreen>
+          </iframe>
+          <p *ngIf="!isYoutube(vid)" class="error-text">Video no compatible</p>
+        </div>
+
+      </div>
+
       <p style="white-space: pre-wrap;">{{ news.textNews }}</p>
     </div>
 
